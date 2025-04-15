@@ -5,5 +5,10 @@
   font-style: normal;
 }
 body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+h1 {
   font-family: 'ScratchOriginal', sans-serif;
+  color: orange;
+  border: 1px white;
 }
