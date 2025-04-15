@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'ScratchOriginal';
-  src: url('https://raw.githubusercontent.com/polylogue2/the-font-archive/ttf/scratch-original.ttf') format('truetype');
+  src: url('https://cdn.jsdelivr.net/gh/polylogue2/the-font-archive@raw/refs/heads/main/ttf/scratch-original.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
