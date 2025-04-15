@@ -1,0 +1,9 @@
+@font-face {
+  font-family: 'ScratchOriginal';
+  src: url('https://raw.githubusercontent.com/polylogue2/the-font-archive/ttf/scratch-original.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+body {
+  font-family: 'ScratchOriginal', sans-serif;
+}
