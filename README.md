@@ -7,7 +7,7 @@ This is the repository for the brand new Scratch News Channel! Soon, news articl
 
 ## Deployment
 
-There is no need to deploy this yourself if you just want to check out our site. If you just want to see our site, you can visit <https://the-scratch-channel.onrender.com/> and browse the live demo.
+There is no need to deploy this yourself. If you just want to check out our site, you can visit <https://the-scratch-channel.onrender.com/> and browse the live demo.
 
 ### Contributing
 
