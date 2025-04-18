@@ -39,6 +39,14 @@ document.getElementById('loginForm')?.addEventListener('submit', async function 
       body: JSON.stringify({ username, password })
     });
 
+    const response = await fetch('/api/auth', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ username, password })
+    });
+
     const data = await response.json();
     alert(data.message);
     if (response.ok) {
