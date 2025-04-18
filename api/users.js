@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-const users = []; // In-memory user storage
+const users = [];
 
-// Add new user
 router.post('/signup', (req, res) => {
   const { username, password } = req.body;
 
@@ -17,7 +16,6 @@ router.post('/signup', (req, res) => {
   res.status(201).json({ message: 'User signed up successfully' });
 });
 
-// Basic login check
 router.post('/login', (req, res) => {
   const { username, password } = req.body;
 
@@ -31,7 +29,6 @@ router.post('/login', (req, res) => {
   res.status(200).json({ message: 'Login successful' });
 });
 
-// Export validation function for auth.js
 function isValidUser(username, password) {
   return users.some(user => user.username === username && user.password === password);
 }
