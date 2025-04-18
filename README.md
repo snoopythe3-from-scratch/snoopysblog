@@ -7,12 +7,12 @@ This is the repository for the brand new Scratch News Channel! Soon, news articl
 
 ## Deployment
 
-There is no need to deploy this yourself if you just want to check out our site. If you just want to see our site, you can visit <https://the-scratch-channel.onrender.com/> and browse the live demo.
+There is no need to deploy this yourself. If you just want to check out our site, you can visit <https://the-scratch-channel.onrender.com/> and browse the live demo.
 
 ### Contributing
 
-If you are however wanting to contribute but are not a contributor yet, first:
-
+If would like to contribute but are not a contributor yet, follow these steps below:
+However, if you find a vulnerability that requires immediate attention, go to the [Security Tab](https://github.com/The-Scratch-Channel/the-scratch-channel.github.io/security) to report it.
 - create a fork of the repository
 
 ![Click on the fork button towards the top of the repository home page](https://u.cubeupload.com/SmartCat3/Screenshot2025041818.png)
