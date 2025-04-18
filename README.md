@@ -11,8 +11,8 @@ There is no need to deploy this yourself if you just want to check out our site.
 
 ### Contributing
 
-If you are however wanting to contribute but are not a contributor yet, first:
-
+If would like to contribute but are not a contributor yet, follow these steps below:
+However, if you find a vulnerability that requires immediate attention, go to the [Security Tab](https://github.com/The-Scratch-Channel/the-scratch-channel.github.io/security) to report it.
 - create a fork of the repository
 
 ![Click on the fork button towards the top of the repository home page](https://u.cubeupload.com/SmartCat3/Screenshot2025041818.png)
