@@ -7,8 +7,9 @@
     "start": "node server.js"
   },
   "author": "The Scratch Channel",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
-    "express": "^4.18.4"
+    "express": "^4.18.4",
+    "body-parser": "^1.20.2"
   }
 }
