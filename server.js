@@ -9,7 +9,7 @@ const app = express();
 // app.use(bodyParser.json());
 
 app.use(express.static('static'));
-
+app.use(express.static("pages"))
 
 // Serve the 'static' folder at the root URL
 const staticPath = path.join(__dirname, 'static');
