@@ -3,12 +3,13 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const { router: usersRouter } = require('./api/users');
 const { router: authRouter } = require('./api/auth');
-const articlesRouter = require('./api/articles');
+const articlesRouter = require('./api/artic');
 
 const app = express();
+// app.use(bodyParser.json());
 
-// Middleware to parse JSON bodies
-app.use(bodyParser.json());
+app.use(express.static('static'));
+
 
 // Serve the 'static' folder at the root URL
 const staticPath = path.join(__dirname, 'static');

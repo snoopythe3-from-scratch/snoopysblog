@@ -1,15 +1,28 @@
 {
-  "name": "node-server",
+  "name": "the-scratch-channel.github.io",
   "version": "1.0.0",
-  "description": "A simple Express server",
+  "description": "The Scratch Channel",
   "main": "server.js",
   "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
-  "author": "The Scratch Channel",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/The-Scratch-Channel/the-scratch-channel.github.io.git"
+  },
+  "keywords": [
+    "scratch",
+    "news"
+  ],
+  "author": "The-Scratch-Channel",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/The-Scratch-Channel/the-scratch-channel.github.io/issues"
+  },
+  "homepage": "https://github.com/The-Scratch-Channel/the-scratch-channel.github.io#readme",
   "dependencies": {
-    "express": "^4.18.4",
-    "body-parser": "^1.20.2"
+    "body-parser": "^2.2.0",
+    "express": "^5.1.0"
   }
 }
