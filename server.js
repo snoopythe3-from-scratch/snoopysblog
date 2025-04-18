@@ -1,5 +1,4 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const path = require('path');
 const { router: usersRouter } = require('./api/users');
 const { router: authRouter } = require('./api/auth');
@@ -9,7 +8,7 @@ const app = express();
 // app.use(bodyParser.json());
 
 app.use(express.static('static'));
-app.use(express.static("pages"))
+app.use(express.static("pages"));
 
 // Serve the 'static' folder at the root URL
 const staticPath = path.join(__dirname, 'static');

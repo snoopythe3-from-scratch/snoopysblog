@@ -22,7 +22,6 @@
   },
   "homepage": "https://github.com/The-Scratch-Channel/the-scratch-channel.github.io#readme",
   "dependencies": {
-    "body-parser": "^2.2.0",
     "express": "^5.1.0"
   }
 }
