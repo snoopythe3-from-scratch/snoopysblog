@@ -1,8 +1,8 @@
 // Handle Signup
 document.getElementById('signupForm')?.addEventListener('submit', async function (e) {
   e.preventDefault();
-  const username = document.getElementById('username').value;
-  const password = document.getElementById('password').value;
+  const username = document.getElementById('signupUsername').value;  // Changed to unique id
+  const password = document.getElementById('signupPassword').value;  // Changed to unique id
 
   try {
     const response = await fetch('/api/signup', {
@@ -15,8 +15,11 @@ document.getElementById('signupForm')?.addEventListener('submit', async function
 
     const data = await response.json();
     alert(data.message);
-    if (response.ok) window.location.href = 'login.html';
+    if (response.ok) {
+      window.location.href = 'login.html';  // Redirect to login page
+    }
   } catch (err) {
+    console.error('Signup failed:', err);
     alert('Signup failed');
   }
 });
@@ -24,8 +27,8 @@ document.getElementById('signupForm')?.addEventListener('submit', async function
 // Handle Login
 document.getElementById('loginForm')?.addEventListener('submit', async function (e) {
   e.preventDefault();
-  const username = document.getElementById('username').value;
-  const password = document.getElementById('password').value;
+  const username = document.getElementById('loginUsername').value;  // Changed to unique id
+  const password = document.getElementById('loginPassword').value;  // Changed to unique id
 
   try {
     const response = await fetch('/api/login', {
@@ -38,8 +41,13 @@ document.getElementById('loginForm')?.addEventListener('submit', async function 
 
     const data = await response.json();
     alert(data.message);
-    if (response.ok) window.location.href = 'articles.html';
+    if (response.ok) {
+      // Save the auth token to localStorage or sessionStorage for future requests
+      localStorage.setItem('authCode', data.authCode); // Assuming the response contains an authCode
+      window.location.href = 'articles.html';  // Redirect to articles page
+    }
   } catch (err) {
+    console.error('Login failed:', err);
     alert('Login failed');
   }
 });
@@ -47,10 +55,10 @@ document.getElementById('loginForm')?.addEventListener('submit', async function 
 // Handle Article Submission
 document.getElementById('articleForm')?.addEventListener('submit', async function (e) {
   e.preventDefault();
-  const title = document.getElementById('title').value;
-  const content = document.getElementById('content').value;
+  const title = document.getElementById('articleTitle').value;  // Changed to unique id
+  const content = document.getElementById('articleContent').value;  // Changed to unique id
 
-  const authCode = localStorage.getItem('authCode');  // Assuming auth code is saved in localStorage
+  const authCode = localStorage.getItem('authCode');  // Retrieve authCode from localStorage
 
   if (!authCode) {
     alert('You need to be logged in to post articles');
@@ -62,15 +70,18 @@ document.getElementById('articleForm')?.addEventListener('submit', async functio
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': authCode
+        'Authorization': `Bearer ${authCode}`  // Authorization header format
       },
       body: JSON.stringify({ title, content })
     });
 
     const data = await response.json();
     alert(data.message);
-    if (response.ok) window.location.href = 'articles.html';
+    if (response.ok) {
+      window.location.href = 'articles.html';  // Redirect to articles page after submission
+    }
   } catch (err) {
+    console.error('Failed to post article:', err);
     alert('Failed to post article');
   }
 });
@@ -86,5 +97,9 @@ if (document.getElementById('articlesList')) {
         articleDiv.innerHTML = `<h3>${article.title}</h3><p>${article.content}</p>`;
         articlesList.appendChild(articleDiv);
       });
+    })
+    .catch(err => {
+      console.error('Error fetching articles:', err);
+      alert('Failed to load articles');
     });
 }
