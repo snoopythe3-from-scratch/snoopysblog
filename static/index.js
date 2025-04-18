@@ -1,23 +1,21 @@
 // Handle Signup
 document.getElementById('signupForm')?.addEventListener('submit', async function (e) {
   e.preventDefault();
-  const username = document.getElementById('signupUsername').value;  // Changed to unique id
-  const password = document.getElementById('signupPassword').value;  // Changed to unique id
+  const username = document.getElementById('signupUsername').value;
+  const password = document.getElementById('signupPassword').value;
 
   try {
     const response = await fetch('/api/signup', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
     });
 
     const data = await response.json();
-    const dataun = JSON.parse(data);
-    alert(dataun);
+    alert(data.message || data.error);
+
     if (response.ok) {
-      window.location.href = 'login.html';  // Redirect to login page
+      window.location.href = 'login.html';
     }
   } catch (err) {
     console.error('Signup failed:', err);
@@ -28,32 +26,35 @@ document.getElementById('signupForm')?.addEventListener('submit', async function
 // Handle Login
 document.getElementById('loginForm')?.addEventListener('submit', async function (e) {
   e.preventDefault();
-  const username = document.getElementById('loginUsername').value;  // Changed to unique id
-  const password = document.getElementById('loginPassword').value;  // Changed to unique id
+  const username = document.getElementById('loginUsername').value;
+  const password = document.getElementById('loginPassword').value;
 
   try {
-    const response = await fetch('/api/login', {
+    // First verify credentials
+    const loginResponse = await fetch('/api/login', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
     });
 
-    const response = await fetch('/api/auth', {
+    const loginData = await loginResponse.json();
+    if (!loginResponse.ok) {
+      alert(loginData.error || 'Login failed');
+      return;
+    }
+
+    // Then request auth code
+    const authResponse = await fetch('/api/auth', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
     });
 
-    const data = await response.json();
-    alert(data.message);
-    if (response.ok) {
-      // Save the auth token to localStorage or sessionStorage for future requests
-      localStorage.setItem('authCode', data.authCode); // Assuming the response contains an authCode
-      window.location.href = 'articles.html';  // Redirect to articles page
+    const authData = await authResponse.json();
+    alert(authData.message || 'Login successful');
+    if (authResponse.ok) {
+      localStorage.setItem('authCode', authData.authCode);
+      window.location.href = 'articles.html';
     }
   } catch (err) {
     console.error('Login failed:', err);
@@ -64,11 +65,10 @@ document.getElementById('loginForm')?.addEventListener('submit', async function 
 // Handle Article Submission
 document.getElementById('articleForm')?.addEventListener('submit', async function (e) {
   e.preventDefault();
-  const title = document.getElementById('articleTitle').value;  // Changed to unique id
-  const content = document.getElementById('articleContent').value;  // Changed to unique id
+  const title = document.getElementById('articleTitle').value;
+  const content = document.getElementById('articleContent').value;
 
-  const authCode = localStorage.getItem('authCode');  // Retrieve authCode from localStorage
-
+  const authCode = localStorage.getItem('authCode');
   if (!authCode) {
     alert('You need to be logged in to post articles');
     return;
@@ -79,15 +79,16 @@ document.getElementById('articleForm')?.addEventListener('submit', async functio
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authCode}`  // Authorization header format
+        'Authorization': `Bearer ${authCode}`
       },
       body: JSON.stringify({ title, content })
     });
 
     const data = await response.json();
-    alert(data.message);
+    alert(data.message || data.error);
+
     if (response.ok) {
-      window.location.href = 'articles.html';  // Redirect to articles page after submission
+      window.location.href = 'articles.html';
     }
   } catch (err) {
     console.error('Failed to post article:', err);
@@ -95,7 +96,7 @@ document.getElementById('articleForm')?.addEventListener('submit', async functio
   }
 });
 
-// Fetch Articles (on articles.html)
+// Fetch Articles
 if (document.getElementById('articlesList')) {
   fetch('/api/articles')
     .then(response => response.json())
