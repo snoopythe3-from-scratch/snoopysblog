@@ -26,8 +26,8 @@ document.getElementById('signupForm')?.addEventListener('submit', async function
 // Handle Login
 document.getElementById('loginForm')?.addEventListener('submit', async function (e) {
   e.preventDefault();
-  const username = document.getElementById('loginUsername').value;
-  const password = document.getElementById('loginPassword').value;
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
 
   try {
     // First verify credentials
@@ -51,11 +51,14 @@ document.getElementById('loginForm')?.addEventListener('submit', async function 
     });
 
     const authData = await authResponse.json();
-    alert(authData.message || 'Login successful');
-    if (authResponse.ok) {
-      localStorage.setItem('authCode', authData.authCode);
-      window.location.href = 'articles.html';
+    if (!authResponse.ok) {
+      alert(authData.error || 'Authentication failed');
+      return;
     }
+
+    localStorage.setItem('authCode', authData.authCode);
+    alert('Login successful!');
+    window.location.href = 'articles.html';
   } catch (err) {
     console.error('Login failed:', err);
     alert('Login failed');
@@ -79,7 +82,7 @@ document.getElementById('articleForm')?.addEventListener('submit', async functio
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authCode}`
+        'Authorization': authCode
       },
       body: JSON.stringify({ title, content })
     });
@@ -96,7 +99,7 @@ document.getElementById('articleForm')?.addEventListener('submit', async functio
   }
 });
 
-// Fetch Articles
+// Fetch Articles (on articles.html)
 if (document.getElementById('articlesList')) {
   fetch('/api/articles')
     .then(response => response.json())
