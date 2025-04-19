@@ -28,5 +28,5 @@ app.use('/api', articlesRouter); // /articles
 app.listen(3000, () => {
   console.log('Server running at http://localhost:3000');
   console.log('Make sure the website loaded correctly!');
-  console.log('Get Help: github.com/the-scratch-channel/the-scratch-channel.github.io/issues')
+  console.log('Get help if incorrectly loaded: github.com/the-scratch-channel/the-scratch-channel.github.io/issues')
 });
