@@ -3,28 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="new.css">
+  <link rel="stylesheet" href="/static/new.css">
   <title>Login - The Scratch Channel</title>
 </head>
 <body>
   <header>
-    <h1 class="stroke-double">Log In to The Scratch Channel</h1>
+    <h1 class="stroke-double">Login - The Scratch Channel</h1>
   </header>
 
   <main>
-    <form id="loginForm">
-      <label for="username">Username:</label>
-      <input type="text" id="username" name="username" required>
-
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password" required>
-
-      <button type="submit">Log In</button>
-    </form>
-
-    <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
+    <a id="link" href="#">Login With ScratchAuth</a>
   </main>
 
-  <script src="/index.js"></script>
+  <script src="/static/index.js"></script>
+  <script>
+    const link = document.getElementById('link');
+    link.href = `https://auth.itinerary.eu.org/auth?redirect=${btoa(window.location.href)}&name=The%20Scratch%20Channel`;
+
+    const url = new URLSearchParams(window.location.search);
+    const code = url.get('privateCode');
+
+    if (code) {
+      (async () => {
+        try {
+          const res = await fetch(`https://auth-api.itinerary.eu.org/auth/verifyToken/${code}`);
+          const data = await res.json();
+          const user = data.username;
+          localStorage.setItem('user', user);
+        } catch (err) {
+          console.error('Error verifying token:', err);
+        }
+      })();
+    }
+  </script>
 </body>
 </html>
