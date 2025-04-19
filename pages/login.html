@@ -28,13 +28,33 @@
         try {
           const res = await fetch(`https://auth-api.itinerary.eu.org/auth/verifyToken/${code}`);
           const data = await res.json();
-          const user = data.username;
-          localStorage.setItem('user', user);
+          const username = data.username;
+          localStorage.setItem('user', username);
         } catch (err) {
           console.error('Error verifying token:', err);
         }
       })();
     }
+      const authResponse = await fetch('/api/auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username })
+    });
+
+    const authData = await authResponse.json();
+    if (!authResponse.ok) {
+      alert(authData.error || 'Authentication failed');
+      return;
+    }
+
+    localStorage.setItem('authCode', authData.authCode);
+    alert('Login successful!');
+    window.location.href = 'articles.html';
+  } catch (err) {
+    console.error('Login failed:', err);
+    alert('Login failed');
+  }
+});
   </script>
 </body>
 </html>
