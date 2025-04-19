@@ -2,6 +2,7 @@
 
 This is the repository for the brand new Scratch News Channel! Soon, news articles about Scratch and scratchlikes will be posted by writers.
 
+
 > [!IMPORTANT]
 > We are not affiliated with Scratch, the LLK, or MIT. News articles here are made by volunteers, not Scratch Team members.
 
@@ -10,6 +11,9 @@ This is the repository for the brand new Scratch News Channel! Soon, news articl
 There is no need to deploy this yourself. If you just want to check out our site, you can visit <https://the-scratch-channel.onrender.com/> and browse the live demo.
 
 ### Contributing
+
+> [!IMPORTANT]
+> Starting April 19th 2025, all contributors are required to do so at https://reimagined-lamp-v6r46vr4q7pw2xqw7.github.dev/
 
 If would like to contribute but are not a contributor yet, follow these steps below:
 However, if you find a vulnerability that requires immediate attention, go to the [Security Tab](https://github.com/The-Scratch-Channel/the-scratch-channel.github.io/security) to report it.
