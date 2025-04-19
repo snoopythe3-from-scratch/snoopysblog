@@ -1,10 +1,15 @@
+// Modules 
 const express = require('express');
 const path = require('path');
+const cors = require('cors');
+
 const { router: adminRouter } = require('./api/admin');
 const { router: authRouter } = require('./api/auth');
 const articlesRouter = require('./api/articles');
 
 const app = express();
+// CORS policy
+app.use(cors({ origin: 'https://the-scratch-channel.github.io' }));
 // app.use(bodyParser.json());
 
 app.use(express.static('static'));
