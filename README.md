@@ -12,7 +12,7 @@ There is no need to deploy this yourself. If you just want to check out our site
 
 ### Contributing
 
-> [!IMPORTANT]
+> [!NOTE]
 > Starting April 19th 2025, all contributors are required to do so at https://reimagined-lamp-v6r46vr4q7pw2xqw7.github.dev/
 
 If would like to contribute but are not a contributor yet, follow these steps below:
