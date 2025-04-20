@@ -29,31 +29,28 @@
           const data = await res.json();
           const username = data.username;
           localStorage.setItem('user', username);
+
+          const authResponse = await fetch('/api/auth', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username })
+          });
+
+          const authData = await authResponse.json();
+          if (!authResponse.ok) {
+            alert(authData.error || 'Authentication failed');
+            return;
+          }
+
+          localStorage.setItem('authCode', authData.authCode);
+          alert('Login successful!');
+          window.location.href = 'articles.html';
         } catch (err) {
-          console.error('Error verifying token:', err);
+          console.error('Login failed:', err);
+          alert('Login failed');
         }
       })();
     }
-      const authResponse = await fetch('/api/auth', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username })
-    });
-
-    const authData = await authResponse.json();
-    if (!authResponse.ok) {
-      alert(authData.error || 'Authentication failed');
-      return;
-    }
-
-    localStorage.setItem('authCode', authData.authCode);
-    alert('Login successful!');
-    window.location.href = 'articles.html';
-  } catch (err) {
-    console.error('Login failed:', err);
-    alert('Login failed');
-  }
-});
   </script>
 </body>
 </html>
