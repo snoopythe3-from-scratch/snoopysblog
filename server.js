@@ -34,3 +34,21 @@ app.listen(3000, () => {
   console.log('Make sure the website loaded correctly!');
   console.log('Get help if incorrectly loaded: github.com/the-scratch-channel/the-scratch-channel.github.io/issues')
 });
+const express = require('express');
+const app = express();
+const port = 3000;
+
+// Middleware
+app.use((req, res, next) => {
+  // Basiclly just turns off <iframe> usage.
+  res.setHeader('Content-Security-Policy', "frame-ancestors 'self'");
+
+  // Enables a XSS detector, which can block some types of XSS attacks.
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+
+  // Prevents browsers from trying to guess the MIME type, which can be exploited for XSS.
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+
+  next(); // Call the next middleware in the stack
+});
+
