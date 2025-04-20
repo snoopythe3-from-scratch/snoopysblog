@@ -15,7 +15,8 @@
     <a id="link" href="#">Login With ScratchAuth</a>
   </main>
 
-  <script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
     const link = document.getElementById('link');
     link.href = `https://auth.itinerary.eu.org/auth?redirect=${btoa(window.location.href)}&name=The%20Scratch%20Channel`;
 
@@ -51,6 +52,7 @@
         }
       })();
     }
-  </script>
+  });
+</script>
 </body>
 </html>
