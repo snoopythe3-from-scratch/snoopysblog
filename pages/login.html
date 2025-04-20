@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/static/new.css">
+  <link rel="stylesheet" href="static/new.css">
   <title>Login - The Scratch Channel</title>
 </head>
 <body>
@@ -15,7 +15,6 @@
     <a id="link" href="#">Login With ScratchAuth</a>
   </main>
 
-  <script src="/static/index.js"></script>
   <script>
     const link = document.getElementById('link');
     link.href = `https://auth.itinerary.eu.org/auth?redirect=${btoa(window.location.href)}&name=The%20Scratch%20Channel`;
