@@ -8,7 +8,7 @@ function generateAuthCode(username) {
 }
 
 router.post('/auth', (req, res) => {
-  const { username, password } = req.body;
+  const { username } = req.body;
   if (!username) return res.status(400).json({ error: 'Username is required' });
   const code = generateAuthCode(username);
   authCodes[username] = `Bearer ${code}`;
