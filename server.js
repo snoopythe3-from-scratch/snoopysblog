@@ -7,7 +7,6 @@ const bodyParser = require('body-parser');
 const { router: adminRouter } = require('./api/admin');
 const { router: authRouter } = require('./api/auth');
 const articlesRouter = require('./api/articles');
-const adminRouter = require('./api/admin');
 
 const app = express();
 // CORS policy
