@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 
 const { router: adminRouter } = require('./api/admin');
 const { router: authRouter } = require('./api/auth');
+const { router: usersRouter } = require('./api/users');
 const articlesRouter = require('./api/articles');
 
 const app = express();
