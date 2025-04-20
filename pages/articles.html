@@ -1,19 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <title>Home - The Scratch Channel</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/static/new.css">
-  <title>Articles - The Scratch Channel</title>
+  <link rel="stylesheet" href="../static/index-revamp.css">
+  <link rel="stylesheet" href="../static/new.css">
+  <link rel="stylesheet" href="../static/index.css">
 </head>
 <body>
-  <header>
-    <h1 class="stroke-double">Articles - The Scratch Channel</h1>
-  </header>
-
+  <div class="header">
+    <p class="nav-logo">TSC</p>
+    <nav class="nav-links">
+      <a href="/">Home</a>
+      <a href="articles.html">Articles</a>
+      <a href="login.html">Log In</a>
+    </nav>
+  </div>  
   <main>
-    <div id="articlesList"></div>
-
     <h2>Post a New Article</h2>
     <form id="articleForm">
       <label for="title">Title:</label>
@@ -24,8 +28,10 @@
 
       <button type="submit">Post Article</button>
     </form>
+    
+    <div id="articlesList"></div>
   </main>
 
-  <script src="/static/index.js"></script>
+  <script src="../static/index.js"></script>
 </body>
 </html>
