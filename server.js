@@ -25,8 +25,8 @@ app.use(express.static(staticPath));
 app.use('/api', usersRouter);  // /signup and /login
 app.use('/api', authRouter);   // /auth
 app.use('/api', articlesRouter);
-app.use('/api', adminRouter);
-// /articles
+app.use(adminRouter);
+// DO NOT PUT /API BEFORE THE ADMIN ROUTES
 
 // Start the server
 app.listen(3000, () => {
@@ -34,9 +34,6 @@ app.listen(3000, () => {
   console.log('Make sure the website loaded correctly!');
   console.log('Get help if incorrectly loaded: github.com/the-scratch-channel/the-scratch-channel.github.io/issues')
 });
-const express = require('express');
-const app = express();
-const port = 3000;
 
 // Middleware
 app.use((req, res, next) => {
