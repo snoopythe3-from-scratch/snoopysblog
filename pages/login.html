@@ -52,7 +52,6 @@
 
           localStorage.setItem('authCode', authData.authCode);
           alert('Login successful!');
-          window.location.href = 'articles.html';
         } catch (err) {
           console.error('Login failed:', err);
           alert('Login failed');
@@ -60,6 +59,16 @@
       })();
     }
   });
-</script>
+          const pfp = 'https://u.cubeupload.com/98pics/NewProject8svg2.png' 
+          const res = await fetch('/api/new-user', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, pfp })
+          });
+          const data = await res.json();
+          if(data.message) {
+            window.location.href = 'articles.html'; 
+           } 
+            </script>
 </body>
 </html>
