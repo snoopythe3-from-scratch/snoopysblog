@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const escapeHtml = require('escape-html');
 
 let users = [];
 
@@ -55,13 +56,13 @@ router.get('/users/:username', (req, res) => {
   if (!user) return res.status(404).send('User not found');
 
   const profileHtml = `
-    <img src="${user.pfp}" alt="${user.username}'s profile picture" style="width:100px;border-radius:50%;" />
-    <h2>@${user.username}</h2>
+    <img src="${escapeHtml(user.pfp)}" alt="${escapeHtml(user.username)}'s profile picture" style="width:100px;border-radius:50%;" />
+    <h2>@${escapeHtml(user.username)}</h2>
     <p>Followers: ${user.followers.length}</p>
     <p>Following: ${user.followings.length}</p>
     <div class="actions">
-      <a href="/users/${user.username}/followers">View Followers</a> | 
-      <a href="/users/${user.username}/following">View Following</a>
+      <a href="/users/${escapeHtml(user.username)}/followers">View Followers</a> | 
+      <a href="/users/${escapeHtml(user.username)}/following">View Following</a>
     </div>
   `;
 
@@ -73,9 +74,9 @@ router.get('/users/:username/followers', (req, res) => {
   if (!user) return res.status(404).send('User not found');
 
   const followersHtml = `
-    <h2>@${user.username}'s Followers</h2>
-    <ul>${user.followers.map(f => `<li>${f}</li>`).join('') || '<li>No followers yet.</li>'}</ul>
-    <div class="actions"><a href="/users/${user.username}">Back to Profile</a></div>
+    <h2>@${escapeHtml(user.username)}'s Followers</h2>
+    <ul>${user.followers.map(f => `<li>${escapeHtml(f)}</li>`).join('') || '<li>No followers yet.</li>'}</ul>
+    <div class="actions"><a href="/users/${escapeHtml(user.username)}">Back to Profile</a></div>
   `;
 
   res.send(htmlWrapper(`${user.username} Followers`, followersHtml));
@@ -86,9 +87,9 @@ router.get('/users/:username/following', (req, res) => {
   if (!user) return res.status(404).send('User not found');
 
   const followingHtml = `
-    <h2>@${user.username} is Following</h2>
-    <ul>${user.followings.map(f => `<li>${f}</li>`).join('')}</ul>
-    <div class="actions"><a href="/users/${user.username}">Back to Profile</a></div>
+    <h2>@${escapeHtml(user.username)} is Following</h2>
+    <ul>${user.followings.map(f => `<li>${escapeHtml(f)}</li>`).join('')}</ul>
+    <div class="actions"><a href="/users/${escapeHtml(user.username)}">Back to Profile</a></div>
   `;
 
   res.send(htmlWrapper(`${user.username} Following`, followingHtml));
