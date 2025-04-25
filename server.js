@@ -41,6 +41,5 @@ app.use('/api', adminRouter);      // /api/admin/*
 // Start the server
 app.listen(3000, () => {
   console.log('Server running at http://localhost:3000');
-  console.log('Make sure the website loaded correctly!');
-  console.log('Need help? Visit: github.com/the-scratch-channel/the-scratch-channel.github.io/issues');
+  console.log('🆘 Need help? Visit: github.com/the-scratch-channel/the-scratch-channel.github.io/issues');
 });
