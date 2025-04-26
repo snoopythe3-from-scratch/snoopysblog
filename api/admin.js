@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { authCodes } = require('./auth');
+const escape = require('escape-html');
 
 // List of admin usernames
 let admins = ['kRxZy_kRxZy', 'Snoopythe3'];
@@ -15,7 +16,7 @@ router.post('/admin', (req, res) => {
     // Check if the user to be promoted is not already an admin
     if (!admins.includes(userToBeAdmin)) {
       admins.push(userToBeAdmin);
-      res.status(200).send(`${userToBeAdmin} has been added as an admin.`);
+      res.status(200).send(`${escape(userToBeAdmin)} has been added as an admin.`);
     } else {
       res.status(409).send(`${userToBeAdmin} is already an admin.`);
     }
