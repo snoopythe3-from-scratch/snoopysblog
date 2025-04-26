@@ -1,2 +1,2 @@
-- name: Pages Preview
-  uses: EndBug/pages-preview@v1.1.1 
+- name: Cosmo Previews
+  uses: wundergraph/cosmo-previews@v0.1.3
