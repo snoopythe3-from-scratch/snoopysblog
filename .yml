@@ -1,0 +1,2 @@
+- name: Pages Preview
+  uses: EndBug/pages-preview@v1.1.1 
