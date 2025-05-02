@@ -57,4 +57,5 @@ jobs:
         with:
           path: '.'
       - id: deployment
+<<<<<<< HEAD
         uses: actions/deploy-pages@v1
