@@ -24,3 +24,6 @@ However, if you find a vulnerability that requires immediate attention, go to th
 - test them by typing `npm install`, then `npm start` and going to http://localhost:3000 in the browser
 - commit and push them to your fork
 - create a pull request to show your changes and let us merge if we can
+
+> [!IMPORTANT]
+> Don't forget to use `npm install` before running the Express server, otherwise it will not load the required modules.
