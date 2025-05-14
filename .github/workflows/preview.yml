@@ -57,5 +57,6 @@ jobs:
         with:
           path: '.'
       - id: deployment
-<<<<<<< HEAD
+# (Please make sure to comment out these! YML
+# workflow errors can and will occur!)<<<<<<< HEAD
         uses: actions/deploy-pages@v1
