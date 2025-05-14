@@ -8,22 +8,25 @@ This is the repository for the brand new Scratch News Channel! Soon, news articl
 
 ## Deployment
 
-There is no need to deploy this yourself if do not want to contribute. If you just want to check out our site, you can visit <https://the-scratch-channel.onrender.com/> and browse the live demo.
+There is no need to deploy this yourself if you do not want to contribute. If you just want to check out our site, you can visit <https://the-scratch-channel.onrender.com/> and browse the live demo.
 
 ## Contributing
 
-If would like to contribute but are not a contributor yet, follow these steps below:
-However, if you find a vulnerability that requires immediate attention, go to the [Security Tab](https://github.com/The-Scratch-Channel/the-scratch-channel.github.io/security) to report it.
-- create a fork of the repository
+If you would like to contribute but are not a contributor yet, follow thes steps below.
+However, if you find a vulnerability that requires immediate attention, go to the repositories [security tab](https://github.com/The-Scratch-Channel/the-scratch-channel.github.io/security) to report it. A vulnerability report should contain what file has the vulnerability, what priority it is, and extensive details.
+- Create a fork of the repository
 
 ![Click on the fork button towards the top of the repository home page](https://u.cubeupload.com/SmartCat3/Screenshot2025041818.png)
 
-- clone your fork by typing `git clone https://github.com/yourusername/yourfork.git`
+- To clone your fork, run `git clone https://github.com/yourusernamehere/yourforknamehere.git`.
 
-- write your contributions
-- test them by typing `npm install`, then `npm start` and going to http://localhost:3000 in the browser
-- commit and push them to your fork
-- create a pull request to show your changes and let us merge if we can
+- Write your contributions
+- Test your contributions in your clone by running `npm install`, then `npm start` and then going to localhost:3000 in your browser
+> [!IMPORTANT]
+>Ensure you have the latest version of node.js to use NPM. If your system is low end or cannot use localhost, you can do the same in a codespace, using PNPM.
+
+- Commit and push them to your fork
+- Create a pull request to show your changes, and if your PR has good work, we might pull it.
 
 > [!IMPORTANT]
 > Don't forget to use `npm install` before running the Express server, otherwise it will not load the required modules.
