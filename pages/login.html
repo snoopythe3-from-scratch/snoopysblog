@@ -23,6 +23,21 @@
   </div>
 
   <script>
+    // helps show detailed errs
+    function showError(message) {
+      const errorDiv = document.getElementById('error-message');
+      errorDiv.textContent = message;
+      errorDiv.style.display = block;
+    }
+
+    // helps clear detailed errs
+    // idk why we need this it clears when the popup is closed, but pls keep so everything doesnt break
+    function clearError() {
+      const errorDiv = document,=.getElementById('error-message');
+      errorDiv.textContent = '';
+      errorDiv.style.display = 'none';
+    }
+    
     document.addEventListener('DOMContentLoaded', () => {
       const link = document.getElementById('link');
       link.href = `https://auth.itinerary.eu.org/auth?redirect=${btoa(window.location.href)}&name=The%20Scratch%20Channel`;
@@ -61,12 +76,16 @@
             });
 
             const newUserData = await newUserResponse.json();
-            if (newUserData.message) {
-              window.location.href = 'articles.html';
+            if (!newUserResponse.ok) {
+              showError(newUserData.error || "Failed to create new user.");
+              return;
             }
+
+            window.location.href = 'articles.html';
+            
           } catch (err) {
             console.error('Login failed:', err);
-            alert('Login failed');
+            alert('Error: Login failed. response from server:', err);
           }
         })();
       }
