@@ -19,7 +19,7 @@
   </div>  
 
   <div class="main">
-    <a id="link" href="#">Login With ScratchAuth</a>
+    <button onclick="auth()">Login With ScratchAuth</button>
   </div>
 
   <script>
@@ -33,14 +33,13 @@
     // helps clear detailed errs
     // idk why we need this it clears when the popup is closed, but pls keep so everything doesnt break
     function clearError() {
-      const errorDiv = document,=.getElementById('error-message');
+      const errorDiv = document.getElementById('error-message');
       errorDiv.textContent = '';
       errorDiv.style.display = 'none';
     }
     
-    document.addEventListener('DOMContentLoaded', () => {
-      const link = document.getElementById('link');
-      link.href = `https://auth.itinerary.eu.org/auth?redirect=${btoa(window.location.href)}&name=The%20Scratch%20Channel`;
+    async function auth() {
+      window.location.href = `https://auth.itinerary.eu.org/auth?redirect=${btoa(window.location.href)}&name=The%20Scratch%20Channel`;
 
       const url = new URLSearchParams(window.location.search);
       const code = url.get('privateCode');
