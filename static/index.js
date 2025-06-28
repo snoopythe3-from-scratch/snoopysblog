@@ -5,7 +5,7 @@ document.getElementById('signupForm')?.addEventListener('submit', async function
   const password = document.getElementById('signupPassword').value;
 
   try {
-    const response = await fetch('/api/signup', {
+    const response = await fetch('https://the-scratch-channel.onrender.com/api/signup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
@@ -31,7 +31,7 @@ document.getElementById('loginForm')?.addEventListener('submit', async function 
 
   try {
     // First verify credentials
-    const loginResponse = await fetch('/api/login', {
+    const loginResponse = await fetch('https://the-scratch-channel.onrender.com/api/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
@@ -44,7 +44,7 @@ document.getElementById('loginForm')?.addEventListener('submit', async function 
     }
 
     // Then request auth code
-    const authResponse = await fetch('/api/auth', {
+    const authResponse = await fetch('https://the-scratch-channel.onrender.com/api/auth', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
@@ -78,7 +78,7 @@ document.getElementById('articleForm')?.addEventListener('submit', async functio
   }
 
   try {
-    const response = await fetch('/api/articles', {
+    const response = await fetch('https://the-scratch-channel.onrender.com/api/articles', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -101,7 +101,7 @@ document.getElementById('articleForm')?.addEventListener('submit', async functio
 
 // Fetch Articles (on articles.html)
 if (document.getElementById('articlesList')) {
-  fetch('/api/articles')
+  fetch('https://the-scratch-channel.onrender.com/api/articles')
     .then(response => response.json())
     .then(articles => {
       const articlesList = document.getElementById('articlesList');
