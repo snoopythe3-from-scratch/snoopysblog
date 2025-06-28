@@ -20,73 +20,101 @@
 
   <div class="main">
     <button onclick="auth()">Login With ScratchAuth</button>
+    <div id="error-message" style="display: none; color: red; margin-top: 10px;"></div>
   </div>
 
   <script>
-    // helps show detailed errs
+    // Helps show detailed errors
     function showError(message) {
       const errorDiv = document.getElementById('error-message');
-      errorDiv.textContent = message;
-      errorDiv.style.display = block;
+      if (errorDiv) { // Ensure the element exists before trying to modify it
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block'; // Corrected 'block' to 'block' (string)
+      }
     }
 
-    // helps clear detailed errs
-    // idk why we need this it clears when the popup is closed, but pls keep so everything doesnt break
+    // Helps clear detailed errors
     function clearError() {
       const errorDiv = document.getElementById('error-message');
-      errorDiv.textContent = '';
-      errorDiv.style.display = 'none';
+      if (errorDiv) { // Ensure the element exists
+        errorDiv.textContent = '';
+        errorDiv.style.display = 'none';
+      }
     }
     
+    // Asynchronous function to handle authentication
     async function auth() {
-      window.location.href = `https://auth.itinerary.eu.org/auth?redirect=${btoa(window.location.href)}&name=The%20Scratch%20Channel`;
+      clearError(); // Clear any previous errors
 
-      const url = new URLSearchParams(window.location.search);
-      const code = url.get('privateCode');
+      // Check if a privateCode already exists in the URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get('privateCode');
 
-      if (code) {
-        (async () => {
-          try {
-            const res = await fetch(`https://auth-api.itinerary.eu.org/auth/verifyToken/${code}`);
-            const data = await res.json();
-            const username = data.username;
-            localStorage.setItem('user', username);
+      if (!code) {
+        // If no code, redirect to ScratchAuth
+        window.location.href = `https://auth.itinerary.eu.org/auth?redirect=${btoa(window.location.href)}&name=The%20Scratch%20Channel`;
+        return; // Stop execution here, the page will reload after redirect
+      }
 
-            const authResponse = await fetch('https://the-scratch-channel.onrender.com/api/auth', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ username })
-            });
+      // If a code exists, proceed with verification
+      try {
+        // Verify the token with the ScratchAuth API
+        const res = await fetch(`https://auth-api.itinerary.eu.org/auth/verifyToken/${code}`);
+        if (!res.ok) {
+          const errorData = await res.json();
+          showError(errorData.error || `Failed to verify token: ${res.status}`);
+          return;
+        }
+        const data = await res.json();
+        const username = data.username;
+        localStorage.setItem('user', username);
 
-            const authData = await authResponse.json();
-            if (!authResponse.ok) {
-              alert(authData.error || 'Authentication failed');
-              return;
-            }
+        // Authenticate with your backend
+        const authResponse = await fetch('https://the-scratch-channel.onrender.com/api/auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username })
+        });
 
-            localStorage.setItem('authCode', authData.authCode);
-            alert('Login successful!');
+        const authData = await authResponse.json();
+        if (!authResponse.ok) {
+          showError(authData.error || 'Authentication failed on server.');
+          return;
+        }
 
-            const pfp = 'https://u.cubeupload.com/98pics/NewProject8svg2.png';
-            const newUserResponse = await fetch('https://the-scratch-channel.onrender.com/api/new-user', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ username, pfp })
-            });
+        localStorage.setItem('authCode', authData.authCode);
+        alert('Login successful!');
 
-            const newUserData = await newUserResponse.json();
-            if (!newUserResponse.ok) {
-              showError(newUserData.error || "Failed to create new user.");
-              return;
-            }
+        // Check if the user is new and create a profile if necessary
+        const pfp = 'https://u.cubeupload.com/98pics/NewProject8svg2.png'; // Default PFP
+        const newUserResponse = await fetch('https://the-scratch-channel.onrender.com/api/new-user', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, pfp })
+        });
 
-            window.location.href = 'articles.html';
-            
-          } catch (err) {
-            console.error('Login failed:', err);
-            alert('Error: Login failed. response from server:', err);
-          }
-        })();
+        const newUserData = await newUserResponse.json();
+        if (!newUserResponse.ok) {
+          // If the user already exists, this might fail, which is fine.
+          // You might want to distinguish between "user already exists" and other errors.
+          console.warn("Could not create new user (might already exist):", newUserData.error || "Unknown error.");
+        }
+
+        // Redirect to articles page
+        window.location.href = 'articles.html';
+        
+      } catch (err) {
+        console.error('Login process failed:', err);
+        showError(`Error during login: ${err.message || err}`);
+      }
+    }
+
+    // Call auth() on page load to handle redirects from ScratchAuth
+    // This ensures that when ScratchAuth redirects back with a code, the process continues automatically.
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has('privateCode')) {
+        auth();
       }
     });
   </script>
