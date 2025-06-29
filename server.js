@@ -28,10 +28,10 @@ app.use(express.static(path.join(__dirname, 'static')));
 app.use(express.static(path.join(__dirname, 'pages')));
 
 // API Routes
-app.use(usersRouter);              // Routes like /signup, /login
-app.use('/api', authRouter);       // /api/auth/*
-app.use('/api', articlesRouter);   // /api/articles/*
-app.use('/api', adminRouter);      // /api/admin/*
+app.use('/', usersRouter);     // Moved under /api/users/*
+app.use('/api/auth', authRouter);       // /api/auth/*
+app.use('/api/articles', articlesRouter); // /api/articles/*
+app.use('/api/admin', adminRouter);     // /api/admin/*
 
 app.listen(3000, () => {
   console.log('Server running at http://localhost:3000');
