@@ -27,4 +27,4 @@ router.get('/articles', (req, res) => {
   res.json(articles);
 });
 
-module.exports = router;
+module.exports = { router };

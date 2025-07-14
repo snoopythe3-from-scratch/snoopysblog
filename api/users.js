@@ -95,4 +95,4 @@ router.get('/users/:username/following', (req, res) => {
   res.send(htmlWrapper(`${user.username} Following`, followingHtml));
 });
 
-module.exports = router;
+module.exports = { router };

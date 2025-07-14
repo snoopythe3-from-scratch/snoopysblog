@@ -18,6 +18,5 @@ function formatUptime(seconds) {
   
   return `${hours}h ${minutes}m ${remainingSeconds}s`;
 }
-
-module.exports = router;
+module.exports = { router };
 
