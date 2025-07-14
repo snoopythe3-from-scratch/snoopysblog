@@ -79,7 +79,7 @@ router.get('/users/:username/followers', (req, res) => {
     <div class="actions"><a href="/users/${escapeHtml(user.username)}">Back to Profile</a></div>
   `;
 
-  res.send(htmlWrapper(`${user.username} Followers`, followersHtml));
+  res.send(htmlWrapper(`${escapeHtml(user.username)} Followers`, followersHtml));
 });
 
 router.get('/users/:username/following', (req, res) => {
