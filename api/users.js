@@ -92,7 +92,7 @@ router.get('/users/:username/following', (req, res) => {
     <div class="actions"><a href="/users/${escapeHtml(user.username)}">Back to Profile</a></div>
   `;
 
-  res.send(htmlWrapper(`${user.username} Following`, followingHtml));
+  res.send(htmlWrapper(`${escapeHtml(user.username)} Following`, followingHtml));
 });
 
 module.exports = { router };
