@@ -15,4 +15,4 @@ Severity: Critical
 ```
 
 > [!IMPORTANT]
-> Don't share any vulnerabilities with anyone other than contributors, to avoid them being abused, which can be illegal.
+> Don't share any vulnerabilities with anyone other than contributors, to avoid them being abused, which can be illegal. Sharing them will result in legal action apon discovery
