@@ -2,13 +2,18 @@ const express = require('express');
 const router = express.Router();
 const escapeHtml = require('escape-html');
 
+function escapeAttribute(value) {
+  if (typeof value !== "string") return "";
+  return value.match(/^https?:\/\/[a-zA-Z0-9\-._~:/?#@!$&'()*+,;=%]+$/) ? value : "";
+}
+
 let users = [];
 
 const htmlWrapper = (title, bodyContent) => `
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>${title} - The Scratch Channel</title>
+  <title>${escapeHtml(title)} - The Scratch Channel</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../static/index-revamp.css">
@@ -28,7 +33,6 @@ const htmlWrapper = (title, bodyContent) => `
     ${bodyContent}
   </div>
   <div class="footer">
-    <!-- Code the footer ._ . -->
   </div>
 </body>
 </html>
@@ -39,24 +43,26 @@ router.post('/api/new-user', (req, res) => {
   if (!username || !pfp) {
     return res.status(400).json({ error: 'Username and profile picture (pfp) required' });
   }
-
+  const safeUsername = String(username).replace(/[^\w-]/g, '').slice(0, 32);
+  const safePfp = escapeAttribute(pfp);
+  if (!safeUsername || !safePfp) {
+    return res.status(400).json({ error: 'Invalid username or profile picture URL' });
+  }
   const userData = {
-    username,
-    pfp,
+    username: safeUsername,
+    pfp: safePfp,
     followers: [],
     followings: ['krxzy_krxzy', 'snoopythe3', 'swiftpixel']
   };
-
   users.push(userData);
   res.json({ message: 'Welcome New User', user: userData });
 });
 
 router.get('/users/:username', (req, res) => {
-  const user = users.find(u => u.username === req.params.username);
+  const user = users.find(u => u.username === req.params.username.replace(/[^\w-]/g, ''));
   if (!user) return res.status(404).send('User not found');
-
   const profileHtml = `
-    <img src="${escapeHtml(user.pfp)}" alt="${escapeHtml(user.username)}'s profile picture" style="width:100px;border-radius:50%;" />
+    <img src="${escapeAttribute(user.pfp)}" alt="${escapeHtml(user.username)}'s profile picture" style="width:100px;border-radius:50%;" />
     <h2>@${escapeHtml(user.username)}</h2>
     <p>Followers: ${user.followers.length}</p>
     <p>Following: ${user.followings.length}</p>
@@ -65,33 +71,30 @@ router.get('/users/:username', (req, res) => {
       <a href="/users/${escapeHtml(user.username)}/following">View Following</a>
     </div>
   `;
-
   res.send(htmlWrapper(`${user.username}'s Profile`, profileHtml));
 });
 
 router.get('/users/:username/followers', (req, res) => {
-  const user = users.find(u => u.username === req.params.username);
+  const safeUsername = req.params.username.replace(/[^\w-]/g, '');
+  const user = users.find(u => u.username === safeUsername);
   if (!user) return res.status(404).send('User not found');
-
   const followersHtml = `
     <h2>@${escapeHtml(user.username)}'s Followers</h2>
     <ul>${user.followers.map(f => `<li>${escapeHtml(f)}</li>`).join('') || '<li>No followers yet.</li>'}</ul>
     <div class="actions"><a href="/users/${escapeHtml(user.username)}">Back to Profile</a></div>
   `;
-
   res.send(htmlWrapper(`${escapeHtml(user.username)} Followers`, followersHtml));
 });
 
 router.get('/users/:username/following', (req, res) => {
-  const user = users.find(u => u.username === req.params.username);
+  const safeUsername = req.params.username.replace(/[^\w-]/g, '');
+  const user = users.find(u => u.username === safeUsername);
   if (!user) return res.status(404).send('User not found');
-
   const followingHtml = `
     <h2>@${escapeHtml(user.username)} is Following</h2>
     <ul>${user.followings.map(f => `<li>${escapeHtml(f)}</li>`).join('')}</ul>
     <div class="actions"><a href="/users/${escapeHtml(user.username)}">Back to Profile</a></div>
   `;
-
   res.send(htmlWrapper(`${escapeHtml(user.username)} Following`, followingHtml));
 });
 
