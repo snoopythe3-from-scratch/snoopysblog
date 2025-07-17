@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>2FA Authenticator Setup</title>
+  <title>2fa testing</title>
   <style>
     body { font-family: sans-serif; padding: 2em; }
     .secret { font-size: 1.2em; color: blue; }
@@ -10,25 +10,51 @@
   </style>
 </head>
 <body>
-  <h2>Set up 2FA with your Authenticator App</h2>
+  <h2>open an authenticator app or a web version. (e.g. Google Authenticator, Authy, etc.)</h2>
   <p>
-    Scan the QR code or enter the key below into your Google Authenticator, Authy, or similar app.
-  </p>
+    scan the code to test. the test user is TestUser101.
   <div>
-    <label>Secret Key:</label>
+    <label>or use the secret key </label>
     <span class="secret" id="secretKey"></span>
   </div>
   <div>
     <canvas id="qrcode" style="margin:10px 0;"></canvas>
   </div>
   <hr>
-  <h3>Verify your code</h3>
+  <h3>type the code generated:</h3>
   <input type="text" id="codeInput" placeholder="Enter 6-digit code" maxlength="6">
   <button onclick="verifyCode()">Verify</button>
   <div id="message"></div>
 
+  <!-- Load libraries -->
   <script src="https://cdn.jsdelivr.net/npm/otplib@12.0.1/otplib-browser.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
-  <script src="/api/2faeg.js"></script>
+  <script>
+    const secret = otplib.authenticator.generateSecret();
+
+    document.getElementById('secretKey').textContent = secret;
+
+    const issuer = "TheScratchChannel";
+    const label = "TestUser101";
+    const otpauth = otplib.authenticator.keyuri(label, issuer, secret);
+
+    const canvas = document.getElementById('qrcode');
+    QRCode.toCanvas(canvas, otpauth, function (error) {
+      if (error) console.error(error);
+    });
+
+    function verifyCode() {
+      const code = document.getElementById('codeInput').value.trim();
+      const isValid = otplib.authenticator.check(code, secret);
+      const messageEl = document.getElementById('message');
+      if (isValid) {
+        messageEl.textContent = "sucsess!";
+        messageEl.style.color = "green";
+      } else {
+        messageEl.textContent = " Invalid code. Please try again :(";
+        messageEl.style.color = "red";
+      }
+    }
+  </script>
 </body>
 </html>
