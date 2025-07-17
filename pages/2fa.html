@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>2FA Authenticator Setup</title>
+  <style>
+    body { font-family: sans-serif; padding: 2em; }
+    .secret { font-size: 1.2em; color: blue; }
+    #message { margin-top: 1em; }
+  </style>
+</head>
+<body>
+  <h2>Set up 2FA with your Authenticator App</h2>
+  <p>
+    Scan the QR code or enter the key below into your Google Authenticator, Authy, or similar app.
+  </p>
+  <div>
+    <label>Secret Key:</label>
+    <span class="secret" id="secretKey"></span>
+  </div>
+  <div>
+    <canvas id="qrcode" style="margin:10px 0;"></canvas>
+  </div>
+  <hr>
+  <h3>Verify your code</h3>
+  <input type="text" id="codeInput" placeholder="Enter 6-digit code" maxlength="6">
+  <button onclick="verifyCode()">Verify</button>
+  <div id="message"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/otplib@12.0.1/otplib-browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <script src="/api/2faeg.js"></script>
+</body>
+</html>
