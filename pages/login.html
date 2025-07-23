@@ -19,46 +19,53 @@
   </div>  
 
   <div class="main">
-    <button onclick="auth()">Login With ScratchAuth</button>
-    <div id="error-message" style="display: none; color: red; margin-top: 10px;"></div>
+    <h2>Login</h2>
+    <button onclick="openLoginPopup()">Login With ScratchAuth</button>
+    <div id="error-message"></div>
   </div>
 
   <script>
-    // Helps show detailed errors
     function showError(message) {
       const errorDiv = document.getElementById('error-message');
-      if (errorDiv) { // Ensure the element exists before trying to modify it
+      if (errorDiv) {
         errorDiv.textContent = message;
-        errorDiv.style.display = 'block'; // Corrected 'block' to 'block' (string)
+        errorDiv.style.display = 'block';
       }
     }
 
-    // Helps clear detailed errors
-    function clearError() {
+    function hideError() {
       const errorDiv = document.getElementById('error-message');
-      if (errorDiv) { // Ensure the element exists
+      if (errorDiv) {
         errorDiv.textContent = '';
         errorDiv.style.display = 'none';
       }
     }
-    
-    // Asynchronous function to handle authentication
-    async function auth() {
-      clearError(); // Clear any previous errors
 
-      // Check if a privateCode already exists in the URL
+    // Popup-based login
+    function openLoginPopup() {
+      hideError();
+      const redirectUrl = `https://auth.itinerary.eu.org/auth?redirect=${btoa(window.location.href)}&name=The%20Scratch%20Channel`;
+      // Open popup window
+      const popup = window.open(
+        `/sauth.html?redirect_url=${encodeURIComponent(redirectUrl)}`,
+        'ScratchAuthLogin',
+        'width=500,height=700'
+      );
+      // Fallback if popup blocked
+      if (!popup) {
+        window.location.href = `/sauth.html?redirect_url=${encodeURIComponent(redirectUrl)}`;
+      }
+    }
+
+    // Main authentication logic (handles redirect from ScratchAuth)
+    async function auth() {
+      hideError();
       const urlParams = new URLSearchParams(window.location.search);
       const code = urlParams.get('privateCode');
 
-      if (!code) {
-        // If no code, redirect to ScratchAuth
-        window.location.href = `https://auth.itinerary.eu.org/auth?redirect=${btoa(window.location.href)}&name=The%20Scratch%20Channel`;
-        return; // Stop execution here, the page will reload after redirect
-      }
+      if (!code) return;
 
-      // If a code exists, proceed with verification
       try {
-        // Verify the token with the ScratchAuth API
         const res = await fetch(`https://auth-api.itinerary.eu.org/auth/verifyToken/${code}`);
         if (!res.ok) {
           const errorData = await res.json();
@@ -69,7 +76,6 @@
         const username = data.username;
         localStorage.setItem('user', username);
 
-        // Authenticate with your backend
         const authResponse = await fetch('https://the-scratch-channel.onrender.com/api/auth', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -83,38 +89,34 @@
         }
 
         localStorage.setItem('authCode', authData.authCode);
-        alert('Login successful!');
 
-        // Check if the user is new and create a profile if necessary
-        const pfp = 'https://u.cubeupload.com/98pics/NewProject8svg2.png'; // Default PFP
+        // Create new user if needed
+        const pfp = 'https://u.cubeupload.com/98pics/NewProject8svg2.png';
         const newUserResponse = await fetch('https://the-scratch-channel.onrender.com/api/new-user', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username, pfp })
         });
 
-        const newUserData = await newUserResponse.json();
+        // Ignore error if user already exists
         if (!newUserResponse.ok) {
-          // If the user already exists, this might fail, which is fine.
-          // You might want to distinguish between "user already exists" and other errors.
+          const newUserData = await newUserResponse.json();
           console.warn("Could not create new user (might already exist):", newUserData.error || "Unknown error.");
         }
 
-        // Redirect to articles page
         window.location.href = 'articles.html';
-        
       } catch (err) {
-        console.error('Login process failed:', err);
         showError(`Error during login: ${err.message || err}`);
       }
     }
 
-    // Call auth() on page load to handle redirects from ScratchAuth
-    // This ensures that when ScratchAuth redirects back with a code, the process continues automatically.
+    // Handle redirect from ScratchAuth
     document.addEventListener('DOMContentLoaded', () => {
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.has('privateCode')) {
         auth();
+      } else {
+        hideError();
       }
     });
   </script>
