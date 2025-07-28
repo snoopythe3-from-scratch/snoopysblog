@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
 @font-face {
     font-family: "ScratchSavers";
-    src: url("ScratchSavers_b2.woff2");
+    src: url("../assets/ScratchSavers_b2.woff2");
 }
 
 body {
