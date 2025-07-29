@@ -76,9 +76,12 @@ export default function MainContent() {
         document.body.style.overflow = 'hidden'; // Disable page scrolling
     };
 
-    const closeArticle = () => {
-        setSelectedArticle(null);
-        document.body.style.overflow = 'auto'; // Re-enable scrolling
+    const closeArticle = (e) => {
+        if (e.target.classList.contains('modal-overlay') || 
+            e.target.classList.contains('close-button')) {
+            setSelectedArticle(null);
+            document.body.style.overflow = 'auto'; // Re-enable scrolling
+        }
     };
 
     return (
@@ -97,7 +100,7 @@ export default function MainContent() {
             </p>
             <hr />
             
-            <div className="articles-grid">
+            <div className="articles-container">
                 {articles.map((article, index) => (
                     <div 
                         key={index} 
@@ -107,8 +110,8 @@ export default function MainContent() {
                         <div className="card-header">
                             <h3>{article.title}</h3>
                             <div className="meta">
-                                <span className="author">{article.author}</span>
-                                <span className="date">{article.date}</span>
+                                <span className="author">By: {article.author}</span>
+                                <span className="date">Date: {article.date}</span>
                             </div>
                         </div>
                         <div className="card-content">
