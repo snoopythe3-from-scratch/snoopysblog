@@ -49,14 +49,22 @@ export default function MainContent() {
                         }
 
                         const content = await marked.parse(lines.slice(contentStartIndex).join("\n"));
-                        
+
                         // Create preview by removing HTML tags and truncating
                         const textContent = content.replace(/<[^>]*>/g, "");
                         const preview = textContent.length > 300
-                            ? textContent.substring(0, 150) + '...' 
+                            ? textContent.substring(0, 150) + '...'
                             : textContent;
 
-                        return { title, author, date, content, preview, filename };
+                        // Extract first image from content for thumbnail
+                        let thumbnail = null;
+                        const imgRegex = /<img[^>]+src="([^">]+)"/;
+                        const imgMatch = content.match(imgRegex);
+                        if (imgMatch && imgMatch[1]) {
+                            thumbnail = imgMatch[1];
+                        }
+
+                        return { title, author, date, content, preview, filename, thumbnail };
                     } catch (err) {
                         console.error(`Failed to load ${filename}:`, err);
                         return null;
@@ -77,7 +85,7 @@ export default function MainContent() {
     };
 
     const closeArticle = (e) => {
-        if (e.target.classList.contains('modal-overlay') || 
+        if (e.target.classList.contains('modal-overlay') ||
             e.target.classList.contains('close-button')) {
             setSelectedArticle(null);
             document.body.style.overflow = 'auto'; // Re-enable scrolling
@@ -99,11 +107,11 @@ export default function MainContent() {
                 </a>.
             </p>
             <hr />
-            
+
             <div className="articles-container">
                 {articles.map((article, index) => (
-                    <div 
-                        key={index} 
+                    <div
+                        key={index}
                         className="article-card"
                         onClick={() => openArticle(article)}
                     >
@@ -114,6 +122,12 @@ export default function MainContent() {
                                 <span className="date">Date: {article.date}</span>
                             </div>
                         </div>
+                        {/* Thumbnail in preview card */}
+                        {article.thumbnail && (
+                            <div className="card-thumbnail">
+                                <img src={article.thumbnail} alt="Article thumbnail" />
+                            </div>
+                        )}
                         <div className="card-content">
                             <p>{article.preview}</p>
                         </div>
@@ -134,9 +148,17 @@ export default function MainContent() {
                                 <span className="date">Date: {selectedArticle.date}</span>
                             </div>
                         </div>
-                        <div 
-                            className="article-full-content" 
-                            dangerouslySetInnerHTML={{ __html: selectedArticle.content }} 
+
+                        {/* Image thumbnail section in modal */}
+                        {selectedArticle.thumbnail && (
+                            <div className="modal-thumbnail">
+                                <img src={selectedArticle.thumbnail} alt="Article thumbnail" />
+                            </div>
+                        )}
+
+                        <div
+                            className="article-full-content"
+                            dangerouslySetInnerHTML={{ __html: selectedArticle.content }}
                         />
                     </div>
                 </div>
