@@ -3,6 +3,7 @@ import { marked } from "marked";
 
 export default function MainContent() {
     const [articles, setArticles] = useState([]);
+    const [selectedArticle, setSelectedArticle] = useState(null);
 
     useEffect(() => {
         async function fetchArticles() {
@@ -16,13 +17,11 @@ export default function MainContent() {
                         const text = await res.text();
                         const lines = text.split("\n");
 
-                        // Changed to require minimum 3 lines (header, separator, data)
                         if (lines.length < 3) {
                             console.warn(`Skipping ${filename}: not enough lines`);
                             return null;
                         }
 
-                        // Changed to use 2nd index (3rd line) for data row
                         const metadataRow = lines[2].trim();
 
                         if (!metadataRow.startsWith("|") || !metadataRow.endsWith("|")) {
@@ -42,19 +41,22 @@ export default function MainContent() {
 
                         const [title, author, date] = metadataValues;
 
-                        // Changed to start searching after table (i > 2)
                         const contentStartIndex = lines.findIndex((line, i) => i > 2 && line.trim() !== "");
 
-                        // Handle case where no content is found
                         if (contentStartIndex === -1) {
                             console.warn(`Skipping ${filename}: no content found`);
                             return null;
                         }
 
-                        // Added await for async parsing
                         const content = await marked.parse(lines.slice(contentStartIndex).join("\n"));
+                        
+                        // Create preview by removing HTML tags and truncating
+                        const textContent = content.replace(/<[^>]*>/g, "");
+                        const preview = textContent.length > 150 
+                            ? textContent.substring(0, 150) + '...' 
+                            : textContent;
 
-                        return { title, author, date, content, filename };
+                        return { title, author, date, content, preview, filename };
                     } catch (err) {
                         console.error(`Failed to load ${filename}:`, err);
                         return null;
@@ -62,20 +64,22 @@ export default function MainContent() {
                 })
             );
 
-            // Filter out nulls and fix variable name
             const validArticles = fetchedArticles.filter(article => article !== null);
-
-            // Set articles with valid ones
             setArticles(validArticles);
-
-            // Debug logs (optional)
-            console.log("Raw files:", files);
-            console.log("Fetched articles:", fetchedArticles);
-            console.log("Valid articles:", validArticles);
         }
 
         fetchArticles();
     }, []);
+
+    const openArticle = (article) => {
+        setSelectedArticle(article);
+        document.body.style.overflow = 'hidden'; // Disable page scrolling
+    };
+
+    const closeArticle = () => {
+        setSelectedArticle(null);
+        document.body.style.overflow = 'auto'; // Re-enable scrolling
+    };
 
     return (
         <div className="main">
@@ -91,21 +95,49 @@ export default function MainContent() {
                     GitHub security page
                 </a>.
             </p>
-            <div className="actions">
-                <a href="/articles.html">Articles</a> | <a href="/login.html">Log In</a> | {" "}
-                <a href="https://scratch.mit.edu/projects/1149116249/">Scratch Project</a>
-            </div>
             <hr />
-            <div className="articles">
+            
+            <div className="articles-grid">
                 {articles.map((article, index) => (
-                    <div key={index} className="article">
-                        <h3>{article.title}</h3>
-                        <p><strong>By:</strong> {article.author} | <strong>Date:</strong> {article.date}</p>
-                        <div dangerouslySetInnerHTML={{ __html: article.content }} />
-                        <hr />
+                    <div 
+                        key={index} 
+                        className="article-card"
+                        onClick={() => openArticle(article)}
+                    >
+                        <div className="card-header">
+                            <h3>{article.title}</h3>
+                            <div className="meta">
+                                <span className="author">{article.author}</span>
+                                <span className="date">{article.date}</span>
+                            </div>
+                        </div>
+                        <div className="card-content">
+                            <p>{article.preview}</p>
+                        </div>
+                        <div className="read-more">Read More →</div>
                     </div>
                 ))}
             </div>
+
+            {/* Modal for full article */}
+            {selectedArticle && (
+                <div className="modal-overlay" onClick={closeArticle}>
+                    <div className="modal-content" onClick={e => e.stopPropagation()}>
+                        <button className="close-button" onClick={closeArticle}>×</button>
+                        <div className="modal-header">
+                            <h2>{selectedArticle.title}</h2>
+                            <div className="meta">
+                                <span className="author">By: {selectedArticle.author}</span>
+                                <span className="date">Date: {selectedArticle.date}</span>
+                            </div>
+                        </div>
+                        <div 
+                            className="article-full-content" 
+                            dangerouslySetInnerHTML={{ __html: selectedArticle.content }} 
+                        />
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

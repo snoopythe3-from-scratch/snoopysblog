@@ -1,0 +1,137 @@
+/* Modern card layout */
+.articles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
+}
+
+.article-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.article-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+    padding: 20px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.card-header h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.3rem;
+    color: #2c3e50;
+}
+
+.meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: #7f8c8d;
+}
+
+.card-content {
+    padding: 20px;
+    flex-grow: 1;
+}
+
+.card-content p {
+    margin: 0;
+    line-height: 1.6;
+    color: #34495e;
+}
+
+.read-more {
+    padding: 15px 20px;
+    background: #f8f9fa;
+    text-align: right;
+    font-weight: 600;
+    color: #3498db;
+    border-top: 1px solid #eaeaea;
+}
+
+/* Modal styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background: white;
+    border-radius: 15px;
+    width: 85%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.close-button {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    color: #7f8c8d;
+    z-index: 10;
+}
+
+.close-button:hover {
+    color: #e74c3c;
+}
+
+.modal-header {
+    padding: 30px 30px 20px;
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 5;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+.modal-header h2 {
+    margin-top: 0;
+    color: #2c3e50;
+}
+
+.article-full-content {
+    padding: 0 30px 30px;
+    line-height: 1.8;
+}
+
+.article-full-content p {
+    margin-bottom: 1.5em;
+    color: #2c3e50;
+}
+
+.article-full-content h1, 
+.article-full-content h2, 
+.article-full-content h3 {
+    color: #2c3e50;
+    margin-top: 1.5em;
+    margin-bottom: 0.8em;
+}
