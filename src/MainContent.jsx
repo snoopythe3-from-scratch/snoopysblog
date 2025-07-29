@@ -52,7 +52,7 @@ export default function MainContent() {
                         
                         // Create preview by removing HTML tags and truncating
                         const textContent = content.replace(/<[^>]*>/g, "");
-                        const preview = textContent.length > 150 
+                        const preview = textContent.length > 300
                             ? textContent.substring(0, 150) + '...' 
                             : textContent;
 
