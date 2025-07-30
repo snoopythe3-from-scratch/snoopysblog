@@ -17,7 +17,7 @@
     cursor: pointer;
     display: flex;
     flex-direction: column;
-    width: 50%;
+    width: 80%;
     min-width: 400px;
     max-width: 800px;
 }

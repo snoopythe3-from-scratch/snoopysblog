@@ -92,9 +92,9 @@ export default function MainContent() {
         }
     };
 
-    return (
-        <div className="main">
-            <h2>Welcome to The Scratch Channel!</h2>
+        return (
+        <div className="page">
+            <h1>Welcome to The Scratch Channel!</h1>
             <p>Here, you can find articles, news stories, and more.</p>
             <p>
                 Are you a developer or a person who found a security vulnerability? Report it on our {" "}
@@ -107,14 +107,21 @@ export default function MainContent() {
                 </a>.
             </p>
             <hr />
-
+            
             <div className="articles-container">
                 {articles.map((article, index) => (
-                    <div
-                        key={index}
+                    <div 
+                        key={index} 
                         className="article-card"
                         onClick={() => openArticle(article)}
                     >
+                        {/* Thumbnail in preview card */}
+                        {article.thumbnail && (
+                            <div className="card-thumbnail">
+                                <img src={article.thumbnail} alt="Article thumbnail" />
+                            </div>
+                        )}
+                        
                         <div className="card-header">
                             <h3>{article.title}</h3>
                             <div className="meta">
@@ -122,12 +129,6 @@ export default function MainContent() {
                                 <span className="date">Date: {article.date}</span>
                             </div>
                         </div>
-                        {/* Thumbnail in preview card */}
-                        {article.thumbnail && (
-                            <div className="card-thumbnail">
-                                <img src={article.thumbnail} alt="Article thumbnail" />
-                            </div>
-                        )}
                         <div className="card-content">
                             <p>{article.preview}</p>
                         </div>
@@ -140,7 +141,6 @@ export default function MainContent() {
             {selectedArticle && (
                 <div className="modal-overlay" onClick={closeArticle}>
                     <div className="modal-content" onClick={e => e.stopPropagation()}>
-
                         <div className="modal-header">
                             <button className="close-button" onClick={closeArticle}>×</button>
                             <h2>{selectedArticle.title}</h2>
@@ -149,7 +149,7 @@ export default function MainContent() {
                                 <span className="date">Date: {selectedArticle.date}</span>
                             </div>
                         </div>
-
+                        
                         {/* Image thumbnail section in modal */}
                         {selectedArticle.thumbnail && (
                             <div className="modal-thumbnail">
