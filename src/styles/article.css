@@ -124,6 +124,17 @@
     padding: 0; /* Remove padding to fix header width */
 }
 
+.modal-header {
+    padding: 30px 30px 20px;
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 10; /* Higher z-index */
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    width: 100%; /* Ensure full width */
+    box-sizing: border-box; /* Include padding in width calculation */
+}
+
 .close-button {
     position: absolute;
     top: 15px;
@@ -133,23 +144,12 @@
     font-size: 2rem;
     cursor: pointer;
     color: #7f8c8d;
-    z-index: 10;
+    z-index: 20; /* Higher than header */
     transition: color 0.2s;
 }
 
 .close-button:hover {
     color: #e74c3c;
-}
-
-.modal-header {
-    padding: 30px 30px 20px;
-    position: sticky;
-    top: 0;
-    background: white;
-    z-index: 5;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
-    width: 100%; /* Ensure full width */
-    box-sizing: border-box; /* Include padding in width calculation */
 }
 
 .modal-header h2 {
@@ -241,5 +241,15 @@
     
     .modal-thumbnail {
         max-height: 200px;
+    }
+    
+    .modal-header {
+        padding: 20px 20px 15px;
+    }
+    
+    .close-button {
+        top: 10px;
+        right: 15px;
+        font-size: 1.8rem;
     }
 }

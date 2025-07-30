@@ -140,8 +140,9 @@ export default function MainContent() {
             {selectedArticle && (
                 <div className="modal-overlay" onClick={closeArticle}>
                     <div className="modal-content" onClick={e => e.stopPropagation()}>
-                        <button className="close-button" onClick={closeArticle}>×</button>
+
                         <div className="modal-header">
+                            <button className="close-button" onClick={closeArticle}>×</button>
                             <h2>{selectedArticle.title}</h2>
                             <div className="meta">
                                 <span className="author">By: {selectedArticle.author}</span>
