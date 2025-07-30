@@ -3,7 +3,6 @@ const path = require('path');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
-// Destructure named export `router` from each module
 const { router: adminRouter } = require('./api/admin');
 const { router: authRouter } = require('./api/auth');
 const { router: usersRouter } = require('./api/users');
@@ -24,14 +23,14 @@ app.use(cors({ origin: 'https://the-scratch-channel.github.io' }));
 app.use(bodyParser.json());
 
 // Static files
-app.use(express.static(path.join(__dirname, 'static')));
-app.use(express.static(path.join(__dirname, 'pages')));
+app.use('/static', express.static(path.join(__dirname, 'static')));
+app.use('/', express.static(path.join(__dirname, 'pages')));
 
 // API Routes
-app.use('/', usersRouter);     // Moved under /api/users/*
-app.use('/api/auth', authRouter);       // /api/auth/*
-app.use('/api/articles', articlesRouter); // /api/articles/*
-app.use('/api/admin', adminRouter);     // /api/admin/*
+app.use('/', usersRouter);                    // /api/users/* assumed handled here
+app.use('/api/auth', authRouter);             // /api/auth/*
+app.use('/api/articles', articlesRouter);     // /api/articles/*
+app.use('/api/admin', adminRouter);           // /api/admin/*
 
 app.listen(3000, () => {
   console.log('Server running at http://localhost:3000');
