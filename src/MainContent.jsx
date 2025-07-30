@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { marked } from "marked";
+import sanitizeHtml from "sanitize-html";
 
 export default function MainContent() {
     const [articles, setArticles] = useState([]);
@@ -50,8 +51,8 @@ export default function MainContent() {
 
                         const content = await marked.parse(lines.slice(contentStartIndex).join("\n"));
 
-                        // Create preview by removing HTML tags and truncating
-                        const textContent = content.replace(/<[^>]*>/g, "");
+                        // Create preview by sanitizing HTML and truncating
+                        const textContent = sanitizeHtml(content, { allowedTags: [], allowedAttributes: {} });
                         const preview = textContent.length > 300
                             ? textContent.substring(0, 150) + '...'
                             : textContent;
