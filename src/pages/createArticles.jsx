@@ -1,7 +1,27 @@
 import React, { useState } from "react";
-import { marked } from "marked";
-import sanitizeHtml from "sanitize-html";
 import { useNavigate } from "react-router-dom";
+import {
+  MDXEditor,
+  headingsPlugin,
+  listsPlugin,
+  linkPlugin,
+  quotePlugin,
+  tablePlugin,
+  thematicBreakPlugin,
+  codeBlockPlugin,
+  codeMirrorPlugin,
+  imagePlugin,
+  markdownShortcutPlugin,
+  toolbarPlugin,
+  UndoRedo,
+  BoldItalicUnderlineToggles,
+  ListsToggle,
+  BlockTypeSelect,
+  CreateLink,
+  InsertTable,
+  InsertImage
+} from '@mdxeditor/editor';
+import '@mdxeditor/editor/style.css';
 
 export default function CreateArticle() {
     const [markdown, setMarkdown] = useState('');
@@ -26,8 +46,6 @@ export default function CreateArticle() {
         a.click();
         URL.revokeObjectURL(url);
     };
-
-    const previewHtml = sanitizeHtml(marked.parse(markdown || ''));
 
     return (
         <div className="create-article-page" style={{ padding: "2rem" }}>
@@ -63,31 +81,41 @@ export default function CreateArticle() {
                 />
             </div>
 
-            <div className="editor-container" style={{ display: "flex", gap: "1rem" }}>
-                <textarea
-                    className="markdown-input"
-                    placeholder="Write your markdown here..."
-                    value={markdown}
-                    onChange={(e) => setMarkdown(e.target.value)}
-                    style={{
-                        width: "50%",
-                        height: "400px",
-                        padding: "1rem",
-                        fontFamily: "monospace",
-                        border: "1px solid #ccc",
-                        resize: "vertical"
-                    }}
-                />
-                <div
-                    className="markdown-preview"
-                    dangerouslySetInnerHTML={{ __html: previewHtml }}
-                    style={{
-                        width: "50%",
-                        height: "400px",
-                        overflowY: "auto",
-                        border: "1px solid #ccc",
-                        padding: "1rem",
-                        background: "#fafafa"
+            <div className="editor-container" style={{ marginBottom: "1rem" }}>
+                <MDXEditor 
+                    markdown={markdown} 
+                    onChange={setMarkdown}
+                    contentEditableClassName="prose"
+                    plugins={[
+                        headingsPlugin(),
+                        listsPlugin(),
+                        linkPlugin(),
+                        quotePlugin(),
+                        tablePlugin(),
+                        thematicBreakPlugin(),
+                        codeBlockPlugin({ defaultCodeBlockLanguage: 'txt' }),
+                        codeMirrorPlugin({ codeBlockLanguages: { js: 'JavaScript', css: 'CSS', txt: 'text' } }),
+                        imagePlugin(),
+                        markdownShortcutPlugin(),
+                        toolbarPlugin({
+                            toolbarContents: () => (
+                                <>
+                                    <UndoRedo />
+                                    <BoldItalicUnderlineToggles />
+                                    <ListsToggle />
+                                    <BlockTypeSelect />
+                                    <CreateLink />
+                                    <InsertTable />
+                                    <InsertImage />
+                                </>
+                            )
+                        })
+                    ]}
+                    style={{ 
+                        height: "400px", 
+                        border: "1px solid #ccc", 
+                        borderRadius: "4px",
+                        overflow: "auto"
                     }}
                 />
             </div>
@@ -99,4 +127,3 @@ export default function CreateArticle() {
         </div>
     );
 }
-
