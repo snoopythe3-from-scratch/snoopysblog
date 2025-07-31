@@ -6,75 +6,85 @@ export default function MainContent() {
     const [articles, setArticles] = useState([]);
     const [selectedArticle, setSelectedArticle] = useState(null);
 
+    const owner = "The-Scratch-Channel";
+    const repo = "the-scratch-channel.github.io";
+    const folder = "articles";
+
     useEffect(() => {
         async function fetchArticles() {
-            const res = await fetch("/articles/index.json");
-            const files = await res.json();
+            try {
+                const fileListRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${folder}`);
+                const files = await fileListRes.json();
 
-            const fetchedArticles = await Promise.all(
-                files.map(async (filename) => {
-                    try {
-                        const res = await fetch(`/articles/${filename}`);
-                        const text = await res.text();
-                        const lines = text.split("\n");
+                const markdownFiles = files.filter(file => file.name.endsWith(".md"));
 
-                        if (lines.length < 3) {
-                            console.warn(`Skipping ${filename}: not enough lines`);
+                const fetchedArticles = await Promise.all(
+                    markdownFiles.map(async (file) => {
+                        try {
+                            const fileRes = await fetch(file.download_url);
+                            const text = await fileRes.text();
+                            const lines = text.split("\n");
+
+                            if (lines.length < 3) {
+                                console.warn(`Skipping ${file.name}: not enough lines`);
+                                return null;
+                            }
+
+                            const metadataRow = lines[2].trim();
+
+                            if (!metadataRow.startsWith("|") || !metadataRow.endsWith("|")) {
+                                console.warn(`Skipping ${file.name}: invalid metadata row`);
+                                return null;
+                            }
+
+                            const metadataValues = metadataRow
+                                .split("|")
+                                .map(s => s.trim())
+                                .filter(s => s.length > 0);
+
+                            if (metadataValues.length < 3) {
+                                console.warn(`Skipping ${file.name}: not enough metadata`);
+                                return null;
+                            }
+
+                            const [title, author, date] = metadataValues;
+
+                            const contentStartIndex = lines.findIndex((line, i) => i > 2 && line.trim() !== "");
+
+                            if (contentStartIndex === -1) {
+                                console.warn(`Skipping ${file.name}: no content`);
+                                return null;
+                            }
+
+                            const content = await marked.parse(lines.slice(contentStartIndex).join("\n"));
+
+                            // Preview
+                            const textContent = sanitizeHtml(content, { allowedTags: [], allowedAttributes: {} });
+                            const preview = textContent.length > 300
+                                ? textContent.substring(0, 150) + '...'
+                                : textContent;
+
+                            // Thumbnail
+                            let thumbnail = null;
+                            const imgRegex = /<img[^>]+src="([^">]+)"/;
+                            const imgMatch = content.match(imgRegex);
+                            if (imgMatch && imgMatch[1]) {
+                                thumbnail = imgMatch[1];
+                            }
+
+                            return { title, author, date, content, preview, filename: file.name, thumbnail };
+                        } catch (err) {
+                            console.error(`Failed to process ${file.name}:`, err);
                             return null;
                         }
+                    })
+                );
 
-                        const metadataRow = lines[2].trim();
-
-                        if (!metadataRow.startsWith("|") || !metadataRow.endsWith("|")) {
-                            console.warn(`Skipping ${filename}: invalid table row format`);
-                            return null;
-                        }
-
-                        const metadataValues = metadataRow
-                            .split("|")
-                            .map(s => s.trim())
-                            .filter(s => s.length > 0);
-
-                        if (metadataValues.length < 3) {
-                            console.warn(`Skipping ${filename}: not enough metadata values`);
-                            return null;
-                        }
-
-                        const [title, author, date] = metadataValues;
-
-                        const contentStartIndex = lines.findIndex((line, i) => i > 2 && line.trim() !== "");
-
-                        if (contentStartIndex === -1) {
-                            console.warn(`Skipping ${filename}: no content found`);
-                            return null;
-                        }
-
-                        const content = await marked.parse(lines.slice(contentStartIndex).join("\n"));
-
-                        // Create preview by sanitizing HTML and truncating
-                        const textContent = sanitizeHtml(content, { allowedTags: [], allowedAttributes: {} });
-                        const preview = textContent.length > 300
-                            ? textContent.substring(0, 150) + '...'
-                            : textContent;
-
-                        // Extract first image from content for thumbnail
-                        let thumbnail = null;
-                        const imgRegex = /<img[^>]+src="([^">]+)"/;
-                        const imgMatch = content.match(imgRegex);
-                        if (imgMatch && imgMatch[1]) {
-                            thumbnail = imgMatch[1];
-                        }
-
-                        return { title, author, date, content, preview, filename, thumbnail };
-                    } catch (err) {
-                        console.error(`Failed to load ${filename}:`, err);
-                        return null;
-                    }
-                })
-            );
-
-            const validArticles = fetchedArticles.filter(article => article !== null);
-            setArticles(validArticles);
+                const validArticles = fetchedArticles.filter(article => article !== null);
+                setArticles(validArticles);
+            } catch (error) {
+                console.error("Failed to fetch from GitHub:", error);
+            }
         }
 
         fetchArticles();
@@ -82,18 +92,18 @@ export default function MainContent() {
 
     const openArticle = (article) => {
         setSelectedArticle(article);
-        document.body.style.overflow = 'hidden'; // Disable page scrolling
+        document.body.style.overflow = 'hidden';
     };
 
     const closeArticle = (e) => {
         if (e.target.classList.contains('modal-overlay') ||
             e.target.classList.contains('close-button')) {
             setSelectedArticle(null);
-            document.body.style.overflow = 'auto'; // Re-enable scrolling
+            document.body.style.overflow = 'auto';
         }
     };
 
-        return (
+    return (
         <div className="page">
             <h1>Welcome to The Scratch Channel!</h1>
             <p>Here, you can find articles, news stories, and more.</p>
@@ -108,21 +118,19 @@ export default function MainContent() {
                 </a>.
             </p>
             <hr />
-            
+
             <div className="articles-container">
                 {articles.map((article, index) => (
-                    <div 
-                        key={index} 
+                    <div
+                        key={index}
                         className="article-card"
                         onClick={() => openArticle(article)}
                     >
-                        {/* Thumbnail in preview card */}
                         {article.thumbnail && (
                             <div className="card-thumbnail">
                                 <img src={article.thumbnail} alt="Article thumbnail" />
                             </div>
                         )}
-                        
                         <div className="card-header">
                             <h3>{article.title}</h3>
                             <div className="meta">
@@ -138,10 +146,9 @@ export default function MainContent() {
                 ))}
             </div>
 
-            {/* Modal for full article */}
             {selectedArticle && (
                 <div className="modal-overlay" onClick={closeArticle}>
-                    <div className="modal-content" onClick={e => e.stopPropagation()}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                         <div className="modal-header">
                             <button className="close-button" onClick={closeArticle}>×</button>
                             <h2>{selectedArticle.title}</h2>
@@ -150,14 +157,11 @@ export default function MainContent() {
                                 <span className="date">Date: {selectedArticle.date}</span>
                             </div>
                         </div>
-                        
-                        {/* Image thumbnail section in modal */}
                         {selectedArticle.thumbnail && (
                             <div className="modal-thumbnail">
                                 <img src={selectedArticle.thumbnail} alt="Article thumbnail" />
                             </div>
                         )}
-
                         <div
                             className="article-full-content"
                             dangerouslySetInnerHTML={{ __html: selectedArticle.content }}
