@@ -103,7 +103,7 @@ export default function MainContent() {
         <div className="page">
             <h1>Welcome to The Scratch Channel!</h1>
             <p>Here, you can find articles, news stories, and more.</p>
-            <hr />
+            <hr id="articles-begin"/>
 
             <div className="articles-container">
                 {articles.map((article, index) => (
