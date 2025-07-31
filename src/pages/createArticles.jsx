@@ -166,6 +166,13 @@ export default function CreateArticle() {
                     Cancel
                 </button>
             </div>
+            <div id="tutorial">
+                <h2>How to submit your article</h2>
+                <p>Firstly, write your article using the editor above. Make sure you input the date name and title. There is no need to have a heading that says your article name, because that is rendered already.
+                    Then, make a GitHub account if you don't already have one and go to our <a href="https://github.com/The-Scratch-Channel/the-scratch-channel.github.io/issues">Issues page</a> and create a new blank issue. Copy in the markdown you've downloaded (including the table part) and soon a developer will add it in.
+                    For Devs: Add it at the beginning of index.json, going from newest to oldest, because the article system does not sort by date but rather order in index.json.
+                </p>
+            </div>
         </div>
     );
 }
