@@ -1,4 +1,5 @@
 import React from "react";
+import {Link} from "react-router-dom";
 
 export default function Footer() {
   return (
@@ -10,19 +11,18 @@ export default function Footer() {
         <div className="footer-group">
           <h4>About</h4>
           <a href="/about">About</a><br />
-          <a href="/credits">Credits</a><br />
+          <a href="/credits">Credits</a><br /> {/* TODO: make about/credits page */}
+          <a href="https://raw.githubusercontent.com/The-Scratch-Channel/the-scratch-channel.github.io/refs/heads/main/LICENSE">License</a>
         </div>
         <div className="footer-group">
           <h4>Resources</h4>
-          <a href="/articles">Articles</a><br />
-          <a href="/faq">FAQ</a><br />
+          <Link to="/#articles"><a href="/articles">Articles</a></Link><br />
           <a href="https://github.com/The-Scratch-Channel/the-scratch-channel.github.io/issues/new/choose">Report an Issue</a>
         </div>
         <div className="footer-group">
           <h4>Community</h4>
-          <a href="/">Forum Topic</a><br />
-          <a href="/events">TSC Studio</a><br />
-          <a href="/social">GitHub</a>
+          <a href="https://scratch.mit.edu/discuss/topic/814999/">Forum Topic</a><br />
+          <a href="https://github.com/The-Scratch-Channel/the-scratch-channel.github.io/">GitHub</a>
         </div>
       </div>
       <br />

@@ -9,7 +9,7 @@ export default function Header() {
         <div className="nav-left">
           <Link to="/"><img src={TSC} alt="TSC Logo" /></Link>
           <Link to="/"><a href="/#">Home</a></Link>
-          <Link to="/"><a href="/#articles-begin">Articles</a></Link>
+          <Link to="/#articles-begin"><a>Articles</a></Link>
           <a href="/#">About</a>
         </div>
         <div className="nav-right">
