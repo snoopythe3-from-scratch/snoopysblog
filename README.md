@@ -12,7 +12,7 @@ There is no need to deploy this yourself if you do not want to contribute. If yo
 
 ## Contributing
 
-If you would like to contribute but are not a contributor yet, follow thes steps below.
+If you would like to contribute but are not a contributor yet, follow these steps below.
 However, if you find a vulnerability that requires immediate attention, go to the repositories [security tab](https://github.com/The-Scratch-Channel/the-scratch-channel.github.io/security) to report it. A vulnerability report should contain what file has the vulnerability, what priority it is, and extensive details.
 - Create a fork of the repository
 
@@ -21,7 +21,7 @@ However, if you find a vulnerability that requires immediate attention, go to th
 - To clone your fork, run `git clone https://github.com/yourusernamehere/yourforknamehere.git`.
 
 - Write your contributions
-- Test your contributions in your clone by running `npm install`, then `npm start` and then going to localhost:3000 in your browser
+- Test your contributions in your clone by running `npm install`, then `npm run dev` and then going to localhost:5173 in your browser
 > [!IMPORTANT]
 >Ensure you have the latest version of node.js to use NPM. If your system is low end or cannot use localhost, you can do the same in a codespace, using PNPM.
 
@@ -29,4 +29,4 @@ However, if you find a vulnerability that requires immediate attention, go to th
 - Create a pull request to show your changes, and if your PR has good work, we might pull it.
 
 > [!IMPORTANT]
-> Don't forget to use `npm install` before running the Express server, otherwise it will not load the required modules.
+> Don't forget to use `npm install` before running Vite, otherwise it will not load the required modules.
