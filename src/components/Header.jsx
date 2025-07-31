@@ -1,12 +1,13 @@
 import React from "react";
-import TSC from "./assets/tsc.png"
+import TSC from "../assets/tsc.png";
+import { Link } from "react-router-dom";
 
 export default function Header() {
   return (
     <div className="navigation">
       <div className="nav-content">
         <div className="nav-left">
-          <img src={TSC} alt="TSC Logo" />
+          <Link to="/"><img src={TSC} alt="TSC Logo" /></Link>
           <a href="/#">Home</a>
           <a href="/#">Articles</a>
           <a href="/#">About</a>

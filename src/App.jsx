@@ -1,9 +1,9 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Header from "./Header";
-import MainContent from "./MainContent";
-import Footer from "./Footer";
-import CreateArticle from "./createArticles";
+import Header from "./components/Header";
+import MainContent from "./pages/MainContent";
+import Footer from "./components/Footer";
+import CreateArticle from "./pages/createArticles";
 
 import "./styles/index-revamp.css";
 import "./styles/article.css";
