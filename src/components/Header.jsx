@@ -8,8 +8,9 @@ export default function Header() {
       <div className="nav-content">
         <div className="nav-left">
           <Link to="/"><img src={TSC} alt="TSC Logo" /></Link>
-          <a href="/#">Home</a>
-          <a href="/#">Articles</a>
+          <Link to="/"><a href="/#">Home</a></Link>
+          <Link to="/"><a href="/#articles-begin">Articles</a></Link>
+          <Link to="/articles/create"><a href="/#">Write an Article</a></Link>
           <a href="/#">About</a>
         </div>
         <div className="nav-right">
