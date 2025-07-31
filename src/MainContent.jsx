@@ -6,34 +6,32 @@ export default function MainContent() {
     const [articles, setArticles] = useState([]);
     const [selectedArticle, setSelectedArticle] = useState(null);
 
-    const owner = "The-Scratch-Channel";
-    const repo = "the-scratch-channel.github.io";
-    const folder = "articles";
+    const folder = "/articles"; // Local folder served from public/articles
 
     useEffect(() => {
         async function fetchArticles() {
             try {
-                const fileListRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${folder}`);
+                const fileListRes = await fetch(`${folder}/index.json`);
                 const files = await fileListRes.json();
 
-                const markdownFiles = files.filter(file => file.name.endsWith(".md"));
+                const markdownFiles = files.filter(name => name.endsWith(".md"));
 
                 const fetchedArticles = await Promise.all(
-                    markdownFiles.map(async (file) => {
+                    markdownFiles.map(async (filename) => {
                         try {
-                            const fileRes = await fetch(file.download_url);
+                            const fileRes = await fetch(`${folder}/${filename}`);
                             const text = await fileRes.text();
                             const lines = text.split("\n");
 
                             if (lines.length < 3) {
-                                console.warn(`Skipping ${file.name}: not enough lines`);
+                                console.warn(`Skipping ${filename}: not enough lines`);
                                 return null;
                             }
 
                             const metadataRow = lines[2].trim();
 
                             if (!metadataRow.startsWith("|") || !metadataRow.endsWith("|")) {
-                                console.warn(`Skipping ${file.name}: invalid metadata row`);
+                                console.warn(`Skipping ${filename}: invalid metadata row`);
                                 return null;
                             }
 
@@ -43,7 +41,7 @@ export default function MainContent() {
                                 .filter(s => s.length > 0);
 
                             if (metadataValues.length < 3) {
-                                console.warn(`Skipping ${file.name}: not enough metadata`);
+                                console.warn(`Skipping ${filename}: not enough metadata`);
                                 return null;
                             }
 
@@ -52,19 +50,17 @@ export default function MainContent() {
                             const contentStartIndex = lines.findIndex((line, i) => i > 2 && line.trim() !== "");
 
                             if (contentStartIndex === -1) {
-                                console.warn(`Skipping ${file.name}: no content`);
+                                console.warn(`Skipping ${filename}: no content`);
                                 return null;
                             }
 
                             const content = await marked.parse(lines.slice(contentStartIndex).join("\n"));
 
-                            // Preview
                             const textContent = sanitizeHtml(content, { allowedTags: [], allowedAttributes: {} });
                             const preview = textContent.length > 300
                                 ? textContent.substring(0, 150) + '...'
                                 : textContent;
 
-                            // Thumbnail
                             let thumbnail = null;
                             const imgRegex = /<img[^>]+src="([^">]+)"/;
                             const imgMatch = content.match(imgRegex);
@@ -72,9 +68,9 @@ export default function MainContent() {
                                 thumbnail = imgMatch[1];
                             }
 
-                            return { title, author, date, content, preview, filename: file.name, thumbnail };
+                            return { title, author, date, content, preview, filename, thumbnail };
                         } catch (err) {
-                            console.error(`Failed to process ${file.name}:`, err);
+                            console.error(`Failed to process ${filename}:`, err);
                             return null;
                         }
                     })
@@ -83,7 +79,7 @@ export default function MainContent() {
                 const validArticles = fetchedArticles.filter(article => article !== null);
                 setArticles(validArticles);
             } catch (error) {
-                console.error("Failed to fetch from GitHub:", error);
+                console.error("Failed to fetch local article list:", error);
             }
         }
 
@@ -107,16 +103,6 @@ export default function MainContent() {
         <div className="page">
             <h1>Welcome to The Scratch Channel!</h1>
             <p>Here, you can find articles, news stories, and more.</p>
-            <p>
-                Are you a developer or a person who found a security vulnerability? Report it on our {" "}
-                <a
-                    href="https://github.com/The-Scratch-Channel/the-scratch-channel.github.io/security/advisories"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    GitHub security page
-                </a>.
-            </p>
             <hr />
 
             <div className="articles-container">
