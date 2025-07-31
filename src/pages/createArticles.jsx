@@ -36,7 +36,11 @@ export default function CreateArticle() {
             return;
         }
 
-        const metadata = `| Title | Author | Date |\n|-------|--------|------|\n| ${title} | ${author} | ${date} |\n\n`;
+        // Format date as DD/MM/YY
+        const [year, month, day] = date.split('-');
+        const formattedDate = `${day}/${month}/${year.slice(2)}`;
+        
+        const metadata = `| Title | Author | Date |\n|-------|--------|------|\n| ${title} | ${author} | ${formattedDate} |\n\n`;
         const blob = new Blob([metadata + markdown], { type: 'text/markdown' });
         const url = URL.createObjectURL(blob);
 
@@ -94,7 +98,20 @@ export default function CreateArticle() {
                         tablePlugin(),
                         thematicBreakPlugin(),
                         codeBlockPlugin({ defaultCodeBlockLanguage: 'txt' }),
-                        codeMirrorPlugin({ codeBlockLanguages: { js: 'JavaScript', css: 'CSS', txt: 'text' } }),
+                        codeMirrorPlugin({ codeBlockLanguages: { 
+                            js: 'JavaScript', 
+                            ts: 'TypeScript',
+                            py: 'Python',
+                            java: 'Java',
+                            cpp: 'C++',
+                            cs: 'C#',
+                            css: 'CSS',
+                            html: 'HTML',
+                            xml: 'XML',
+                            json: 'JSON',
+                            md: 'Markdown',
+                            txt: 'text' 
+                        }}),
                         imagePlugin(),
                         markdownShortcutPlugin(),
                         toolbarPlugin({
@@ -115,14 +132,39 @@ export default function CreateArticle() {
                         height: "400px", 
                         border: "1px solid #ccc", 
                         borderRadius: "4px",
-                        overflow: "auto"
+                        overflow: "auto",
+                        backgroundColor: "#fff"
                     }}
                 />
             </div>
 
             <div className="button-group" style={{ marginTop: "1rem", display: "flex", gap: "1rem" }}>
-                <button onClick={handleDownload}>Download Markdown</button>
-                <button onClick={() => navigate('/')}>Cancel</button>
+                <button 
+                    onClick={handleDownload}
+                    style={{
+                        padding: "0.5rem 1rem",
+                        background: "#007bff",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "4px",
+                        cursor: "pointer"
+                    }}
+                >
+                    Download Markdown
+                </button>
+                <button 
+                    onClick={() => navigate('/')}
+                    style={{
+                        padding: "0.5rem 1rem",
+                        background: "#6c757d",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "4px",
+                        cursor: "pointer"
+                    }}
+                >
+                    Cancel
+                </button>
             </div>
         </div>
     );
