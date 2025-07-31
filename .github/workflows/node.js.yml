@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install
+      - name: Install Dependencies
       - run: npm install
 
       - name: 🔨 Build Project
