@@ -30,3 +30,9 @@ However, if you find a vulnerability that requires immediate attention, go to th
 
 > [!IMPORTANT]
 > Don't forget to use `npm install` before running Vite, otherwise it will not load the required modules.
+
+## Support
+### With a GitHub Account
+If you need support and have a GitHub account, you can report issues here. Security Vulnerabilities MUST be reported in the security tab.
+### Without a GitHub Account
+If you require support and do not have a github account, another contact option is to call or text +1 (256) 780-6385.
