@@ -196,3 +196,8 @@ footer {
 ::selection {
   background-color: var(--selection-color);
 }
+#about-content {
+  width: 60%;
+  margin-left: auto;
+  margin-right: auto;
+}
