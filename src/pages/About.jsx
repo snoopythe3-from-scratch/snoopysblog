@@ -18,6 +18,8 @@ export default function About() {
             <li>Gvyt <a href="https://github.com/Gvyt">Github</a>, <a href="https://scratch.mit.edu/users/GvYoutube/">Scratch</a></li>
             <li>Snoopythe3 <a href="https://github.com/snoopythe3-from-scratch">Github</a>, <a href="https://scratch.mit.edu/users/snoopythe3/">Scratch</a></li>
         </ul>
+
+        <p>Our codebase is licensed under the MIT License, meaning you can do whatever you want with the code as long as you include the same LICENSE file, which you can find <a href="https://raw.githubusercontent.com/The-Scratch-Channel/the-scratch-channel.github.io/refs/heads/main/LICENSE">here</a>.</p>
         </div>
         </>
     );
