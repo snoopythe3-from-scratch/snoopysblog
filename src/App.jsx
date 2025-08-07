@@ -5,10 +5,12 @@ import MainContent from "./pages/MainContent";
 import Footer from "./components/Footer";
 import CreateArticle from "./pages/createArticles";
 import About from "./pages/About";
+import ArticlePage from "./pages/ArticlePage";
 
 import "./styles/index-revamp.css";
 import "./styles/article.css";
-// I added routing to make it easier
+import "./styles/article-page.css";
+
 function App() {
   return (
     <Router>
@@ -17,6 +19,7 @@ function App() {
         <Route path="/" element={<MainContent />} />
         <Route path="/articles/create" element={<CreateArticle />} />
         <Route path="/about" element={<About />} />
+        <Route path="/article/:filename" element={<ArticlePage />} />
       </Routes>
       <Footer />
     </Router>
