@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { marked } from "marked";
 import sanitizeHtml from "sanitize-html";
+import { useNavigate } from "react-router-dom";
 
 export default function MainContent() {
     const [articles, setArticles] = useState([]);
     const [selectedArticle, setSelectedArticle] = useState(null);
+    const navigate = useNavigate();
 
-    const folder = "/articles"; // Local folder served from public/articles
+    const folder = "/articles"; 
 
     useEffect(() => {
         async function fetchArticles() {
@@ -87,8 +89,7 @@ export default function MainContent() {
     }, []);
 
     const openArticle = (article) => {
-        setSelectedArticle(article);
-        document.body.style.overflow = 'hidden';
+        navigate(`/article/${article.filename}`);
     };
 
     const closeArticle = (e) => {
