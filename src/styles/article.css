@@ -1,4 +1,4 @@
-/* Centered container for cards */
+/* Container for article cards */
 .articles-container {
     display: flex;
     flex-direction: column;
@@ -7,7 +7,7 @@
     margin-top: 30px;
 }
 
-/* Modern card layout */
+/* Article card base styles */
 .article-card {
     background: white;
     border-radius: 12px;
@@ -27,7 +27,7 @@
     box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
 }
 
-/* Thumbnail in preview card */
+/* Thumbnail inside article card */
 .card-thumbnail {
     height: 200px;
     overflow: hidden;
@@ -49,6 +49,7 @@
     transform: scale(1.05);
 }
 
+/* Card header */
 .card-header {
     padding: 20px;
     background: #f8f9fa;
@@ -61,16 +62,19 @@
     color: #2c3e50;
 }
 
+/* Meta information */
 .meta {
     display: flex;
     justify-content: space-between;
     font-size: 0.9rem;
     color: #7f8c8d;
 }
+
 .article-card .date {
     margin-right: 33px;
 }
 
+/* Card content */
 .card-content {
     padding: 20px;
     flex-grow: 1;
@@ -83,6 +87,7 @@
     font-size: 1rem;
 }
 
+/* Read more button */
 .read-more {
     padding: 15px 20px;
     background: #f8f9fa;
@@ -97,13 +102,10 @@
     background: #e3f2fd;
 }
 
-/* Modal styles - FIXED HEADER & CONTENT OVERFLOW */
+/* Modal styles */
 .modal-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    top: 0; left: 0; right: 0; bottom: 0;
     background: rgba(0, 0, 0, 0.85);
     display: flex;
     align-items: center;
@@ -121,7 +123,7 @@
     overflow-y: auto;
     box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
     position: relative;
-    padding: 0; /* Remove padding to fix header width */
+    padding: 0; /* Fix header width */
 }
 
 .modal-header {
@@ -129,10 +131,17 @@
     position: sticky;
     top: 0;
     background: white;
-    z-index: 10; /* Higher z-index */
+    z-index: 10;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
-    width: 100%; /* Ensure full width */
-    box-sizing: border-box; /* Include padding in width calculation */
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.modal-header h2 {
+    margin-top: 0;
+    color: #2c3e50;
+    font-size: 2rem;
+    padding-right: 40px; /* Space for close button */
 }
 
 .close-button {
@@ -144,7 +153,7 @@
     font-size: 2rem;
     cursor: pointer;
     color: #7f8c8d;
-    z-index: 20; /* Higher than header */
+    z-index: 20;
     transition: color 0.2s;
 }
 
@@ -152,14 +161,7 @@
     color: #e74c3c;
 }
 
-.modal-header h2 {
-    margin-top: 0;
-    color: #2c3e50;
-    font-size: 2rem;
-    padding-right: 40px; /* Space for close button */
-}
-
-/* Article thumbnail in modal */
+/* Modal article thumbnail */
 .modal-thumbnail {
     width: 100%;
     max-height: 300px;
@@ -178,23 +180,21 @@
     display: block;
 }
 
+/* Article full content inside modal */
 .article-full-content {
     padding: 0 30px 30px;
     line-height: 1.8;
     font-size: 1.1rem;
-    /* Prevent horizontal overflow */
     overflow-x: hidden;
     max-width: 100%;
     word-wrap: break-word;
 }
 
-/* Prevent content elements from overflowing */
 .article-full-content * {
     max-width: 100%;
     overflow-wrap: break-word;
 }
 
-/* Specifically handle images */
 .article-full-content img {
     max-width: 100%;
     height: auto;
@@ -202,7 +202,6 @@
     margin: 20px auto;
 }
 
-/* Handle code blocks and preformatted text */
 .article-full-content pre,
 .article-full-content code {
     white-space: pre-wrap;
