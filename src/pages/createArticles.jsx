@@ -23,12 +23,22 @@ import {
 } from '@mdxeditor/editor';
 import '@mdxeditor/editor/style.css';
 
+
 export default function CreateArticle() {
     const [markdown, setMarkdown] = useState('');
     const [title, setTitle] = useState('');
     const [author, setAuthor] = useState('');
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+    const [isDark, setIsDark] = useState(() => document.documentElement.classList.contains('dark'));
     const navigate = useNavigate();
+
+    React.useEffect(() => {
+        const observer = new MutationObserver(() => {
+            setIsDark(document.documentElement.classList.contains('dark'));
+        });
+        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+        return () => observer.disconnect();
+    }, []);
 
     const handleDownload = () => {
         if (!title || !author) {
@@ -90,6 +100,7 @@ export default function CreateArticle() {
                     markdown={markdown} 
                     onChange={setMarkdown}
                     contentEditableClassName="prose"
+                    className={isDark ? "dark-theme" : undefined}
                     plugins={[
                         headingsPlugin(),
                         listsPlugin(),
@@ -133,7 +144,8 @@ export default function CreateArticle() {
                         border: "1px solid #ccc", 
                         borderRadius: "4px",
                         overflow: "auto",
-                        backgroundColor: "#fff"
+                        backgroundColor: isDark ? "#23272e" : "#fff",
+                        color: isDark ? "#f5f5f5" : undefined
                     }}
                 />
             </div>
