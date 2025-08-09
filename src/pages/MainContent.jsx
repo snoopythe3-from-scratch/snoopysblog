@@ -104,6 +104,7 @@ export default function MainContent() {
         <div className="page">
             <h1>Welcome to The Scratch Channel!</h1>
             <p>Here, you can find articles, news stories, and more.</p>
+            <p>We aim to post at 1pm BST daily but sometimes we can forget.</p>
             <hr id="articles-begin"/>
 
             <div className="articles-container">
