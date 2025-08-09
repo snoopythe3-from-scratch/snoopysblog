@@ -33,5 +33,5 @@ However, if you find a vulnerability that requires immediate attention, go to th
 
 ## Support
 
-If you need support and have a GitHub account, you can report issues here. Security Vulnerabilities MUST be reported in the security tab.
+If you need support and have a GitHub account, you can report issues here. Security Vulnerabilities MUST be reported in the security tab, or call or text ‪+1 (313) 513-7748.
 <!-- Why would you give out your phone number? If anything, just do email address, or better, your scratch profile>
