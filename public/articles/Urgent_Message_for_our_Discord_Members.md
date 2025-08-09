@@ -1,0 +1,15 @@
+| Title | Author | Date |
+|-------|--------|------|
+| Urgent Message for our Discord Members | GvYoutube | 09/08/25 |
+
+<img height="121" width="211" alt="dc" title="Do not click this!" src="https://u.cubeupload.com/GvYoutube/Screenshot2025080918.jpg" />
+
+Hello, everyone!
+
+Its come to our attention that an NSFW server link was posted to all channels pinging everyone.
+
+If you see the following embed link above, don't click it. It is disgusting, and a scam. We are working to delete these messages.
+
+In the meantime, report them to Discord and block the user.
+
+Stay safe!
