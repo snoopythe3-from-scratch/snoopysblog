@@ -10,8 +10,8 @@ export default function Footer() {
       <div className="footer-links">
         <div className="footer-group">
           <h4>About</h4>
-          <a href="/about">About and Credits</a><br />
-          <a href="https://raw.githubusercontent.com/The-Scratch-Channel/the-scratch-channel.github.io/refs/heads/main/LICENSE">License</a>
+          <a href="/about">About and Credits</a><br>
+          <a href="https://raw.githubusercontent.com/The-Scratch-Channel/the-scratch-channel.github.io/refs/heads/main/LICENSE">License</a><br>
           <a href="https://stats.uptimerobot.com/abiwl4EvLm">Status checker</a>
         </div>
         <div className="footer-group">
