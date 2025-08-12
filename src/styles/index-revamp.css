@@ -12,7 +12,7 @@
 	--heading-color: #ffffff;
 	--highlight-color: #4E97FE;
 	--selection-color: #4E97FE80;
-	--footer-bg: #1a1a1a;
+	--footer-bg: #2d2d2d;
 	background-color: #121212;
 	color: var(--text-color);
 }
