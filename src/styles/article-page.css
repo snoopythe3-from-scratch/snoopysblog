@@ -21,18 +21,6 @@
     border-radius: 8px;
 }
 
-/* Back button */
-.back-button {
-    margin-top: 2rem;
-    padding: 10px 20px;
-    background-color: #0000FF;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s;
-}
-
 .back-button:hover {
     background-color: #e0e0e0;
 }

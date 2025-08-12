@@ -7,7 +7,10 @@ import CreateArticle from "./pages/createArticles";
 import About from "./pages/About";
 import ArticlePage from "./pages/ArticlePage";
 
-import "./styles/index-revamp.css";
+import "./styles/main.css";
+import "./styles/about.css";
+import "./styles/footer.css";
+import "./styles/navbar.css";
 import "./styles/article.css";
 import "./styles/article-page.css";
 
