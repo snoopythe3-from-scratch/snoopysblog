@@ -30,13 +30,7 @@ export default function Header() {
                     <Link to="/articles/create">Write an Article</Link>
                     <button
                         onClick={() => setDarkMode(prev => !prev)}
-                        style={{
-                            background: "none",
-                            border: "none",
-                            cursor: "pointer",
-                            color: "white",
-                            fontSize: "1.2rem"
-                        }}
+                        className="dark-mode-btn"
                         aria-label="Toggle Dark Mode"
                     >
                         <i className={darkMode ? "fa-solid fa-sun" : "fa-solid fa-moon"} />
