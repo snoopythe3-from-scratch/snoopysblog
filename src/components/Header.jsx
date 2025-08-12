@@ -21,9 +21,8 @@ export default function Header() {
         <div className="navigation">
             <div className="nav-content">
                 <div className="nav-left">
-                    <Link to="/"><img src={TSC} alt="TSC Logo" /></Link>
+                    <Link to="/"><img src="https://avatars.githubusercontent.com/u/199918955?v=4&size=64" alt="Logo"/></Link>
                     <Link to="/">Home</Link>
-                    <Link to="https://stats.uptimerobot.com/abiwl4EvLm">Status</Link>
                     <Link to="/about">About</Link>
                 </div>
                 <div className="nav-right">
