@@ -15,7 +15,6 @@ export default function MainContent() {
             try {
                 const fileListRes = await fetch(`${folder}/index.json`);
                 const files = await fileListRes.json();
-
                 const markdownFiles = files.filter(name => name.endsWith(".md"));
 
                 const fetchedArticles = await Promise.all(
@@ -44,8 +43,11 @@ export default function MainContent() {
 
                             const content = marked.parse(lines.slice(contentStartIndex).join("\n"));
                             const textContent = sanitizeHtml(content, { allowedTags: [], allowedAttributes: {} });
-                            const preview = textContent.length > 300
-                                ? textContent.substring(0, 150) + '...'
+
+                            // Limit preview to first 10 words
+                            const words = textContent.split(/\s+/);
+                            const preview = words.length > 10
+                                ? words.slice(0, 10).join(" ") + "..."
                                 : textContent;
 
                             let thumbnail = null;
@@ -76,8 +78,10 @@ export default function MainContent() {
     };
 
     const closeArticle = (e) => {
-        if (e.target.classList.contains('modal-overlay') ||
-            e.target.classList.contains('close-button')) {
+        if (
+            e.target.classList.contains('modal-overlay') ||
+            e.target.classList.contains('close-button')
+        ) {
             setSelectedArticle(null);
             document.body.style.overflow = 'auto';
         }
@@ -92,11 +96,7 @@ export default function MainContent() {
 
             <div className="articles-container">
                 {articles.map((article, index) => (
-                    <div
-                        key={index}
-                        className="article-card"
-                        onClick={() => openArticle(article)}
-                    >
+                    <div key={index} className="article-card">
                         {article.thumbnail && (
                             <div className="card-thumbnail">
                                 <img src={article.thumbnail} alt="Article thumbnail" />
@@ -112,7 +112,12 @@ export default function MainContent() {
                         <div className="card-content">
                             <p>{article.preview}</p>
                         </div>
-                        <div className="read-more">Read More →</div>
+                        <div
+                            className="read-more"
+                            onClick={() => openArticle(article)}
+                        >
+                            Read More →
+                        </div>
                     </div>
                 ))}
             </div>
