@@ -46,7 +46,7 @@ export default function MainContent() {
 
                             // Limit preview to first 10 words
                             const words = textContent.split(/\s+/);
-                            const preview = words.length > 10
+                            const preview = words.length > 25
                                 ? words.slice(0, 10).join(" ") + "..."
                                 : textContent;
 
