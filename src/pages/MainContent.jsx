@@ -8,7 +8,7 @@ export default function MainContent() {
     const [selectedArticle, setSelectedArticle] = useState(null);
     const navigate = useNavigate();
 
-    const folder = "/articles"; 
+    const folder = "https://myscratchblocks.onrender.com/the-scratch-channel/articles";
 
     useEffect(() => {
         async function fetchArticles() {
@@ -25,39 +25,24 @@ export default function MainContent() {
                             const text = await fileRes.text();
                             const lines = text.split("\n");
 
-                            if (lines.length < 3) {
-                                console.warn(`Skipping ${filename}: not enough lines`);
-                                return null;
-                            }
+                            if (lines.length < 3) return null;
 
                             const metadataRow = lines[2].trim();
-
-                            if (!metadataRow.startsWith("|") || !metadataRow.endsWith("|")) {
-                                console.warn(`Skipping ${filename}: invalid metadata row`);
-                                return null;
-                            }
+                            if (!metadataRow.startsWith("|") || !metadataRow.endsWith("|")) return null;
 
                             const metadataValues = metadataRow
                                 .split("|")
                                 .map(s => s.trim())
                                 .filter(s => s.length > 0);
 
-                            if (metadataValues.length < 3) {
-                                console.warn(`Skipping ${filename}: not enough metadata`);
-                                return null;
-                            }
+                            if (metadataValues.length < 3) return null;
 
                             const [title, author, date] = metadataValues;
 
                             const contentStartIndex = lines.findIndex((line, i) => i > 2 && line.trim() !== "");
+                            if (contentStartIndex === -1) return null;
 
-                            if (contentStartIndex === -1) {
-                                console.warn(`Skipping ${filename}: no content`);
-                                return null;
-                            }
-
-                            const content = await marked.parse(lines.slice(contentStartIndex).join("\n"));
-
+                            const content = marked.parse(lines.slice(contentStartIndex).join("\n"));
                             const textContent = sanitizeHtml(content, { allowedTags: [], allowedAttributes: {} });
                             const preview = textContent.length > 300
                                 ? textContent.substring(0, 150) + '...'
@@ -66,9 +51,7 @@ export default function MainContent() {
                             let thumbnail = null;
                             const imgRegex = /<img[^>]+src="([^">]+)"/;
                             const imgMatch = content.match(imgRegex);
-                            if (imgMatch && imgMatch[1]) {
-                                thumbnail = imgMatch[1];
-                            }
+                            if (imgMatch && imgMatch[1]) thumbnail = imgMatch[1];
 
                             return { title, author, date, content, preview, filename, thumbnail };
                         } catch (err) {
@@ -78,10 +61,9 @@ export default function MainContent() {
                     })
                 );
 
-                const validArticles = fetchedArticles.filter(article => article !== null);
-                setArticles(validArticles);
+                setArticles(fetchedArticles.filter(article => article !== null));
             } catch (error) {
-                console.error("Failed to fetch local article list:", error);
+                console.error("Failed to fetch article list:", error);
             }
         }
 
@@ -89,7 +71,8 @@ export default function MainContent() {
     }, []);
 
     const openArticle = (article) => {
-        navigate(`/article/${article.filename}`);
+        setSelectedArticle(article);
+        document.body.style.overflow = 'hidden';
     };
 
     const closeArticle = (e) => {
@@ -102,10 +85,10 @@ export default function MainContent() {
 
     return (
         <div className="page">
-            <h1><centre>Welcome to The Scratch Channel!</centre></h1>
-            <p><centre>Here, you can find articles, news stories, and more.</centre></p>
-            <p><centre>We aim to post at 1pm BST daily but sometimes we can forget.</centre></p>
-            <hr id="articles-begin"/>
+            <h1 style={{ textAlign: 'center' }}>Welcome to The Scratch Channel!</h1>
+            <p style={{ textAlign: 'center' }}>Here, you can find articles, news stories, and more.</p>
+            <p style={{ textAlign: 'center' }}>We aim to post at 1pm BST daily but sometimes we can forget.</p>
+            <hr id="articles-begin" />
 
             <div className="articles-container">
                 {articles.map((article, index) => (
