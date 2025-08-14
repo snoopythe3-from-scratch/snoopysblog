@@ -23,23 +23,48 @@ export default function MainContent() {
                         try {
                             const fileRes = await fetch(`${folder}/${filename}`);
                             const text = await fileRes.text();
-                            const content = marked.parse(text);
+                            const lines = text.split("\n");
+
+                            if (lines.length < 3) return null;
+
+                            const metadataRow = lines[2].trim();
+                            if (!metadataRow.startsWith("|") || !metadataRow.endsWith("|")) return null;
+
+                            const metadataValues = metadataRow
+                                .split("|")
+                                .map(s => s.trim())
+                                .filter(s => s.length > 0);
+
+                            if (metadataValues.length < 3) return null;
+
+                            const [title, author, date] = metadataValues;
+
+                            const contentStartIndex = lines.findIndex((line, i) => i > 2 && line.trim() !== "");
+                            if (contentStartIndex === -1) return null;
+
+                            const content = marked.parse(lines.slice(contentStartIndex).join("\n"));
                             const textContent = sanitizeHtml(content, { allowedTags: [], allowedAttributes: {} });
-                            if (textContent.length < 10) return null;
-                            const preview = textContent.length > 300 ? textContent.substring(0, 150) + '...' : textContent;
+                            const preview = textContent.length > 300
+                                ? textContent.substring(0, 150) + '...'
+                                : textContent;
+
                             let thumbnail = null;
                             const imgRegex = /<img[^>]+src="([^">]+)"/;
                             const imgMatch = content.match(imgRegex);
                             if (imgMatch && imgMatch[1]) thumbnail = imgMatch[1];
-                            return { title: filename, content, preview, filename, thumbnail };
+
+                            return { title, author, date, content, preview, filename, thumbnail };
                         } catch (err) {
+                            console.error(`Failed to process ${filename}:`, err);
                             return null;
                         }
                     })
                 );
 
                 setArticles(fetchedArticles.filter(article => article !== null));
-            } catch (error) {}
+            } catch (error) {
+                console.error("Failed to fetch article list:", error);
+            }
         }
 
         fetchArticles();
@@ -51,7 +76,8 @@ export default function MainContent() {
     };
 
     const closeArticle = (e) => {
-        if (e.target.classList.contains('modal-overlay') || e.target.classList.contains('close-button')) {
+        if (e.target.classList.contains('modal-overlay') ||
+            e.target.classList.contains('close-button')) {
             setSelectedArticle(null);
             document.body.style.overflow = 'auto';
         }
@@ -66,7 +92,11 @@ export default function MainContent() {
 
             <div className="articles-container">
                 {articles.map((article, index) => (
-                    <div key={index} className="article-card" onClick={() => openArticle(article)}>
+                    <div
+                        key={index}
+                        className="article-card"
+                        onClick={() => openArticle(article)}
+                    >
                         {article.thumbnail && (
                             <div className="card-thumbnail">
                                 <img src={article.thumbnail} alt="Article thumbnail" />
@@ -74,6 +104,10 @@ export default function MainContent() {
                         )}
                         <div className="card-header">
                             <h3>{article.title}</h3>
+                            <div className="meta">
+                                <span className="author">By: {article.author}</span>
+                                <span className="date">Date: {article.date}</span>
+                            </div>
                         </div>
                         <div className="card-content">
                             <p>{article.preview}</p>
@@ -89,13 +123,20 @@ export default function MainContent() {
                         <div className="modal-header">
                             <button className="close-button" onClick={closeArticle}>×</button>
                             <h2>{selectedArticle.title}</h2>
+                            <div className="meta">
+                                <span className="author">By: {selectedArticle.author}</span>
+                                <span className="date">Date: {selectedArticle.date}</span>
+                            </div>
                         </div>
                         {selectedArticle.thumbnail && (
                             <div className="modal-thumbnail">
                                 <img src={selectedArticle.thumbnail} alt="Article thumbnail" />
                             </div>
                         )}
-                        <div className="article-full-content" dangerouslySetInnerHTML={{ __html: selectedArticle.content }} />
+                        <div
+                            className="article-full-content"
+                            dangerouslySetInnerHTML={{ __html: selectedArticle.content }}
+                        />
                     </div>
                 </div>
             )}
