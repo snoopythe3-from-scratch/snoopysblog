@@ -9,7 +9,7 @@ export default function MainContent() {
     const navigate = useNavigate();
 
     const folder = "https://myscratchblocks.onrender.com/the-scratch-channel/articles";
-
+    let articleID = [];
     useEffect(() => {
         async function fetchArticles() {
             try {
@@ -23,7 +23,6 @@ export default function MainContent() {
                             const fileRes = await fetch(`${folder}/${filename}`);
                             const text = await fileRes.text();
                             const lines = text.split("\n");
-
                             if (lines.length < 3) return null;
 
                             const metadataRow = lines[2].trim();
@@ -37,7 +36,7 @@ export default function MainContent() {
                             if (metadataValues.length < 3) return null;
 
                             const [title, author, date] = metadataValues;
-
+                            articleID[title] = filename;
                             const contentStartIndex = lines.findIndex((line, i) => i > 2 && line.trim() !== "");
                             if (contentStartIndex === -1) return null;
 
@@ -47,7 +46,7 @@ export default function MainContent() {
                             // Limit preview to first 10 words
                             const words = textContent.split(/\s+/);
                             const preview = words.length > 25
-                                ? words.slice(0, 10).join(" ") + "..."
+                                ? words.slice(0, 25).join(" ") + "..."
                                 : textContent;
 
                             let thumbnail = null;
@@ -73,8 +72,7 @@ export default function MainContent() {
     }, []);
 
     const openArticle = (article) => {
-        setSelectedArticle(article);
-        document.body.style.overflow = 'hidden';
+        navigate(`article/${articleID[article.title)}`);
     };
 
     const closeArticle = (e) => {
