@@ -85,7 +85,11 @@ export default function MainContent() {
                     <div key={index} className="article-card">
                         {article.thumbnail && (
                             <div className="card-thumbnail">
-                                <img src={article.thumbnail} alt="Article thumbnail" />
+                                <img 
+                                    src={article.thumbnail} 
+                                    alt="Article thumbnail" 
+                                    loading="lazy"
+                                />
                             </div>
                         )}
                         <div className="card-header">
