@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { marked } from "marked";
 import sanitizeHtml from "sanitize-html";
 import { useNavigate } from "react-router-dom";
@@ -7,9 +7,9 @@ export default function MainContent() {
     const [articles, setArticles] = useState([]);
     const [selectedArticle, setSelectedArticle] = useState(null);
     const navigate = useNavigate();
+    const articleID = useRef({});
 
     const folder = "https://myscratchblocks.onrender.com/the-scratch-channel/articles";
-    let articleID = {};
 
     useEffect(() => {
         async function fetchArticles() {
@@ -38,7 +38,7 @@ export default function MainContent() {
                             if (metadataValues.length < 3) return null;
 
                             const [title, author, date] = metadataValues;
-                            articleID[title] = filename;
+                            articleID.current[title] = filename;
 
                             const contentStartIndex = lines.findIndex((line, i) => i > 2 && line.trim() !== "");
                             if (contentStartIndex === -1) return null;
@@ -71,7 +71,8 @@ export default function MainContent() {
     }, []);
 
     const openArticle = (article) => {
-        navigate(`article/${articleID[article.title]}`);
+        setSelectedArticle(article);
+        document.body.style.overflow = 'hidden';
     };
 
     const closeArticle = (e) => {
@@ -79,6 +80,10 @@ export default function MainContent() {
             setSelectedArticle(null);
             document.body.style.overflow = 'auto';
         }
+    };
+
+    const goToArticlePage = (article) => {
+        navigate(`article/${articleID.current[article.title]}`);
     };
 
     return (
@@ -109,6 +114,7 @@ export default function MainContent() {
                         <div className="read-more" onClick={() => openArticle(article)}>
                             Read More →
                         </div>
+                        <button onClick={() => goToArticlePage(article)}>Go to Page</button>
                     </div>
                 ))}
             </div>
@@ -129,7 +135,10 @@ export default function MainContent() {
                                 <img src={selectedArticle.thumbnail} alt="Article thumbnail" />
                             </div>
                         )}
-                        <div className="article-full-content" dangerouslySetInnerHTML={{ __html: selectedArticle.content }} />
+                        <div
+                            className="article-full-content"
+                            dangerouslySetInnerHTML={{ __html: selectedArticle.content }}
+                        />
                     </div>
                 </div>
             )}
