@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 
 export default function MainContent() {
     const [articles, setArticles] = useState([]);
-    const [selectedArticle, setSelectedArticle] = useState(null);
     const navigate = useNavigate();
     const articleID = useRef({});
 
@@ -56,7 +55,7 @@ export default function MainContent() {
                             const imgMatch = content.match(imgRegex);
                             if (imgMatch && imgMatch[1]) thumbnail = imgMatch[1];
 
-                            return { title, author, date, content, preview, filename, thumbnail };
+                            return { title, author, date, preview, thumbnail };
                         } catch {
                             return null;
                         }
@@ -71,18 +70,6 @@ export default function MainContent() {
     }, []);
 
     const openArticle = (article) => {
-        setSelectedArticle(article);
-        document.body.style.overflow = 'hidden';
-    };
-
-    const closeArticle = (e) => {
-        if (e.target.classList.contains('modal-overlay') || e.target.classList.contains('close-button')) {
-            setSelectedArticle(null);
-            document.body.style.overflow = 'auto';
-        }
-    };
-
-    const goToArticlePage = (article) => {
         navigate(`article/${articleID.current[article.title]}`);
     };
 
@@ -114,34 +101,9 @@ export default function MainContent() {
                         <div className="read-more" onClick={() => openArticle(article)}>
                             Read More →
                         </div>
-                        <button onClick={() => goToArticlePage(article)}>Go to Page</button>
                     </div>
                 ))}
             </div>
-
-            {selectedArticle && (
-                <div className="modal-overlay" onClick={closeArticle}>
-                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                        <div className="modal-header">
-                            <button className="close-button" onClick={closeArticle}>×</button>
-                            <h2>{selectedArticle.title}</h2>
-                            <div className="meta">
-                                <span className="author">By: {selectedArticle.author}</span>
-                                <span className="date">Date: {selectedArticle.date}</span>
-                            </div>
-                        </div>
-                        {selectedArticle.thumbnail && (
-                            <div className="modal-thumbnail">
-                                <img src={selectedArticle.thumbnail} alt="Article thumbnail" />
-                            </div>
-                        )}
-                        <div
-                            className="article-full-content"
-                            dangerouslySetInnerHTML={{ __html: selectedArticle.content }}
-                        />
-                    </div>
-                </div>
-            )}
         </div>
     );
 }
