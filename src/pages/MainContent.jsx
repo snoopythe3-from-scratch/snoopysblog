@@ -9,7 +9,8 @@ export default function MainContent() {
     const navigate = useNavigate();
 
     const folder = "https://myscratchblocks.onrender.com/the-scratch-channel/articles";
-    let articleID = [];
+    let articleID = {};
+
     useEffect(() => {
         async function fetchArticles() {
             try {
@@ -23,6 +24,7 @@ export default function MainContent() {
                             const fileRes = await fetch(`${folder}/${filename}`);
                             const text = await fileRes.text();
                             const lines = text.split("\n");
+
                             if (lines.length < 3) return null;
 
                             const metadataRow = lines[2].trim();
@@ -37,13 +39,13 @@ export default function MainContent() {
 
                             const [title, author, date] = metadataValues;
                             articleID[title] = filename;
+
                             const contentStartIndex = lines.findIndex((line, i) => i > 2 && line.trim() !== "");
                             if (contentStartIndex === -1) return null;
 
                             const content = marked.parse(lines.slice(contentStartIndex).join("\n"));
                             const textContent = sanitizeHtml(content, { allowedTags: [], allowedAttributes: {} });
 
-                            // Limit preview to first 10 words
                             const words = textContent.split(/\s+/);
                             const preview = words.length > 25
                                 ? words.slice(0, 25).join(" ") + "..."
@@ -55,17 +57,14 @@ export default function MainContent() {
                             if (imgMatch && imgMatch[1]) thumbnail = imgMatch[1];
 
                             return { title, author, date, content, preview, filename, thumbnail };
-                        } catch (err) {
-                            console.error(`Failed to process ${filename}:`, err);
+                        } catch {
                             return null;
                         }
                     })
                 );
 
-                setArticles(fetchedArticles.filter(article => article !== null));
-            } catch (error) {
-                console.error("Failed to fetch article list:", error);
-            }
+                setArticles(fetchedArticles.filter(Boolean));
+            } catch {}
         }
 
         fetchArticles();
@@ -76,10 +75,7 @@ export default function MainContent() {
     };
 
     const closeArticle = (e) => {
-        if (
-            e.target.classList.contains('modal-overlay') ||
-            e.target.classList.contains('close-button')
-        ) {
+        if (e.target.classList.contains('modal-overlay') || e.target.classList.contains('close-button')) {
             setSelectedArticle(null);
             document.body.style.overflow = 'auto';
         }
@@ -110,10 +106,7 @@ export default function MainContent() {
                         <div className="card-content">
                             <p>{article.preview}</p>
                         </div>
-                        <div
-                            className="read-more"
-                            onClick={() => openArticle(article)}
-                        >
+                        <div className="read-more" onClick={() => openArticle(article)}>
                             Read More →
                         </div>
                     </div>
@@ -136,10 +129,7 @@ export default function MainContent() {
                                 <img src={selectedArticle.thumbnail} alt="Article thumbnail" />
                             </div>
                         )}
-                        <div
-                            className="article-full-content"
-                            dangerouslySetInnerHTML={{ __html: selectedArticle.content }}
-                        />
+                        <div className="article-full-content" dangerouslySetInnerHTML={{ __html: selectedArticle.content }} />
                     </div>
                 </div>
             )}
