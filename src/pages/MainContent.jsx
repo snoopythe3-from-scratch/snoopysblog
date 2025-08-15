@@ -72,7 +72,7 @@ export default function MainContent() {
     }, []);
 
     const openArticle = (article) => {
-        navigate(`article/${articleID[article.title)}`);
+        navigate(`article/${articleID[article.title]}`);
     };
 
     const closeArticle = (e) => {
