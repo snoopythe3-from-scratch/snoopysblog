@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function MainContent() {
     const [categories, setCategories] = useState([]);
+    const [articlesByCategory, setArticlesByCategory] = useState({});
     const [selectedCategory, setSelectedCategory] = useState(null);
     const navigate = useNavigate();
 
@@ -12,18 +13,52 @@ export default function MainContent() {
         async function fetchArticles() {
             try {
                 const res = await fetch(`${folder}/index.json`);
-                const data = await res.json();
+                const files = await res.json();
 
-                // group articles by category
-                const grouped = {};
-                data.forEach(article => {
+                const articles = await Promise.all(
+                    files.map(async (file) => {
+                        const articleRes = await fetch(`${folder}/${file}`);
+                        const text = await articleRes.text();
+                        const lines = text.split("\n");
+
+                        if (lines.length < 3) return null;
+
+                        // Extract metadata (assuming last column is category)
+                        const metadataRow = lines[2].trim();
+                        if (!metadataRow.startsWith("|") || !metadataRow.endsWith("|")) return null;
+                        const metadataValues = metadataRow.split("|").map(s => s.trim()).filter(s => s.length > 0);
+                        if (metadataValues.length < 4) return null; // title, author, date, category
+
+                        const [title, author, date, category] = metadataValues;
+
+                        return {
+                            filename: file,
+                            title,
+                            author,
+                            date,
+                            category
+                        };
+                    })
+                );
+
+                const validArticles = articles.filter(Boolean);
+
+                // Build category list and group articles
+                const grouped = {
+                  "TSC Announcements": [],
+                  "TSC Update Log": [],
+                  "Scratch News": [],
+                  "Questions": []
+                };
+                validArticles.forEach(article => {
                     if (!grouped[article.category]) grouped[article.category] = [];
                     grouped[article.category].push(article);
                 });
 
-                setCategories(grouped);
+                setCategories(Object.keys(grouped));
+                setArticlesByCategory(grouped);
             } catch (err) {
-                console.error("Error loading articles:", err);
+                console.error("Error fetching articles:", err);
             }
         }
 
@@ -34,72 +69,41 @@ export default function MainContent() {
         navigate(`/article/${article.filename}/${article.category}`);
     };
 
-    return (
-        <div className="page">
-            <h1 style={{ textAlign: "center" }}>Welcome to The Scratch Channel!</h1>
-            <p style={{ textAlign: "center" }}>Here, you can find articles, news stories, and more.</p>
-            <p style={{ textAlign: "center" }}>We aim to post at 1pm BST daily but sometimes we can forget.</p>
-            <hr id="articles-begin" />
-
-            {/* If no category selected, show category list */}
-            {!selectedCategory && (
-                <div className="categories-container" style={{ display: "grid", gap: "1rem" }}>
-                    {Object.keys(categories).map((cat, i) => (
-                        <div
-                            key={i}
-                            className="category-card"
-                            style={{
-                                border: "1px solid #ccc",
-                                borderRadius: "8px",
-                                padding: "1rem",
-                                cursor: "pointer",
-                                textAlign: "center"
-                            }}
-                            onClick={() => setSelectedCategory(cat)}
-                        >
-                            <h2>{cat}</h2>
-                            <p>{categories[cat].length} articles</p>
+    if (selectedCategory) {
+        // Show only articles in selected category
+        return (
+            <div className="page">
+                <button onClick={() => setSelectedCategory(null)}>← Back to Categories</button>
+                <h2>{selectedCategory}</h2>
+                <div className="articles-container">
+                    {articlesByCategory[selectedCategory].map((article, idx) => (
+                        <div key={idx} className="article-card" onClick={() => openArticle(article)}>
+                            <h3>{article.title}</h3>
+                            <p>By {article.author} | {article.date}</p>
                         </div>
                     ))}
                 </div>
-            )}
+            </div>
+        );
+    }
 
-            {/* If a category is selected, show its articles */}
-            {selectedCategory && (
-                <div>
-                    <button
-                        onClick={() => setSelectedCategory(null)}
-                        style={{
-                            marginBottom: "1rem",
-                            padding: "0.5rem 1rem",
-                            background: "#6c757d",
-                            color: "white",
-                            border: "none",
-                            borderRadius: "4px",
-                            cursor: "pointer"
-                        }}
+    // Show all categories
+    return (
+        <div className="page">
+            <h1>Welcome to The Scratch Channel!</h1>
+            <h2>Categories</h2>
+            <div className="categories-container">
+                {categories.map((cat, idx) => (
+                    <div
+                        key={idx}
+                        className="category-card"
+                        onClick={() => setSelectedCategory(cat)}
+                        style={{ cursor: "pointer", border: "1px solid #ccc", padding: "1rem", margin: "0.5rem 0" }}
                     >
-                        ← Back to Categories
-                    </button>
-                    <h2>{selectedCategory}</h2>
-                    <div className="articles-container">
-                        {categories[selectedCategory].map((article, idx) => (
-                            <div key={idx} className="article-card">
-                                <div className="card-header">
-                                    <h3>{article.title}</h3>
-                                    <div className="meta">
-                                        <span className="author">By: {article.author}</span>
-                                        <span className="date">Date: {article.date}</span>
-                                    </div>
-                                </div>
-                                <div className="read-more" onClick={() => openArticle(article)}>
-                                    Read More →
-                                </div>
-                            </div>
-                        ))}
+                        {cat}
                     </div>
-                </div>
-            )}
+                ))}
+            </div>
         </div>
     );
 }
