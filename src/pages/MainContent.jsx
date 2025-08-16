@@ -55,7 +55,12 @@ export default function MainContent() {
                 const validArticles = articles.filter(Boolean);
 
                 // Build category list and group articles
-                const grouped = {};
+                const grouped = {
+                  "TSC Announcements": [],
+                  "TSC Update Log": [],
+                  "Scratch News": [],
+                  "Questions": []
+                };
                 validArticles.forEach(article => {
                     if (!grouped[article.category]) grouped[article.category] = [];
                     grouped[article.category].push(article);
