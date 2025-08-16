@@ -1,113 +1,105 @@
-import React, { useEffect, useState, useRef } from "react";
-import { marked } from "marked";
-import sanitizeHtml from "sanitize-html";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function MainContent() {
-    const [articles, setArticles] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState(null);
     const navigate = useNavigate();
-    const articleID = useRef({});
 
     const folder = "https://myscratchblocks.onrender.com/the-scratch-channel/articles";
 
     useEffect(() => {
         async function fetchArticles() {
             try {
-                const fileListRes = await fetch(`${folder}/index.json`);
-                const files = await fileListRes.json();
-                const markdownFiles = files.filter(name => name.endsWith(".md"));
+                const res = await fetch(`${folder}/index.json`);
+                const data = await res.json();
 
-                const fetchedArticles = await Promise.all(
-                    markdownFiles.map(async (filename) => {
-                        try {
-                            const fileRes = await fetch(`${folder}/${filename}`);
-                            const text = await fileRes.text();
-                            const lines = text.split("\n");
+                // group articles by category
+                const grouped = {};
+                data.forEach(article => {
+                    if (!grouped[article.category]) grouped[article.category] = [];
+                    grouped[article.category].push(article);
+                });
 
-                            if (lines.length < 3) return null;
-
-                            const metadataRow = lines[2].trim();
-                            if (!metadataRow.startsWith("|") || !metadataRow.endsWith("|")) return null;
-
-                            const metadataValues = metadataRow
-                                .split("|")
-                                .map(s => s.trim())
-                                .filter(s => s.length > 0);
-
-                            if (metadataValues.length < 3) return null;
-
-                            const [title, author, date] = metadataValues;
-                            articleID.current[title] = filename;
-
-                            const contentStartIndex = lines.findIndex((line, i) => i > 2 && line.trim() !== "");
-                            if (contentStartIndex === -1) return null;
-
-                            const content = marked.parse(lines.slice(contentStartIndex).join("\n"));
-                            const textContent = sanitizeHtml(content, { allowedTags: [], allowedAttributes: {} });
-
-                            const words = textContent.split(/\s+/);
-                            const preview = words.length > 25
-                                ? words.slice(0, 25).join(" ") + "..."
-                                : textContent;
-
-                            let thumbnail = null;
-                            const imgRegex = /<img[^>]+src="([^">]+)"/;
-                            const imgMatch = content.match(imgRegex);
-                            if (imgMatch && imgMatch[1]) thumbnail = imgMatch[1];
-
-                            return { title, author, date, preview, thumbnail };
-                        } catch {
-                            return null;
-                        }
-                    })
-                );
-
-                setArticles(fetchedArticles.filter(Boolean));
-            } catch {}
+                setCategories(grouped);
+            } catch (err) {
+                console.error("Error loading articles:", err);
+            }
         }
 
         fetchArticles();
     }, []);
 
     const openArticle = (article) => {
-        navigate(`article/${articleID.current[article.title]}`);
+        navigate(`/article/${article.filename}/${article.category}`);
     };
 
     return (
         <div className="page">
-            <h1 style={{ textAlign: 'center' }}>Welcome to The Scratch Channel!</h1>
-            <p style={{ textAlign: 'center' }}>Here, you can find articles, news stories, and more.</p>
-            <p style={{ textAlign: 'center' }}>We aim to post at 1pm BST daily but sometimes we can forget.</p>
+            <h1 style={{ textAlign: "center" }}>Welcome to The Scratch Channel!</h1>
+            <p style={{ textAlign: "center" }}>Here, you can find articles, news stories, and more.</p>
+            <p style={{ textAlign: "center" }}>We aim to post at 1pm BST daily but sometimes we can forget.</p>
             <hr id="articles-begin" />
 
-            <div className="articles-container">
-                {articles.map((article, index) => (
-                    <div key={index} className="article-card">
-                        {article.thumbnail && (
-                            <div className="card-thumbnail">
-                                <img 
-                                    src={article.thumbnail} 
-                                    alt="Article thumbnail" 
-                                    loading="lazy"
-                                />
+            {/* If no category selected, show category list */}
+            {!selectedCategory && (
+                <div className="categories-container" style={{ display: "grid", gap: "1rem" }}>
+                    {Object.keys(categories).map((cat, i) => (
+                        <div
+                            key={i}
+                            className="category-card"
+                            style={{
+                                border: "1px solid #ccc",
+                                borderRadius: "8px",
+                                padding: "1rem",
+                                cursor: "pointer",
+                                textAlign: "center"
+                            }}
+                            onClick={() => setSelectedCategory(cat)}
+                        >
+                            <h2>{cat}</h2>
+                            <p>{categories[cat].length} articles</p>
+                        </div>
+                    ))}
+                </div>
+            )}
+
+            {/* If a category is selected, show its articles */}
+            {selectedCategory && (
+                <div>
+                    <button
+                        onClick={() => setSelectedCategory(null)}
+                        style={{
+                            marginBottom: "1rem",
+                            padding: "0.5rem 1rem",
+                            background: "#6c757d",
+                            color: "white",
+                            border: "none",
+                            borderRadius: "4px",
+                            cursor: "pointer"
+                        }}
+                    >
+                        ← Back to Categories
+                    </button>
+                    <h2>{selectedCategory}</h2>
+                    <div className="articles-container">
+                        {categories[selectedCategory].map((article, idx) => (
+                            <div key={idx} className="article-card">
+                                <div className="card-header">
+                                    <h3>{article.title}</h3>
+                                    <div className="meta">
+                                        <span className="author">By: {article.author}</span>
+                                        <span className="date">Date: {article.date}</span>
+                                    </div>
+                                </div>
+                                <div className="read-more" onClick={() => openArticle(article)}>
+                                    Read More →
+                                </div>
                             </div>
-                        )}
-                        <div className="card-header">
-                            <h3>{article.title}</h3>
-                            <div className="meta">
-                                <span className="author">By: {article.author}</span>
-                                <span className="date">Date: {article.date}</span>
-                            </div>
-                        </div>
-                        <div className="card-content">
-                            <p>{article.preview}</p>
-                        </div>
-                        <div className="read-more" onClick={() => openArticle(article)}>
-                            Read More →
-                        </div>
+                        ))}
                     </div>
-                ))}
-            </div>
+                </div>
+            )}
         </div>
     );
 }
