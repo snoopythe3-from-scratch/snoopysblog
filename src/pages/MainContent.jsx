@@ -72,7 +72,7 @@ export default function MainContent() {
     }, []);
 
     const openArticle = (article) => {
-        navigate(`article/${article.filename}`);
+        navigate(`${selectedCategory}/article/${article.filename}`);
     };
 
     if (!selectedCategory) {
