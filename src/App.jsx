@@ -23,7 +23,7 @@ function App() {
         <Route path="/" element={<MainContent />} />
         <Route path="/articles/create" element={<CreateArticle />} />
         <Route path="/about" element={<About />} />
-        <Route path="/article/:filename" element={<ArticlePage />} />
+        <Route path="/:category/article/:filename" element={<ArticlePage />} />
       </Routes>
       <Footer />
     </Router>
