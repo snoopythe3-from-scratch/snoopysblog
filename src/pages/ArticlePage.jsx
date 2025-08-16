@@ -4,7 +4,7 @@ import { marked } from "marked";
 import sanitizeHtml from "sanitize-html";
 
 export default function ArticlePage() {
-    const { filename } = useParams();
+    const { filename, category } = useParams();
     const [article, setArticle] = useState(null);
     const [loading, setLoading] = useState(true);
 
