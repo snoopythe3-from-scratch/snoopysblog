@@ -118,3 +118,22 @@
 .read-more:hover {
   background-color: #005fa3;
 }
+
+/* Back to categories button */
+.back-btn {
+  display: inline-block;
+  margin: 20px 0;
+  padding: 10px 20px;
+  background-color: #ff6b6b;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 12px;
+  transition: background-color 0.3s ease;
+  text-decoration: none;
+}
+
+.back-btn:hover {
+  background-color: #e04e4e;
+}
