@@ -27,7 +27,8 @@ export default function CreateArticle() {
   const [markdown, setMarkdown] = useState('');
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [category, setCategory] = useState('TSC Announcements');
+  const [date] = useState(new Date().toISOString().split('T')[0]); // fixed date
   const [isDark, setIsDark] = useState(() =>
     document.documentElement.classList.contains('dark')
   );
@@ -51,14 +52,12 @@ export default function CreateArticle() {
     const [year, month, day] = date.split('-');
     const formattedDate = `${day}/${month}/${year.slice(2)}`;
 
-    const metadata = `| Title | Author | Date |\n|-------|--------|------|\n| ${title} | ${author} | ${formattedDate} |\n\n`;
+    const metadata = `| Title | Author | Date | Category |\n|-------|--------|------|----------|\n| ${title} | ${author} | ${formattedDate} | ${category} |\n\n`;
     const fileContent = metadata + markdown;
 
-    // Create a Blob for the .md file
     const fileBlob = new Blob([fileContent], { type: 'text/markdown' });
     const fileName = `${title.replace(/\s+/g, '_')}.md`;
 
-    // Prepare form data
     const formData = new FormData();
     formData.append('file', fileBlob, fileName);
 
@@ -109,9 +108,24 @@ export default function CreateArticle() {
         <input
           type="date"
           value={date}
-          onChange={e => setDate(e.target.value)}
-          style={{ padding: "0.5rem", marginTop: "0.3rem" }}
+          readOnly
+          disabled
+          style={{ padding: "0.5rem", marginTop: "0.3rem", background: "#e9ecef", cursor: "not-allowed" }}
         />
+      </div>
+
+      <div className="form-group" style={{ marginBottom: "1rem" }}>
+        <label>Category</label>
+        <select
+          value={category}
+          onChange={e => setCategory(e.target.value)}
+          style={{ width: "100%", padding: "0.5rem", marginTop: "0.3rem" }}
+        >
+          <option value="TSC Announcements">TSC Announcements</option>
+          <option value="TSC Update Log">TSC Update Log</option>
+          <option value="Scratch News">Scratch News</option>
+          <option value="Questions">Questions</option>
+        </select>
       </div>
 
       <div className="editor-container" style={{ marginBottom: "1rem" }}>
@@ -203,7 +217,8 @@ export default function CreateArticle() {
       <div id="tutorial">
         <h2>How to submit your article</h2>
         <p>
-          Firstly, write your article using the editor above. Make sure you input the date, name, and title.
+          Firstly, write your article using the editor above. Make sure you input the author name, title, 
+          and choose a category. The date is automatically set to today.
           There is no need to have a heading that says your article name, because that is rendered already.
           Then, click <b>Submit Article</b> to send the .md file to our server.
         </p>
