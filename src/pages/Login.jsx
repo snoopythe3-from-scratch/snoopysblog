@@ -2,33 +2,45 @@ import { useEffect, useState } from "react";
 
 export default function LoginPage() {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const REDIRECT_URI = window.location.origin + "/login";
 
   useEffect(() => {
-    // Check sessionStorage first (restore session)
+    // 1️⃣ Check sessionStorage first
     const savedUser = sessionStorage.getItem("scratchUser");
-    if (savedUser && !user) {
+    if (savedUser) {
       setUser(JSON.parse(savedUser));
+      setLoading(false);
       return;
     }
 
-    // Check if redirected back with ?id
+    // 2️⃣ Check if redirected back with ?id
     const params = new URLSearchParams(window.location.search);
     const token = params.get("id");
-    if (token && !user) {
-      // Parse token response directly from API
+
+    if (token) {
       fetch(`https://corsproxy.io?url=https://scratch-id.onrender.com/verification/${token}`)
         .then(res => res.json())
         .then(data => {
-          if (data.token) {
-            setUser(data.token);
-            sessionStorage.setItem("scratchUser", JSON.stringify(data.token));
+          const sessionKey = Object.keys(data)[0];
+          if (sessionKey && data[sessionKey]) {
+            const userData = data[sessionKey];
+            const userObj = {
+              username: userData.user,
+              // Use username to fetch avatar from Scratch
+              avatarUrl: `https://uploads.scratch.mit.edu/users/avatars/${userData.user}.png`
+            };
+            setUser(userObj);
+            sessionStorage.setItem("scratchUser", JSON.stringify(userObj));
           }
         })
-        .catch(err => console.error("auth error:", err));
+        .catch(err => console.error("Auth error:", err))
+        .finally(() => setLoading(false));
+    } else {
+      setLoading(false);
     }
-  }, [user]);
+  }, []);
 
   const handleLogin = () => {
     const redirectParam = btoa(REDIRECT_URI);
@@ -41,6 +53,10 @@ export default function LoginPage() {
     setUser(null);
     sessionStorage.removeItem("scratchUser");
   };
+
+  if (loading) {
+    return <div style={{ textAlign: "center", marginTop: "2rem" }}>Loading...</div>;
+  }
 
   return (
     <div style={{
@@ -84,9 +100,9 @@ export default function LoginPage() {
             <h1 style={{ fontSize: "1.25rem", fontWeight: "bold", marginBottom: "0.5rem" }}>
               Welcome, {user.username}!
             </h1>
-            {user.id && (
+            {user.avatarUrl && (
               <img
-                src={`https://uploads.scratch.mit.edu/users/avatars/${user.id}.png`}
+                src={user.avatarUrl}
                 alt="avatar"
                 style={{
                   borderRadius: "50%",
