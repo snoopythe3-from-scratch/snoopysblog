@@ -6,6 +6,7 @@ import Footer from "./components/Footer";
 import CreateArticle from "./pages/createArticles";
 import About from "./pages/About";
 import ArticlePage from "./pages/ArticlePage";
+import LoginPage from "./pages/Login";
 
 import "./styles/main.css";
 import "./styles/about.css";
@@ -25,6 +26,7 @@ function App() {
         <Route path="/articles/create" element={<CreateArticle />} />
         <Route path="/about" element={<About />} />
         <Route path="/:category/article/:filename" element={<ArticlePage />} />
+        <Route path="/login" element={<LoginPage />} />
       </Routes>
       <Footer />
     </Router>
