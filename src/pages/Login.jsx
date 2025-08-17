@@ -7,7 +7,7 @@ export default function LoginPage() {
   const REDIRECT_URI = window.location.origin + "/login";
 
   useEffect(() => {
-    const savedUser = sessionStorage.getItem("scratchUser");
+    const savedUser = localStorage.getItem("scratchUser");
     if (savedUser) {
       setUser(JSON.parse(savedUser));
       setLoading(false);
@@ -31,7 +31,7 @@ export default function LoginPage() {
               avatarUrl: `https://turbowarp.org/users/avatars/${userData.user}.png`
             };
             setUser(userObj);
-            sessionStorage.setItem("scratchUser", userObj.username);
+            localStorage.setItem("scratchUser", userObj.username);
           }
         })
         .catch(err => console.error("Auth error:", err))
@@ -50,7 +50,7 @@ export default function LoginPage() {
 
   const handleLogout = () => {
     setUser(null);
-    sessionStorage.removeItem("scratchUser");
+    localStorage.removeItem("scratchUser");
   };
 
   if (loading) {
