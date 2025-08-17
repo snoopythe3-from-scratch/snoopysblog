@@ -18,7 +18,7 @@ export default function LoginPage() {
     const token = params.get("id");
     if (token && !user) {
       // Parse token response directly from API
-      fetch(`https://scratch-id.onrender.com/verification/${token}`)
+      fetch(`https://corsproxy.io?url=https://scratch-id.onrender.com/verification/${token}`)
         .then(res => res.json())
         .then(data => {
           if (data.token) {
@@ -32,7 +32,7 @@ export default function LoginPage() {
 
   const handleLogin = () => {
     const redirectParam = btoa(REDIRECT_URI);
-    window.location.href = `https://scratch-id.onrender.com/auth?redirect=${redirectParam}&name=${encodeURIComponent(
+    window.location.href = `https://scratch-id.onrender.com/?redirect=${redirectParam}&name=${encodeURIComponent(
       "The Scratch Channel"
     )}`;
   };
