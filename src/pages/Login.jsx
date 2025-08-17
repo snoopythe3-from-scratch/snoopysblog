@@ -31,7 +31,7 @@ export default function LoginPage() {
               avatarUrl: `https://turbowarp.org/users/avatars/${userData.user}.png`
             };
             setUser(userObj);
-            sessionStorage.setItem("scratchUser", JSON.stringify(userObj));
+            sessionStorage.setItem("scratchUser", userObj.username);
           }
         })
         .catch(err => console.error("Auth error:", err))
