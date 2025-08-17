@@ -25,13 +25,36 @@ import '@mdxeditor/editor/style.css';
 
 export default function CreateArticle() {
   const navigate = useNavigate();
-  const scratchUser = sessionStorage.getItem("scratchUser"); // logged-in user
+  const scratchUser = sessionStorage.getItem("scratchUser");
   const [markdown, setMarkdown] = useState('');
   const [title, setTitle] = useState('');
   const [date] = useState(new Date().toISOString().split('T')[0]);
   const [isDark, setIsDark] = useState(() =>
     document.documentElement.classList.contains('dark')
   );
+
+  // Allowed admin users
+  const allowedAdmins = [
+    "SmartCat3",
+    "Swiftpixel",
+    "scratchcode1_2_3",
+    "kRxZy_kRxZy",
+    "GvYoutube",
+    "snoopythe3",
+  ];
+
+  const isAdmin = allowedAdmins.includes(scratchUser);
+
+  // Categories
+  const categories = [
+    "TSC Announcements",
+    "TSC Update Log",
+    "Scratch News",
+    "Questions"
+  ];
+
+  // Default category
+  const [category, setCategory] = useState("Questions");
 
   useEffect(() => {
     const observer = new MutationObserver(() => {
@@ -54,7 +77,7 @@ export default function CreateArticle() {
     const [year, month, day] = date.split('-');
     const formattedDate = `${day}/${month}/${year.slice(2)}`;
 
-    const metadata = `| Title | Author | Date | Category |\n|-------|--------|------|----------|\n| ${title} | ${scratchUser} | ${formattedDate} | Questions |\n\n`;
+    const metadata = `| Title | Author | Date | Category |\n|-------|--------|------|----------|\n| ${title} | ${scratchUser} | ${formattedDate} | ${category} |\n\n`;
     const fileContent = metadata + markdown;
 
     const fileBlob = new Blob([fileContent], { type: 'text/markdown' });
@@ -69,10 +92,7 @@ export default function CreateArticle() {
         body: formData
       });
 
-      if (!response.ok) {
-        throw new Error(`Server error: ${response.statusText}`);
-      }
-
+      if (!response.ok) throw new Error(`Server error: ${response.statusText}`);
       alert("Article submitted successfully!");
       navigate("/");
     } catch (error) {
@@ -83,9 +103,9 @@ export default function CreateArticle() {
 
   return (
     <div className="create-article-page" style={{ padding: "2rem" }}>
-      <h1>Ask a Question</h1>
+      <h1>Create Article</h1>
 
-      <div className="form-group" style={{ marginBottom: "1rem" }}>
+      <div style={{ marginBottom: "1rem" }}>
         <label>Title</label>
         <input
           type="text"
@@ -95,7 +115,7 @@ export default function CreateArticle() {
         />
       </div>
 
-      <div className="form-group" style={{ marginBottom: "1rem" }}>
+      <div style={{ marginBottom: "1rem" }}>
         <label>Author</label>
         <input
           type="text"
@@ -106,7 +126,7 @@ export default function CreateArticle() {
         />
       </div>
 
-      <div className="form-group" style={{ marginBottom: "1rem" }}>
+      <div style={{ marginBottom: "1rem" }}>
         <label>Date</label>
         <input
           type="date"
@@ -117,18 +137,20 @@ export default function CreateArticle() {
         />
       </div>
 
-      <div className="form-group" style={{ marginBottom: "1rem" }}>
+      <div style={{ marginBottom: "1rem" }}>
         <label>Category</label>
-        <input
-          type="text"
-          value="Questions"
-          readOnly
-          disabled
-          style={{ width: "100%", padding: "0.5rem", marginTop: "0.3rem", background: "#e9ecef", cursor: "not-allowed" }}
-        />
+        <select
+          value={category}
+          onChange={e => setCategory(e.target.value)}
+          disabled={!isAdmin} // Only allowedAdmins can change category
+          style={{ width: "100%", padding: "0.5rem", marginTop: "0.3rem" }}
+        >
+          {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+        </select>
+        {!isAdmin && <small>Category is fixed for non-admins.</small>}
       </div>
 
-      <div className="editor-container" style={{ marginBottom: "1rem" }}>
+      <div style={{ marginBottom: "1rem" }}>
         <MDXEditor
           markdown={markdown}
           onChange={setMarkdown}
@@ -185,30 +207,16 @@ export default function CreateArticle() {
         />
       </div>
 
-      <div className="button-group" style={{ marginTop: "1rem", display: "flex", gap: "1rem" }}>
+      <div style={{ marginTop: "1rem", display: "flex", gap: "1rem" }}>
         <button
           onClick={handleSubmit}
-          style={{
-            padding: "0.5rem 1rem",
-            background: "#007bff",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer"
-          }}
+          style={{ padding: "0.5rem 1rem", background: "#007bff", color: "white", border: "none", borderRadius: "4px", cursor: "pointer" }}
         >
-          Submit Question
+          Submit
         </button>
         <button
           onClick={() => navigate('/')}
-          style={{
-            padding: "0.5rem 1rem",
-            background: "#6c757d",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer"
-          }}
+          style={{ padding: "0.5rem 1rem", background: "#6c757d", color: "white", border: "none", borderRadius: "4px", cursor: "pointer" }}
         >
           Cancel
         </button>
