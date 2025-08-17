@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { marked } from "marked";
 
 export function ArticlePage() {
     const { filename } = useParams();
     const [article, setArticle] = useState(null);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
     const scratchUser = sessionStorage.getItem("scratchUser");
-
+    if (!scratchUser) {
+        navigate('/login');
+    }
+        
     useEffect(() => {
         async function fetchArticle() {
             try {
@@ -45,7 +49,7 @@ export function ArticlePage() {
 
                 setArticle({
                     title,
-                    author: scratchUser || "Unknown",
+                    author: scratchUser
                     date,
                     content,
                     filename,
