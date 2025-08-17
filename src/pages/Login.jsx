@@ -7,7 +7,6 @@ export default function LoginPage() {
   const REDIRECT_URI = window.location.origin + "/login";
 
   useEffect(() => {
-    // 1️⃣ Check sessionStorage first
     const savedUser = sessionStorage.getItem("scratchUser");
     if (savedUser) {
       setUser(JSON.parse(savedUser));
@@ -15,7 +14,7 @@ export default function LoginPage() {
       return;
     }
 
-    // 2️⃣ Check if redirected back with ?id
+    // Check if redirected back with ?id
     const params = new URLSearchParams(window.location.search);
     const token = params.get("id");
 
