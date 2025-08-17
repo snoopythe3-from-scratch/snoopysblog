@@ -36,7 +36,7 @@ export default function Header() {
                         <i className={darkMode ? "fa-solid fa-sun" : "fa-solid fa-moon"} />
                     </button>
                     <Link to="/login">
-                        <button>Account</button>
+                        Account
                     </Link>
                 </div>
             </div>
