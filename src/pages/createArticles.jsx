@@ -25,7 +25,7 @@ import '@mdxeditor/editor/style.css';
 
 export default function CreateArticle() {
   const navigate = useNavigate();
-  const scratchUser = sessionStorage.getItem("scratchUser");
+  const scratchUser = localStorage.getItem("scratchUser");
   const [markdown, setMarkdown] = useState('');
   const [title, setTitle] = useState('');
   const [date] = useState(new Date().toISOString().split('T')[0]);
