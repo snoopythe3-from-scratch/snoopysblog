@@ -28,7 +28,7 @@ export default function LoginPage() {
             const userObj = {
               username: userData.user,
               // Use username to fetch avatar from Scratch
-              avatarUrl: `https://uploads.scratch.mit.edu/users/avatars/${userData.user}.png`
+              avatarUrl: `https://turbowarp.org/users/avatars/${userData.user}.png`
             };
             setUser(userObj);
             sessionStorage.setItem("scratchUser", JSON.stringify(userObj));
