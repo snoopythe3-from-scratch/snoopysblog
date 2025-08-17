@@ -77,19 +77,21 @@ export default function CreateArticle() {
     const [year, month, day] = date.split('-');
     const formattedDate = `${day}/${month}/${year.slice(2)}`;
 
-    const metadata = `| Title | Author | Date | Category |\n|-------|--------|------|----------|\n| ${title} | ${scratchUser} | ${formattedDate} | ${category} |\n\n`;
-    const fileContent = metadata + markdown;
-
-    const fileBlob = new Blob([fileContent], { type: 'text/markdown' });
-    const fileName = `${title.replace(/\s+/g, '_')}.md`;
-
-    const formData = new FormData();
-    formData.append('file', fileBlob, fileName);
+    const payload = {
+      title,
+      author: scratchUser, // now safely part of JSON
+      date: formattedDate,
+      category,
+      content: markdown
+    };
 
     try {
       const response = await fetch("https://myscratchblocks.onrender.com/the-scratch-channel/articles/create", {
         method: "POST",
-        body: formData
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
       });
 
       if (!response.ok) throw new Error(`Server error: ${response.statusText}`);
@@ -142,7 +144,7 @@ export default function CreateArticle() {
         <select
           value={category}
           onChange={e => setCategory(e.target.value)}
-          disabled={!isAdmin} // Only allowedAdmins can change category
+          disabled={!isAdmin}
           style={{ width: "100%", padding: "0.5rem", marginTop: "0.3rem" }}
         >
           {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
