@@ -24,15 +24,14 @@ import {
 import '@mdxeditor/editor/style.css';
 
 export default function CreateArticle() {
+  const navigate = useNavigate();
+  const scratchUser = sessionStorage.getItem("scratchUser"); // logged-in user
   const [markdown, setMarkdown] = useState('');
   const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [category, setCategory] = useState('TSC Announcements');
-  const [date] = useState(new Date().toISOString().split('T')[0]); // fixed date
+  const [date] = useState(new Date().toISOString().split('T')[0]);
   const [isDark, setIsDark] = useState(() =>
     document.documentElement.classList.contains('dark')
   );
-  const navigate = useNavigate();
 
   useEffect(() => {
     const observer = new MutationObserver(() => {
@@ -42,17 +41,20 @@ export default function CreateArticle() {
     return () => observer.disconnect();
   }, []);
 
+  if (!scratchUser) {
+    return <div>You must be logged in to post.</div>;
+  }
+
   const handleSubmit = async () => {
-    if (!title || !author) {
-      alert("Title and Author are required.");
+    if (!title) {
+      alert("Title is required.");
       return;
     }
 
-    // format date as DD/MM/YY
     const [year, month, day] = date.split('-');
     const formattedDate = `${day}/${month}/${year.slice(2)}`;
 
-    const metadata = `| Title | Author | Date | Category |\n|-------|--------|------|----------|\n| ${title} | ${author} | ${formattedDate} | ${category} |\n\n`;
+    const metadata = `| Title | Author | Date | Category |\n|-------|--------|------|----------|\n| ${title} | ${scratchUser} | ${formattedDate} | Questions |\n\n`;
     const fileContent = metadata + markdown;
 
     const fileBlob = new Blob([fileContent], { type: 'text/markdown' });
@@ -81,7 +83,7 @@ export default function CreateArticle() {
 
   return (
     <div className="create-article-page" style={{ padding: "2rem" }}>
-      <h1>Create a New Article</h1>
+      <h1>Ask a Question</h1>
 
       <div className="form-group" style={{ marginBottom: "1rem" }}>
         <label>Title</label>
@@ -97,9 +99,10 @@ export default function CreateArticle() {
         <label>Author</label>
         <input
           type="text"
-          value={author}
-          onChange={e => setAuthor(e.target.value)}
-          style={{ width: "100%", padding: "0.5rem", marginTop: "0.3rem" }}
+          value={scratchUser}
+          readOnly
+          disabled
+          style={{ width: "100%", padding: "0.5rem", marginTop: "0.3rem", background: "#e9ecef", cursor: "not-allowed" }}
         />
       </div>
 
@@ -116,16 +119,13 @@ export default function CreateArticle() {
 
       <div className="form-group" style={{ marginBottom: "1rem" }}>
         <label>Category</label>
-        <select
-          value={category}
-          onChange={e => setCategory(e.target.value)}
-          style={{ width: "100%", padding: "0.5rem", marginTop: "0.3rem" }}
-        >
-          <option value="TSC Announcements">TSC Announcements</option>
-          <option value="TSC Update Log">TSC Update Log</option>
-          <option value="Scratch News">Scratch News</option>
-          <option value="Questions">Questions</option>
-        </select>
+        <input
+          type="text"
+          value="Questions"
+          readOnly
+          disabled
+          style={{ width: "100%", padding: "0.5rem", marginTop: "0.3rem", background: "#e9ecef", cursor: "not-allowed" }}
+        />
       </div>
 
       <div className="editor-container" style={{ marginBottom: "1rem" }}>
@@ -197,7 +197,7 @@ export default function CreateArticle() {
             cursor: "pointer"
           }}
         >
-          Submit Article
+          Submit Question
         </button>
         <button
           onClick={() => navigate('/')}
@@ -212,16 +212,6 @@ export default function CreateArticle() {
         >
           Cancel
         </button>
-      </div>
-
-      <div id="tutorial">
-        <h2>How to submit your article</h2>
-        <p>
-          Firstly, write your article using the editor above. Make sure you input the author name, title, 
-          and choose a category. The date is automatically set to today.
-          There is no need to have a heading that says your article name, because that is rendered already.
-          Then, click <b>Submit Article</b> to send the .md file to our server.
-        </p>
       </div>
     </div>
   );
