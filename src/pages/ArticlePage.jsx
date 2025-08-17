@@ -1,44 +1,50 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { marked } from "marked";
+import sanitizeHtml from "sanitize-html";
 
-export function ArticlePage() {
-    const { filename } = useParams();
+export default function ArticlePage() {
+    const { filename, category } = useParams();
     const [article, setArticle] = useState(null);
     const [loading, setLoading] = useState(true);
-    const navigate = useNavigate();
-    const scratchUser = sessionStorage.getItem("scratchUser");
-    if (!scratchUser) {
-        navigate('/login');
-    }
-        
+
     useEffect(() => {
         async function fetchArticle() {
             try {
-                const fileRes = await fetch(
-                    `https://myscratchblocks.onrender.com/the-scratch-channel/articles/${filename}`
-                );
+                const fileRes = await fetch(`https://myscratchblocks.onrender.com/the-scratch-channel/articles/${filename}`);
                 const text = await fileRes.text();
                 const lines = text.split("\n");
 
-                if (lines.length < 3) return;
+                if (lines.length < 3) {
+                    console.warn(`Skipping ${filename}: not enough lines`);
+                    return;
+                }
+
                 const metadataRow = lines[2].trim();
-                if (!metadataRow.startsWith("|") || !metadataRow.endsWith("|")) return;
+                if (!metadataRow.startsWith("|") || !metadataRow.endsWith("|")) {
+                    console.warn(`Skipping ${filename}: invalid metadata row`);
+                    return;
+                }
+
                 const metadataValues = metadataRow
                     .split("|")
                     .map(s => s.trim())
                     .filter(s => s.length > 0);
-                if (metadataValues.length < 3) return;
 
-                const [title, , date] = metadataValues;
-                const contentStartIndex = lines.findIndex(
-                    (line, i) => i > 2 && line.trim() !== ""
-                );
-                if (contentStartIndex === -1) return;
+                if (metadataValues.length < 3) {
+                    console.warn(`Skipping ${filename}: not enough metadata`);
+                    return;
+                }
 
-                const content = await marked.parse(
-                    lines.slice(contentStartIndex).join("\n")
-                );
+                const [title, author, date] = metadataValues;
+                const contentStartIndex = lines.findIndex((line, i) => i > 2 && line.trim() !== "");
+                
+                if (contentStartIndex === -1) {
+                    console.warn(`Skipping ${filename}: no content`);
+                    return;
+                }
+
+                const content = await marked.parse(lines.slice(contentStartIndex).join("\n"));
 
                 let thumbnail = null;
                 const imgRegex = /<img[^>]+src="([^">]+)"/;
@@ -49,7 +55,7 @@ export function ArticlePage() {
 
                 setArticle({
                     title,
-                    author: scratchUser
+                    author,
                     date,
                     content,
                     filename,
@@ -61,8 +67,9 @@ export function ArticlePage() {
                 setLoading(false);
             }
         }
+
         fetchArticle();
-    }, [filename, scratchUser]);
+    }, [filename]);
 
     if (loading) {
         return <div>Loading article...</div>;
@@ -91,64 +98,5 @@ export function ArticlePage() {
                 dangerouslySetInnerHTML={{ __html: article.content }}
             />
         </div>
-    );
-}
-
-export function PostForm({ category, onSubmit }) {
-    const scratchUser = sessionStorage.getItem("scratchUser");
-    const allowedAdmins = [
-        "SmartCat3",
-        "Swiftpixel",
-        "scratchcode1_2_3",
-        "kRxZy_kRxZy",
-        "GvYoutube",
-        "snoopythe3"
-    ];
-    const [title, setTitle] = useState("");
-    const [content, setContent] = useState("");
-
-    if (!scratchUser) {
-        return <div>You must be logged in to post.</div>;
-    }
-
-    const isAdmin = allowedAdmins.includes(scratchUser);
-    if (!isAdmin && category !== "Questions") {
-        return <div>You can only post to the Questions section.</div>;
-    }
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const newPost = {
-            title,
-            author: scratchUser,
-            category,
-            content,
-            date: new Date().toISOString(),
-        };
-        onSubmit(newPost);
-    };
-
-    return (
-        <form onSubmit={handleSubmit} className="post-form">
-            <h2>Create a Post in {category}</h2>
-            <div>
-                <label>Title:</label>
-                <input
-                    type="text"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    required
-                />
-            </div>
-            <div>
-                <label>Content:</label>
-                <textarea
-                    value={content}
-                    onChange={(e) => setContent(e.target.value)}
-                    required
-                />
-            </div>
-            <button type="submit">Post</button>
-        </form>
     );
 }
