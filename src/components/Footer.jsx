@@ -17,7 +17,8 @@ export default function Footer() {
         <div className="footer-group">
           <h4>Resources</h4>
           <Link to="/#articles"><a href="/articles">Articles</a></Link><br />
-          <a href="https://github.com/The-Scratch-Channel/the-scratch-channel.github.io/issues/new/choose">Report an Issue</a>
+          <a href="https://github.com/The-Scratch-Channel/the-scratch-channel.github.io/issues/new/choose">Report an Issue</a><br />
+          <a href="https://g.page/r/CakZ0j7aw6SLEBM/review">Leave a review</a>
         </div>
         <div className="footer-group">
           <h4>Community</h4>
