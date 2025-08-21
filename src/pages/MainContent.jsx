@@ -107,7 +107,7 @@ export default function MainContent() {
     return (
         <div className="page">
             <h1 style={{ textAlign: "center" }}>
-                {selectedCategory} ({articles.length})
+                {selectedCategory}
             </h1>
             <button className="back-btn" onClick={() => setSelectedCategory(null)}>← Back to Categories</button>
 
