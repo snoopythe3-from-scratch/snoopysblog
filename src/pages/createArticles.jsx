@@ -20,17 +20,17 @@ import {
   CreateLink,
   InsertTable,
   InsertImage
-} from '@mdxeditor/editor';
-import '@mdxeditor/editor/style.css';
+} from "@mdxeditor/editor";
+import "@mdxeditor/editor/style.css";
 
 export default function CreateArticle() {
   const navigate = useNavigate();
   const scratchUser = localStorage.getItem("scratchUser");
-  const [markdown, setMarkdown] = useState('');
-  const [title, setTitle] = useState('');
-  const [date] = useState(new Date().toISOString().split('T')[0]);
+  const [markdown, setMarkdown] = useState("");
+  const [title, setTitle] = useState("");
+  const [date] = useState(new Date().toISOString().split("T")[0]);
   const [isDark, setIsDark] = useState(() =>
-    document.documentElement.classList.contains('dark')
+    document.documentElement.classList.contains("dark")
   );
 
   // Allowed admin users
@@ -40,7 +40,7 @@ export default function CreateArticle() {
     "scratchcode1_2_3",
     "kRxZy_kRxZy",
     "GvYoutube",
-    "snoopythe3",
+    "snoopythe3"
   ];
 
   const isAdmin = allowedAdmins.includes(scratchUser);
@@ -58,9 +58,12 @@ export default function CreateArticle() {
 
   useEffect(() => {
     const observer = new MutationObserver(() => {
-      setIsDark(document.documentElement.classList.contains('dark'));
+      setIsDark(document.documentElement.classList.contains("dark"));
     });
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"]
+    });
     return () => observer.disconnect();
   }, []);
 
@@ -74,25 +77,33 @@ export default function CreateArticle() {
       return;
     }
 
-    const [year, month, day] = date.split('-');
+    const [year, month, day] = date.split("-");
     const formattedDate = `${day}/${month}/${year.slice(2)}`;
 
-    const payload = {
-      title,
-      author: scratchUser, // now safely part of JSON
-      date: formattedDate,
-      category,
-      content: markdown
-    };
+    // ✅ Markdown table layout for metadata
+    const fileContent = `| Title | Author | Date | Category |
+|-------|--------|------|----------|
+| ${title} | ${scratchUser} | ${formattedDate} | ${category} |
+
+${markdown}
+`;
+
+    // Create a File object
+    const file = new File([fileContent], `${title.replace(/\s+/g, "_")}.md`, {
+      type: "text/markdown"
+    });
+
+    const formData = new FormData();
+    formData.append("file", file);
 
     try {
-      const response = await fetch("https://myscratchblocks.onrender.com/the-scratch-channel/articles/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload)
-      });
+      const response = await fetch(
+        "https://myscratchblocks.onrender.com/the-scratch-channel/articles/create",
+        {
+          method: "POST",
+          body: formData
+        }
+      );
 
       if (!response.ok) throw new Error(`Server error: ${response.statusText}`);
       alert("Article submitted successfully!");
@@ -112,8 +123,12 @@ export default function CreateArticle() {
         <input
           type="text"
           value={title}
-          onChange={e => setTitle(e.target.value)}
-          style={{ width: "100%", padding: "0.5rem", marginTop: "0.3rem" }}
+          onChange={(e) => setTitle(e.target.value)}
+          style={{
+            width: "100%",
+            padding: "0.5rem",
+            marginTop: "0.3rem"
+          }}
         />
       </div>
 
@@ -124,7 +139,13 @@ export default function CreateArticle() {
           value={scratchUser}
           readOnly
           disabled
-          style={{ width: "100%", padding: "0.5rem", marginTop: "0.3rem", background: "#e9ecef", cursor: "not-allowed" }}
+          style={{
+            width: "100%",
+            padding: "0.5rem",
+            marginTop: "0.3rem",
+            background: "#e9ecef",
+            cursor: "not-allowed"
+          }}
         />
       </div>
 
@@ -135,7 +156,12 @@ export default function CreateArticle() {
           value={date}
           readOnly
           disabled
-          style={{ padding: "0.5rem", marginTop: "0.3rem", background: "#e9ecef", cursor: "not-allowed" }}
+          style={{
+            padding: "0.5rem",
+            marginTop: "0.3rem",
+            background: "#e9ecef",
+            cursor: "not-allowed"
+          }}
         />
       </div>
 
@@ -143,11 +169,19 @@ export default function CreateArticle() {
         <label>Category</label>
         <select
           value={category}
-          onChange={e => setCategory(e.target.value)}
+          onChange={(e) => setCategory(e.target.value)}
           disabled={!isAdmin}
-          style={{ width: "100%", padding: "0.5rem", marginTop: "0.3rem" }}
+          style={{
+            width: "100%",
+            padding: "0.5rem",
+            marginTop: "0.3rem"
+          }}
         >
-          {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+          {categories.map((cat) => (
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
+          ))}
         </select>
         {!isAdmin && <small>Category is fixed for non-admins.</small>}
       </div>
@@ -165,21 +199,21 @@ export default function CreateArticle() {
             quotePlugin(),
             tablePlugin(),
             thematicBreakPlugin(),
-            codeBlockPlugin({ defaultCodeBlockLanguage: 'txt' }),
+            codeBlockPlugin({ defaultCodeBlockLanguage: "txt" }),
             codeMirrorPlugin({
               codeBlockLanguages: {
-                js: 'JavaScript',
-                ts: 'TypeScript',
-                py: 'Python',
-                java: 'Java',
-                cpp: 'C++',
-                cs: 'C#',
-                css: 'CSS',
-                html: 'HTML',
-                xml: 'XML',
-                json: 'JSON',
-                md: 'Markdown',
-                txt: 'text'
+                js: "JavaScript",
+                ts: "TypeScript",
+                py: "Python",
+                java: "Java",
+                cpp: "C++",
+                cs: "C#",
+                css: "CSS",
+                html: "HTML",
+                xml: "XML",
+                json: "JSON",
+                md: "Markdown",
+                txt: "text"
               }
             }),
             imagePlugin(),
@@ -212,13 +246,27 @@ export default function CreateArticle() {
       <div style={{ marginTop: "1rem", display: "flex", gap: "1rem" }}>
         <button
           onClick={handleSubmit}
-          style={{ padding: "0.5rem 1rem", background: "#007bff", color: "white", border: "none", borderRadius: "4px", cursor: "pointer" }}
+          style={{
+            padding: "0.5rem 1rem",
+            background: "#007bff",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer"
+          }}
         >
           Submit
         </button>
         <button
-          onClick={() => navigate('/')}
-          style={{ padding: "0.5rem 1rem", background: "#6c757d", color: "white", border: "none", borderRadius: "4px", cursor: "pointer" }}
+          onClick={() => navigate("/")}
+          style={{
+            padding: "0.5rem 1rem",
+            background: "#6c757d",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer"
+          }}
         >
           Cancel
         </button>
