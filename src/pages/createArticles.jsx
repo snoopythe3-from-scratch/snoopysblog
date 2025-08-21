@@ -80,7 +80,7 @@ export default function CreateArticle() {
     const [year, month, day] = date.split("-");
     const formattedDate = `${day}/${month}/${year.slice(2)}`;
 
-    // ✅ Markdown table layout for metadata
+    //  Markdown table layout for metadata
     const fileContent = `| Title | Author | Date | Category |
 |-------|--------|------|----------|
 | ${title} | ${scratchUser} | ${formattedDate} | ${category} |
