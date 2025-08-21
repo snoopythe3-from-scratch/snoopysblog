@@ -10,7 +10,7 @@ export default function MainContent() {
     const navigate = useNavigate();
     const articleID = useRef({});
 
-    const folder = "https://myscratchblocks.onrender.com/the-scratch-channel/articles";
+    const folder = "https://corsproxy.io/?url=https://raw.githubusercontent.com/The-Scratch-Channel/the-scratch-channel.github.io/refs/heads/main/AUTOADDED-ARTICLES";
 
     useEffect(() => {
         async function fetchArticles() {
