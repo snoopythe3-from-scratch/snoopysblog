@@ -56,10 +56,10 @@ export default function MainContent() {
 
                 // Build category list and group articles
                 const grouped = {
-                  "TSC Announcements": [],
-                  "TSC Update Log": [],
-                  "Scratch News": [],
-                  "Questions": []
+                    "TSC Announcements": [],
+                    "TSC Update Log": [],
+                    "Scratch News": [],
+                    "Questions": []
                 };
                 validArticles.forEach(article => {
                     if (!grouped[article.category]) grouped[article.category] = [];
@@ -81,7 +81,7 @@ export default function MainContent() {
     };
 
     if (!selectedCategory) {
-        // Display categories
+        // Display categories with article counts
         return (
             <div className="page">
                 <h1 style={{ textAlign: "center" }}>Welcome to The Scratch Channel!</h1>
@@ -93,7 +93,7 @@ export default function MainContent() {
                             className="category-card"
                             onClick={() => setSelectedCategory(cat)}
                         >
-                            {cat}
+                            {cat} ({articlesByCategory[cat]?.length || 0})
                         </div>
                     ))}
                 </div>
@@ -106,7 +106,9 @@ export default function MainContent() {
 
     return (
         <div className="page">
-            <h1 style={{ textAlign: "center" }}>{selectedCategory}</h1>
+            <h1 style={{ textAlign: "center" }}>
+                {selectedCategory} ({articles.length})
+            </h1>
             <button className="back-btn" onClick={() => setSelectedCategory(null)}>← Back to Categories</button>
 
             <div className="articles-container">
