@@ -3,6 +3,13 @@ import {Link} from "react-router-dom";
 
 export default function Footer() {
   return (
+    <head>
+    <!-- START Formbricks Surveys -->
+<script type="text/javascript">
+!function(){var t=document.createElement("script");t.type="text/javascript",t.async=!0,t.src="https://app.formbricks.com/js/formbricks.umd.cjs",t.onload=function(){window.formbricks?window.formbricks.setup({environmentId:"cmen97vlbo8mkrj01dqdq88zx",appUrl:"https://app.formbricks.com"}):console.error("Formbricks library failed to load properly. The formbricks object is not available.");};var e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(t,e)}();
+</script>
+<!-- END Formbricks Surveys --> 
+</head>
     <footer>
       <div className="footer-main">
         <strong>The Scratch Channel</strong> is not affiliated with Scratch, the Scratch Team, or the Scratch Foundation.
