@@ -53,7 +53,7 @@ jobs:
             });
 
             const labelList = labelsToAdd.map(label => '`' + label + '`').join(' ');
-            const commentBody = "The following label(s) were added to this issue: " + labelList + "\n\n---\nIf this labeling is incorrect, dislike this comment to have the labels removed.";
+            const commentBody = "The following label(s) were added to this issue: " + labelList + "\nIf this labeling is incorrect, dislike this comment to have the labels removed.\n\n*I am a bot, and this action was performed automatically.* This is [glabeller](https://github.com/polylogue2/glabeller) version 1.";
 
             const comment = await github.rest.issues.createComment({
               owner: context.repo.owner,
