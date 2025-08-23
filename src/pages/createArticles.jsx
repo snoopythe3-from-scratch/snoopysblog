@@ -18,7 +18,10 @@ export default function CreateArticle() {
   const categories = ["TSC Announcements", "TSC Update Log", "Scratch News"];
   const [category, setCategory] = useState(categories[0]);
 
-  const editor = useEditor({ extensions: [StarterKit, Bold, Italic, Underline, Link, Image], content: "" });
+  const editor = useEditor({
+    extensions: [StarterKit, Bold, Italic, Underline, Link, Image],
+    content: "",
+  });
 
   useEffect(() => {
     const token = localStorage.getItem("scratchToken");
@@ -76,30 +79,36 @@ ${content}
     <div className="container mt-4">
       <div className="card shadow p-4">
         <h1 className="mb-4">✍️ Create Article</h1>
+
         <div className="mb-3">
           <label className="form-label">Title</label>
           <input className="form-control" type="text" value={title} onChange={e => setTitle(e.target.value)} placeholder="Enter your article title..." />
         </div>
+
         <div className="mb-3">
           <label className="form-label">Author</label>
           <input className="form-control" type="text" value={scratchUser} readOnly disabled />
         </div>
+
         <div className="mb-3">
           <label className="form-label">Date</label>
           <input className="form-control" type="date" value={date} readOnly disabled />
         </div>
+
         <div className="mb-3">
           <label className="form-label">Category</label>
           <select className="form-select" value={category} onChange={e => setCategory(e.target.value)}>
             {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
           </select>
         </div>
+
         <div className="mb-3">
           <label className="form-label">Content</label>
-          <div className="border rounded p-3" style={{ minHeight: "250px", background: "#fff" }}>
+          <div className="editor-container">
             <EditorContent editor={editor} />
           </div>
         </div>
+
         <div className="d-flex gap-3 mt-3">
           <button className="btn btn-primary" onClick={handleSubmit}>Submit</button>
           <button className="btn btn-secondary" onClick={() => navigate("/")}>Cancel</button>
