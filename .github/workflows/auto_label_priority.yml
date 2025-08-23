@@ -26,7 +26,11 @@ jobs:
             const hasKeyword = (keywords) => keywords.some(k => title.includes(k) || body.includes(k));
             const hasLabel = (label) => existingLabels.includes(label);
 
-            if (hasKeyword(["urgent", "deployment"]) || hasLabel("deployment")) {
+            if (hasKeyword(["urgent"])) {
+              labelsToAdd.push("HIGH PRIORITY");
+            }
+            
+            if (hasKeyword(["deployment"]) || hasLabel("deployment")) {
               labelsToAdd.push("HIGH PRIORITY");
               if (!hasLabel("deployment")) labelsToAdd.push("deployment");
             }
