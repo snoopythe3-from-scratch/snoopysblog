@@ -1,0 +1,103 @@
+/* Editor container */
+.editor-container {
+  border: 1px solid #d1d5db; /* light gray border */
+  border-radius: 0.5rem; /* rounded corners */
+  padding: 1rem;
+  min-height: 250px;
+  background-color: #ffffff; /* white background */
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+  transition: border-color 0.2s ease;
+}
+
+.editor-container:focus-within {
+  border-color: #4f46e5; /* highlight when focused */
+  box-shadow: 0 0 0 2px rgba(79,70,229,0.2);
+}
+
+/* Paragraphs and text inside editor */
+.editor-container p {
+  margin: 0.5rem 0;
+  line-height: 1.6;
+  color: #374151; /* gray-700 */
+  font-size: 1rem;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Bold text */
+.editor-container strong {
+  font-weight: 600;
+}
+
+/* Italic text */
+.editor-container em {
+  font-style: italic;
+}
+
+/* Underline text */
+.editor-container u {
+  text-decoration: underline;
+}
+
+/* Links */
+.editor-container a {
+  color: #4f46e5;
+  text-decoration: underline;
+}
+
+/* Headings */
+.editor-container h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 1rem 0 0.5rem;
+}
+
+.editor-container h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 1rem 0 0.5rem;
+}
+
+.editor-container h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0.75rem 0 0.5rem;
+}
+
+/* Images */
+.editor-container img {
+  max-width: 100%;
+  border-radius: 0.5rem;
+  margin: 0.5rem 0;
+  display: block;
+}
+
+/* Lists */
+.editor-container ul,
+.editor-container ol {
+  padding-left: 1.25rem;
+  margin: 0.5rem 0;
+}
+
+.editor-container li {
+  margin: 0.25rem 0;
+}
+
+/* Code blocks */
+.editor-container pre {
+  background-color: #f3f4f6;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.95rem;
+}
+
+/* Blockquotes */
+.editor-container blockquote {
+  border-left: 4px solid #4f46e5;
+  padding-left: 1rem;
+  color: #6b7280;
+  font-style: italic;
+  margin: 0.5rem 0;
+}
+ 
