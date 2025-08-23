@@ -61,19 +61,3 @@ jobs:
               issue_number: issue.number,
               body: commentBody
             });
-
-            const comment_id = comment.data.id;
-
-            await github.rest.reactions.createForIssueComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              comment_id,
-              content: "+1"
-            });
-
-            await github.rest.reactions.createForIssueComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              comment_id,
-              content: "-1"
-            });
