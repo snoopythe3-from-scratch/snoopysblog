@@ -58,8 +58,7 @@ export default function MainContent() {
                 const grouped = {
                     "TSC Announcements": [],
                     "TSC Update Log": [],
-                    "Scratch News": [],
-                    "Questions": []
+                    "Scratch News": []
                 };
                 validArticles.forEach(article => {
                     if (!grouped[article.category]) grouped[article.category] = [];
