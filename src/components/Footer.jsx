@@ -3,11 +3,6 @@ import {Link} from "react-router-dom";
 
 export default function Footer() {
   return (
-    {/* start formbricks survey*/}
-<script type="text/javascript">
-!function(){var t=document.createElement("script");t.type="text/javascript",t.async=!0,t.src="https://app.formbricks.com/js/formbricks.umd.cjs",t.onload=function(){window.formbricks?window.formbricks.setup({environmentId:"cmen97vlbo8mkrj01dqdq88zx",appUrl:"https://app.formbricks.com"}):console.error("Formbricks library failed to load properly. The formbricks object is not available.");};var e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(t,e)}();
-</script>
-  {/* end formbricks survey*/}
     <footer>
       <div className="footer-main">
         <strong>The Scratch Channel</strong> is not affiliated with Scratch, the Scratch Team, or the Scratch Foundation.
@@ -21,7 +16,7 @@ export default function Footer() {
         </div>
         <div className="footer-group">
           <h4>Resources</h4>
-          <Link to="/#articles"><a href="/articles">Articles</a></Link><br />
+          <Link to="/#articles">Articles</Link><br />
           <a href="https://www.google.com/search?sca_esv=a07cb0739b81081f&q=The%20Scratch%20Channel&stick=H4sIAAAAAAAAAONgU1I1qDBKTjIwMEtKMzQxM7FINje3MqiwSEo0STZOSTROTTEytEy0XMQqHJKRqhCcXJRYkpyh4JyRmJeXmgMAA7YRJD8AAAA&mat=CYAsXbaVju9Q&ved=2ahUKEwjene-VhJmPAxWqWkEAHRYWDPIQrMcEegQIFBAC">Google Business</a><br />
           <a href="https://github.com/The-Scratch-Channel/the-scratch-channel.github.io/issues/new/choose">Report an Issue</a><br />
           <a href="https://g.page/r/CakZ0j7aw6SLEBM/review">Leave a review</a>
