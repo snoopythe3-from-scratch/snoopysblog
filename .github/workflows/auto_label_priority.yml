@@ -51,7 +51,12 @@ jobs:
               labels: labelsToAdd
             });
 
-            const commentBody = `The following label(s) were added to this issue: ${labelsToAdd.map(l => \`\${'\`'}\${l}\`\`).join(' ')}\n\n---\nIf this labeling is incorrect, dislike this comment to have the labels removed.`;
+            const labelList = labelsToAdd.map(label => `\`${label}\``).join(' ');
+            const commentBody = `The following label(s) were added to this issue: ${labelList}
+
+---
+
+If this labeling is incorrect, dislike this comment to have the labels removed.`;
 
             const comment = await github.rest.issues.createComment({
               owner: context.repo.owner,
