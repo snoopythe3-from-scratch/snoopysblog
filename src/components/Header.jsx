@@ -24,7 +24,7 @@ export default function Header() {
                     <Link to="/"><img src={TSC} alt="TSC Logo" /></Link>
                     <Link to="/">Home</Link>
                     <Link to="https://stats.uptimerobot.com/abiwl4EvLm">Status</Link>
-                    <Link to="/about">About</Link>
+                    <Link to="/about">About Us</Link>
                 </div>
                 <div className="nav-right">
                     <Link to="/articles/create">Write an Article</Link>
