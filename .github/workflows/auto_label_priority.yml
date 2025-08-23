@@ -1,0 +1,77 @@
+name: Auto Label and React
+
+on:
+  issues:
+    types: [opened, edited]
+
+jobs:
+  label_and_comment:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Analyze and label issue
+        uses: actions/github-script@v7
+        id: labeler
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issue = context.payload.issue;
+            const title = issue.title.toLowerCase();
+            const body = (issue.body || "").toLowerCase();
+            const existingLabels = issue.labels.map(l => l.name.toLowerCase());
+
+            let labelsToAdd = [];
+
+            const hasKeyword = (keywords) => keywords.some(k => title.includes(k) || body.includes(k));
+            const hasLabel = (label) => existingLabels.includes(label);
+
+            if (hasKeyword(["urgent", "deployment"]) || hasLabel("deployment")) {
+              labelsToAdd.push("HIGH PRIORITY");
+              if (!hasLabel("deployment")) labelsToAdd.push("deployment");
+            }
+
+            if (hasKeyword(["bug"]) || hasLabel("bug")) {
+              labelsToAdd.push("Medium Priority");
+              if (!hasLabel("bug")) labelsToAdd.push("bug");
+            }
+
+            if (hasKeyword(["enhancement", "request", "suggestion"]) || hasLabel("enhancement")) {
+              labelsToAdd.push("Low Priority");
+              if (!hasLabel("enhancement")) labelsToAdd.push("enhancement");
+            }
+
+            labelsToAdd = [...new Set(labelsToAdd)];
+
+            if (labelsToAdd.length === 0) return;
+
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              labels: labelsToAdd
+            });
+
+            const commentBody = `The following label(s) were added to this issue: ${labelsToAdd.map(l => \`\${'\`'}\${l}\`\`).join(' ')}\n\n---\nIf this labeling is incorrect, dislike this comment to have the labels removed.`;
+
+            const comment = await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              body: commentBody
+            });
+
+            const comment_id = comment.data.id;
+
+            await github.rest.reactions.createForIssueComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id,
+              content: "+1"
+            });
+
+            await github.rest.reactions.createForIssueComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id,
+              content: "-1"
+            });
