@@ -16,6 +16,7 @@ import "./styles/article.css";
 import "./styles/article-page.css";
 import "./styles/article-modal.css";
 import "./styles/categories.css";
+import "./styles/editor.css";
 
 function App() {
   return (
