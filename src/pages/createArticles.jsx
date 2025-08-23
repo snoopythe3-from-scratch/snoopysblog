@@ -1,75 +1,42 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  MDXEditor,
-  headingsPlugin,
-  listsPlugin,
-  linkPlugin,
-  quotePlugin,
-  tablePlugin,
-  thematicBreakPlugin,
-  codeBlockPlugin,
-  codeMirrorPlugin,
-  imagePlugin,
-  markdownShortcutPlugin,
-  toolbarPlugin,
-  UndoRedo,
-  BoldItalicUnderlineToggles,
-  ListsToggle,
-  BlockTypeSelect,
-  CreateLink,
-  InsertTable,
-  InsertImage
-} from "@mdxeditor/editor";
-import "@mdxeditor/editor/style.css";
+import { EditorContent, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import Bold from "@tiptap/extension-bold";
+import Italic from "@tiptap/extension-italic";
+import Underline from "@tiptap/extension-underline";
+import Link from "@tiptap/extension-link";
+import Image from "@tiptap/extension-image";
 
 export default function CreateArticle() {
   const navigate = useNavigate();
   const scratchUser = localStorage.getItem("scratchUser");
-  const [markdown, setMarkdown] = useState("");
   const [title, setTitle] = useState("");
   const [date] = useState(new Date().toISOString().split("T")[0]);
-  const [isDark, setIsDark] = useState(() =>
-    document.documentElement.classList.contains("dark")
-  );
 
-  // Allowed admin users
+  // Allowed admins
   const allowedAdmins = [
     "SmartCat3",
     "Swiftpixel",
     "scratchcode1_2_3",
     "kRxZy_kRxZy",
     "GvYoutube",
-    "snoopythe3"
+    "snoopythe3",
   ];
-
   const isAdmin = allowedAdmins.includes(scratchUser);
 
-  // Categories
-  const categories = [
-    "TSC Announcements",
-    "TSC Update Log",
-    "Scratch News",
-    "Questions"
-  ];
+  // Categories (no "Questions")
+  const categories = ["TSC Announcements", "TSC Update Log", "Scratch News"];
+  const [category, setCategory] = useState(categories[0]);
 
-  // Default category
-  const [category, setCategory] = useState("Questions");
+  // Setup Tiptap Editor
+  const editor = useEditor({
+    extensions: [StarterKit, Bold, Italic, Underline, Link, Image],
+    content: "",
+  });
 
-  useEffect(() => {
-    const observer = new MutationObserver(() => {
-      setIsDark(document.documentElement.classList.contains("dark"));
-    });
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"]
-    });
-    return () => observer.disconnect();
-  }, []);
-
-  if (!scratchUser) {
-    return <div>You must be logged in to post.</div>;
-  }
+  if (!scratchUser) return <div className="container mt-4 alert alert-warning">⚠️ You must be logged in to post.</div>;
+  if (!isAdmin) return <div className="container mt-4 alert alert-danger">🚫 Only admins can create posts.</div>;
 
   const handleSubmit = async () => {
     if (!title) {
@@ -77,20 +44,20 @@ export default function CreateArticle() {
       return;
     }
 
+    const content = editor.getHTML(); // get HTML from editor
+
     const [year, month, day] = date.split("-");
     const formattedDate = `${day}/${month}/${year.slice(2)}`;
 
-    //  Markdown table layout for metadata
     const fileContent = `| Title | Author | Date | Category |
 |-------|--------|------|----------|
 | ${title} | ${scratchUser} | ${formattedDate} | ${category} |
 
-${markdown}
+${content}
 `;
 
-    // Create a File object
     const file = new File([fileContent], `${title.replace(/\s+/g, "_")}.md`, {
-      type: "text/markdown"
+      type: "text/markdown",
     });
 
     const formData = new FormData();
@@ -101,175 +68,92 @@ ${markdown}
         "https://myscratchblocks.onrender.com/the-scratch-channel/articles/create",
         {
           method: "POST",
-          body: formData
+          body: formData,
         }
       );
-
       if (!response.ok) throw new Error(`Server error: ${response.statusText}`);
-      alert("Article submitted successfully!");
+      alert("✅ Article submitted successfully!");
       navigate("/");
     } catch (error) {
       console.error("Error submitting article:", error);
-      alert("Failed to submit article. Please try again.");
+      alert("❌ Failed to submit article. Please try again.");
     }
   };
 
   return (
-    <div className="create-article-page" style={{ padding: "2rem" }}>
-      <h1>Create Article</h1>
+    <div className="container mt-4">
+      <div className="card shadow p-4">
+        <h1 className="mb-4">✍️ Create Article</h1>
 
-      <div style={{ marginBottom: "1rem" }}>
-        <label>Title</label>
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          style={{
-            width: "100%",
-            padding: "0.5rem",
-            marginTop: "0.3rem"
-          }}
-        />
-      </div>
+        {/* Title */}
+        <div className="mb-3">
+          <label className="form-label">Title</label>
+          <input
+            className="form-control"
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Enter your article title..."
+          />
+        </div>
 
-      <div style={{ marginBottom: "1rem" }}>
-        <label>Author</label>
-        <input
-          type="text"
-          value={scratchUser}
-          readOnly
-          disabled
-          style={{
-            width: "100%",
-            padding: "0.5rem",
-            marginTop: "0.3rem",
-            background: "#e9ecef",
-            cursor: "not-allowed"
-          }}
-        />
-      </div>
+        {/* Author */}
+        <div className="mb-3">
+          <label className="form-label">Author</label>
+          <input
+            className="form-control"
+            type="text"
+            value={scratchUser}
+            readOnly
+            disabled
+          />
+        </div>
 
-      <div style={{ marginBottom: "1rem" }}>
-        <label>Date</label>
-        <input
-          type="date"
-          value={date}
-          readOnly
-          disabled
-          style={{
-            padding: "0.5rem",
-            marginTop: "0.3rem",
-            background: "#e9ecef",
-            cursor: "not-allowed"
-          }}
-        />
-      </div>
+        {/* Date */}
+        <div className="mb-3">
+          <label className="form-label">Date</label>
+          <input
+            className="form-control"
+            type="date"
+            value={date}
+            readOnly
+            disabled
+          />
+        </div>
 
-      <div style={{ marginBottom: "1rem" }}>
-        <label>Category</label>
-        <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          disabled={!isAdmin}
-          style={{
-            width: "100%",
-            padding: "0.5rem",
-            marginTop: "0.3rem"
-          }}
-        >
-          {categories.map((cat) => (
-            <option key={cat} value={cat}>
-              {cat}
-            </option>
-          ))}
-        </select>
-        {!isAdmin && <small>Category is fixed for non-admins.</small>}
-      </div>
+        {/* Category */}
+        <div className="mb-3">
+          <label className="form-label">Category</label>
+          <select
+            className="form-select"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          >
+            {categories.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      <div style={{ marginBottom: "1rem" }}>
-        <MDXEditor
-          markdown={markdown}
-          onChange={setMarkdown}
-          contentEditableClassName="prose"
-          className={isDark ? "dark-theme" : undefined}
-          plugins={[
-            headingsPlugin(),
-            listsPlugin(),
-            linkPlugin(),
-            quotePlugin(),
-            tablePlugin(),
-            thematicBreakPlugin(),
-            codeBlockPlugin({ defaultCodeBlockLanguage: "txt" }),
-            codeMirrorPlugin({
-              codeBlockLanguages: {
-                js: "JavaScript",
-                ts: "TypeScript",
-                py: "Python",
-                java: "Java",
-                cpp: "C++",
-                cs: "C#",
-                css: "CSS",
-                html: "HTML",
-                xml: "XML",
-                json: "JSON",
-                md: "Markdown",
-                txt: "text"
-              }
-            }),
-            imagePlugin(),
-            markdownShortcutPlugin(),
-            toolbarPlugin({
-              toolbarContents: () => (
-                <>
-                  <UndoRedo />
-                  <BoldItalicUnderlineToggles />
-                  <ListsToggle />
-                  <BlockTypeSelect />
-                  <CreateLink />
-                  <InsertTable />
-                  <InsertImage />
-                </>
-              )
-            })
-          ]}
-          style={{
-            height: "400px",
-            border: "1px solid #ccc",
-            borderRadius: "4px",
-            overflow: "auto",
-            backgroundColor: isDark ? "#23272e" : "#fff",
-            color: isDark ? "#f5f5f5" : undefined
-          }}
-        />
-      </div>
+        {/* Tiptap Editor */}
+        <div className="mb-3">
+          <label className="form-label">Content</label>
+          <div className="border rounded p-3" style={{ minHeight: "250px", background: "#fff" }}>
+            <EditorContent editor={editor} />
+          </div>
+        </div>
 
-      <div style={{ marginTop: "1rem", display: "flex", gap: "1rem" }}>
-        <button
-          onClick={handleSubmit}
-          style={{
-            padding: "0.5rem 1rem",
-            background: "#007bff",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer"
-          }}
-        >
-          Submit
-        </button>
-        <button
-          onClick={() => navigate("/")}
-          style={{
-            padding: "0.5rem 1rem",
-            background: "#6c757d",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer"
-          }}
-        >
-          Cancel
-        </button>
+        {/* Buttons */}
+        <div className="d-flex gap-3 mt-3">
+          <button className="btn btn-primary" onClick={handleSubmit}>
+            Submit
+          </button>
+          <button className="btn btn-secondary" onClick={() => navigate("/")}>
+            Cancel
+          </button>
+        </div>
       </div>
     </div>
   );
