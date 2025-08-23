@@ -17,6 +17,7 @@ export default function LoginPage() {
     // Check if redirected back with ?id
     const params = new URLSearchParams(window.location.search);
     const token = params.get("id");
+    localStorage.setItem('id', token);
 
     if (token) {
       fetch(`https://corsproxy.io?url=https://scratch-id.onrender.com/verification/${token}`)
