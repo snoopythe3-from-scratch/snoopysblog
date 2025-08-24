@@ -67,7 +67,7 @@ jobs:
 
             // Comment on the issue
             const labelList = labelsToAdd.map(label => '`' + label + '`').join(' ');
-            const commentBody = "The following label(s) were added to this issue: " + labelList + "\n\n*I am a bot, and this action was performed automatically.*";
+            const commentBody = "The following label(s) were added to this issue: " + labelList + "\n\n*I am a bot made by @polylogue2 and may make mistakes.*";
 
             await github.rest.issues.createComment({
               owner: context.repo.owner,
