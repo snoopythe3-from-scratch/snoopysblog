@@ -50,7 +50,7 @@ jobs:
                 *I am a bot, and this issue was generated automatically.*
                 `,
                 labels: ['deployment', 'HIGH PRIORITY'],
-                assignees: ['polylogue2', 'krxzy_krxzy', 'nouxinf']
+                assignees: ['polylogue2', 'snoopythe3-from-scratch']
               });
             } else {
               console.log('Issue already exists.');
