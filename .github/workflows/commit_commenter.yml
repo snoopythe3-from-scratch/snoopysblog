@@ -3,14 +3,14 @@ name: Commit Summary
 on:
   push:
     branches:
-      - main  # or change to your default branch
+      - main
 
 jobs:
   comment-on-commit:
     runs-on: ubuntu-latest
+
     permissions:
       contents: read
-      issues: write
       pull-requests: write
 
     steps:
@@ -20,7 +20,7 @@ jobs:
     - name: Get commit info
       id: commit_data
       run: |
-        COMMIT_SHA=$(echo "${{ github.sha }}")
+        COMMIT_SHA="${{ github.sha }}"
         AUTHOR_NAME=$(git log -1 --pretty=format:'%an' $COMMIT_SHA)
         AUTHOR_EMAIL=$(git log -1 --pretty=format:'%ae' $COMMIT_SHA)
         COMMIT_MESSAGE=$(git log -1 --pretty=format:'%s' $COMMIT_SHA)
@@ -36,10 +36,10 @@ jobs:
       uses: peter-evans/commit-comment@v3
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        commit: ${{ steps.commit_data.outputs.sha }}
+        sha: ${{ steps.commit_data.outputs.sha }}
         body: |
           **Commit Summary**
-          
+
           - **Commit ID**: `${{ steps.commit_data.outputs.sha }}`
           - **Author**: ${{ steps.commit_data.outputs.author_name }} (<${{ steps.commit_data.outputs.author_email }}>)
           - **Message**: _${{ steps.commit_data.outputs.message }}_
