@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState  } from "react";
 import { auth } from "../firebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate, useParams } from "react-router-dom";
@@ -16,6 +16,7 @@ export default function LoginPage() {
 			navigate('/');
 		} catch (error) {
 			console.error("Error signing in", error.message);
+			alert("Error signing in", error.message);
 		}
 	};
 	return (
