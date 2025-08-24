@@ -7,6 +7,8 @@ import CreateArticle from "./pages/createArticles";
 import About from "./pages/About";
 import ArticlePage from "./pages/ArticlePage";
 import LoginPage from "./pages/Login";
+import Account from "./pages/Account";
+import SignUpForm from "./pages/SignUp";
 
 import "./styles/main.css";
 import "./styles/about.css";
@@ -27,7 +29,9 @@ function App() {
         <Route path="/articles/create" element={<CreateArticle />} />
         <Route path="/about" element={<About />} />
         <Route path="/:category/article/:filename" element={<ArticlePage />} />
+        <Route path="/account" element={<Account />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignUpForm />} />
       </Routes>
       <Footer />
     </Router>
