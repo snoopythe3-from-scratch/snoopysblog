@@ -55,7 +55,7 @@ export default function CreateArticle() {
 
     const fileContent = `| Title | Author | Date | Category |
 |-------|--------|------|----------|
-| ${title} | TSC Offical | ${formattedDate} | ${category} |
+| ${title} | ${scratchUser} | ${formattedDate} | ${category} |
 
 ${content}
 `;
