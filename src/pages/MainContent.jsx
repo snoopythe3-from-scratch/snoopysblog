@@ -1,139 +1,172 @@
-import React, { useEffect, useState, useRef } from "react";
-import { marked } from "marked";
-import sanitizeHtml from "sanitize-html";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { db, auth } from "../firebaseConfig";
+import { collection, getDocs, doc, getDoc, updateDoc, increment, setDoc } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
 
 export default function MainContent() {
-    const [categories, setCategories] = useState([]);
-    const [articlesByCategory, setArticlesByCategory] = useState({});
-    const [selectedCategory, setSelectedCategory] = useState(null);
-    const navigate = useNavigate();
-    const articleID = useRef({});
+  const [categories, setCategories] = useState([]);
+  const [articlesByCategory, setArticlesByCategory] = useState({});
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [user, setUser] = useState(null);
+  const [userReactions, setUserReactions] = useState({});
+  const [animate, setAnimate] = useState({});
+  const navigate = useNavigate();
 
-    const folder = "https://corsproxy.io/?url=https://raw.githubusercontent.com/The-Scratch-Channel/the-scratch-channel.github.io/refs/heads/main/AUTOADDED-ARTICLES";
+  useEffect(() => {
+    onAuthStateChanged(auth, (u) => setUser(u));
+  }, []);
 
-    useEffect(() => {
-        async function fetchArticles() {
-            try {
-                const res = await fetch(`${folder}/index.json`);
-                const files = await res.json();
+  useEffect(() => {
+    async function fetchArticles() {
+      const snapshot = await getDocs(collection(db, "articles"));
+      const grouped = {};
 
-                const articles = await Promise.all(
-                    files.map(async (file) => {
-                        const articleRes = await fetch(`${folder}/${file}`);
-                        const text = await articleRes.text();
-                        const lines = text.split("\n");
+      for (let docSnap of snapshot.docs) {
+        const data = docSnap.data();
+        const id = docSnap.id;
+        const article = {
+          id,
+          title: data.title,
+          author: data.author,
+          date: data.date,
+          category: data.category,
+          preview: data.preview || "",
+          thumbnail: data.thumbnail || "",
+          reactions: {
+            thumbsUp: data.thumbsUp || 0,
+            thumbsDown: data.thumbsDown || 0,
+            heart: data.heart || 0,
+          },
+        };
 
-                        if (lines.length < 3) return null;
+        if (!grouped[article.category]) grouped[article.category] = [];
+        grouped[article.category].push(article);
 
-                        // Extract metadata (title, author, date, category)
-                        const metadataRow = lines[2].trim();
-                        if (!metadataRow.startsWith("|") || !metadataRow.endsWith("|")) return null;
-                        const metadataValues = metadataRow.split("|").map(s => s.trim()).filter(s => s.length > 0);
-                        if (metadataValues.length < 4) return null;
-
-                        const [title, author, date, category] = metadataValues;
-                        articleID.current[title] = file;
-
-                        const contentStartIndex = lines.findIndex((line, i) => i > 2 && line.trim() !== "");
-                        if (contentStartIndex === -1) return null;
-
-                        const contentHtml = marked.parse(lines.slice(contentStartIndex).join("\n"));
-                        const textContent = sanitizeHtml(contentHtml, { allowedTags: [], allowedAttributes: {} });
-
-                        const words = textContent.split(/\s+/);
-                        const preview = words.length > 25 ? words.slice(0, 25).join(" ") + "..." : textContent;
-
-                        let thumbnail = null;
-                        const imgMatch = contentHtml.match(/<img[^>]+src="([^">]+)"/);
-                        if (imgMatch && imgMatch[1]) thumbnail = imgMatch[1];
-
-                        return { filename: file, title, author, date, category, preview, thumbnail };
-                    })
-                );
-
-                const validArticles = articles.filter(Boolean);
-
-                // Build category list and group articles
-                const grouped = {
-                    "TSC Announcements": [],
-                    "TSC Update Log": [],
-                    "Scratch News": []
-                };
-                validArticles.forEach(article => {
-                    if (!grouped[article.category]) grouped[article.category] = [];
-                    grouped[article.category].push(article);
-                });
-
-                setCategories(Object.keys(grouped));
-                setArticlesByCategory(grouped);
-            } catch (err) {
-                console.error("Error fetching articles:", err);
-            }
+        // fetch user reactions if logged in
+        if (user) {
+          const userDocRef = doc(db, "articles", id, "reactions", user.uid);
+          const userDoc = await getDoc(userDocRef);
+          setUserReactions((prev) => ({
+            ...prev,
+            [id]: userDoc.exists() ? userDoc.data() : { thumbsUp: false, thumbsDown: false, heart: false },
+          }));
         }
+      }
 
-        fetchArticles();
-    }, []);
-
-    const openArticle = (article) => {
-        navigate(`${selectedCategory}/article/${article.filename}`);
-    };
-
-    if (!selectedCategory) {
-        // Display categories with article counts
-        return (
-            <div className="page">
-                <h1 style={{ textAlign: "center" }}>Welcome to The Scratch Channel!</h1>
-                <p style={{ textAlign: "center" }}>Click a category to view its articles.</p>
-                <div className="categories-container">
-                    {categories.map((cat, idx) => (
-                        <div
-                            key={idx}
-                            className="category-card"
-                            onClick={() => setSelectedCategory(cat)}
-                        >
-                            {cat} ({articlesByCategory[cat]?.length || 0})
-                        </div>
-                    ))}
-                </div>
-            </div>
-        );
+      setCategories(Object.keys(grouped));
+      setArticlesByCategory(grouped);
     }
 
-    // Display articles in selected category
-    const articles = articlesByCategory[selectedCategory] || [];
+    fetchArticles();
+  }, [user]);
 
+  const handleReaction = async (articleId, type) => {
+    if (!user) return;
+    if (userReactions[articleId]?.[type]) return;
+
+    setAnimate((prev) => ({ ...prev, [articleId]: { ...(prev[articleId] || {}), [type]: true } }));
+    setTimeout(() => setAnimate((prev) => ({ ...prev, [articleId]: { ...(prev[articleId] || {}), [type]: false } })), 200);
+
+    const articleRef = doc(db, "articles", articleId);
+    await updateDoc(articleRef, { [type]: increment(1) });
+
+    const userDocRef = doc(db, "articles", articleId, "reactions", user.uid);
+    await setDoc(userDocRef, { ...(userReactions[articleId] || {}), [type]: true }, { merge: true });
+
+    setUserReactions((prev) => ({
+      ...prev,
+      [articleId]: { ...(prev[articleId] || {}), [type]: true },
+    }));
+
+    setArticlesByCategory((prev) => {
+      const updated = { ...prev };
+      for (let cat in updated) {
+        updated[cat] = updated[cat].map(a => a.id === articleId ? { ...a, reactions: { ...a.reactions, [type]: a.reactions[type] + 1 } } : a);
+      }
+      return updated;
+    });
+  };
+
+  if (!selectedCategory) {
     return (
-        <div className="page">
-            <h1 style={{ textAlign: "center" }}>
-                {selectedCategory}
-            </h1>
-            <button className="back-btn" onClick={() => setSelectedCategory(null)}>← Back to Categories</button>
-
-            <div className="articles-container">
-                {articles.map((article, index) => (
-                    <div key={index} className="article-card">
-                        {article.thumbnail && (
-                            <div className="card-thumbnail">
-                                <img src={article.thumbnail} alt="Article thumbnail" loading="lazy" />
-                            </div>
-                        )}
-                        <div className="card-header">
-                            <h3>{article.title}</h3>
-                            <div className="meta">
-                                <span className="author">By: {article.author}</span>
-                                <span className="date">Date: {article.date}</span>
-                            </div>
-                        </div>
-                        <div className="card-content">
-                            <p>{article.preview}</p>
-                        </div>
-                        <div className="read-more" onClick={() => openArticle(article)}>
-                            Read More →
-                        </div>
-                    </div>
-                ))}
+      <div className="page">
+        <h1 style={{ textAlign: "center" }}>Welcome to The Scratch Channel!</h1>
+        <div className="categories-container">
+          {categories.map((cat) => (
+            <div key={cat} className="category-card" onClick={() => setSelectedCategory(cat)}>
+              {cat} ({articlesByCategory[cat]?.length || 0})
             </div>
+          ))}
         </div>
+      </div>
     );
+  }
+
+  const articles = articlesByCategory[selectedCategory] || [];
+
+  return (
+    <div className="page">
+      <h1 style={{ textAlign: "center" }}>{selectedCategory}</h1>
+      <button className="back-btn" onClick={() => setSelectedCategory(null)}>← Back to Categories</button>
+
+      <div className="articles-container">
+        {articles.map((article) => (
+          <div key={article.id} className="article-card">
+            {article.thumbnail && <div className="card-thumbnail"><img src={article.thumbnail} alt="" loading="lazy" /></div>}
+            <div className="card-header">
+              <h3>{article.title}</h3>
+              <div className="meta">
+                <span className="author">By: {article.author}</span>
+                <span className="date">Date: {article.date}</span>
+              </div>
+            </div>
+            <div className="card-content"><p>{article.preview}</p></div>
+            <div className="reactions">
+              <button
+                className={`reaction-btn ${animate[article.id]?.thumbsUp ? "animate" : ""}`}
+                onClick={() => handleReaction(article.id, "thumbsUp")}
+                style={{ color: userReactions[article.id]?.thumbsUp ? "#0d6efd" : "grey" }}
+              >
+                👍 {article.reactions.thumbsUp}
+              </button>
+              <button
+                className={`reaction-btn ${animate[article.id]?.thumbsDown ? "animate" : ""}`}
+                onClick={() => handleReaction(article.id, "thumbsDown")}
+                style={{ color: userReactions[article.id]?.thumbsDown ? "#dc3545" : "grey" }}
+              >
+                👎 {article.reactions.thumbsDown}
+              </button>
+              <button
+                className={`reaction-btn ${animate[article.id]?.heart ? "animate" : ""}`}
+                onClick={() => handleReaction(article.id, "heart")}
+                style={{ color: userReactions[article.id]?.heart ? "#ff4081" : "grey" }}
+              >
+                ❤️ {article.reactions.heart}
+              </button>
+            </div>
+            <div className="read-more" onClick={() => navigate(`${selectedCategory}/article/${article.id}`)}>Read More →</div>
+          </div>
+        ))}
+      </div>
+
+      <style>{`
+        .reactions {
+          display: flex;
+          gap: 12px;
+          margin-top: 10px;
+        }
+        .reaction-btn {
+          font-size: 20px;
+          background: none;
+          border: none;
+          cursor: pointer;
+          transition: transform 0.2s;
+        }
+        .reaction-btn.animate {
+          transform: scale(1.4);
+        }
+      `}</style>
+    </div>
+  );
 }
