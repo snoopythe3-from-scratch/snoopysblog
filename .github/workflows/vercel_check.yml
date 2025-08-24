@@ -37,15 +37,15 @@ jobs:
             const exists = issues.some(issue => issue.title === title);
 
             if (!exists) {
-              const body = `
-Deployment to Vercel failed
-
-**Details:**  
-- Status: \`Failed\`  
-- Logs: [View Deployment](${context.payload.deployment_status?.target_url || context.payload.repository?.html_url})
-
-*I am a bot, and this issue was generated automatically.*
-              `.trim();
+              const body = [
+                'Detected a failed deployment to **Vercel**. Please review the logs and recent edits to resolve this issue as soon as possible.,
+                '',
+                '**Details:**',
+                '- Status: `Failed`',
+                `- Logs: [View Deployment](${context.payload.deployment_status?.target_url || context.payload.repository?.html_url})`,
+                '',
+                '*I am a bot, and this issue was generated automatically.*'
+              ].join('\n');
 
               await github.rest.issues.create({
                 owner: context.repo.owner,
