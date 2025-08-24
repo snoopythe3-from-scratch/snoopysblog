@@ -37,11 +37,11 @@ jobs:
                 title,
                 body: `Deployment to Vercel failed
 
-**Details:**  
-- Status: \`Failed\`  
-- Logs: [View Deployment](${context.payload.deployment_status?.target_url || context.payload.repository?.html_url})
-
-*I am a bot, and this issue was generated automatically.*
+                **Details:**  
+                - Status: \`Failed\`  
+                - Logs: [View Deployment](${context.payload.deployment_status?.target_url || context.payload.repository?.html_url})
+                
+                *I am a bot, and this issue was generated automatically.*
                 `,
                 labels: ['deployment', 'HIGH PRIORITY'],
                 assignees: ['polylogue2', 'krxzy_krxzy', 'nouxinf']
