@@ -1,102 +1,133 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { marked } from "marked";
-import sanitizeHtml from "sanitize-html";
+import { useParams } from "react-router-dom";
+import { db, auth } from "../firebaseConfig";
+import { doc, getDoc, updateDoc, increment, setDoc } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
 
 export default function ArticlePage() {
-    const { filename, category } = useParams();
-    const [article, setArticle] = useState(null);
-    const [loading, setLoading] = useState(true);
+  const { filename, category } = useParams();
+  const [article, setArticle] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
+  const [userReactions, setUserReactions] = useState({ thumbsUp: false, thumbsDown: false, heart: false });
+  const [animate, setAnimate] = useState({ thumbsUp: false, thumbsDown: false, heart: false });
+  const [reactions, setReactions] = useState({ thumbsUp: 0, thumbsDown: 0, heart: 0 });
 
-    useEffect(() => {
-        async function fetchArticle() {
-            try {
-                const fileRes = await fetch(`https://corsproxy.io/?url=https://raw.githubusercontent.com/The-Scratch-Channel/the-scratch-channel.github.io/refs/heads/main/AUTOADDED-ARTICLES/${filename}`);
-                const text = await fileRes.text();
-                const lines = text.split("\n");
+  useEffect(() => {
+    onAuthStateChanged(auth, (u) => {
+      setUser(u);
+    });
+  }, []);
 
-                if (lines.length < 3) {
-                    console.warn(`Skipping ${filename}: not enough lines`);
-                    return;
-                }
+  useEffect(() => {
+    async function fetchArticle() {
+      const docRef = doc(db, "articles", filename);
+      const docSnap = await getDoc(docRef);
+      if (!docSnap.exists()) {
+        setArticle(null);
+      } else {
+        const data = docSnap.data();
+        setArticle(data);
+        setReactions({
+          thumbsUp: data.thumbsUp || 0,
+          thumbsDown: data.thumbsDown || 0,
+          heart: data.heart || 0,
+        });
 
-                const metadataRow = lines[2].trim();
-                if (!metadataRow.startsWith("|") || !metadataRow.endsWith("|")) {
-                    console.warn(`Skipping ${filename}: invalid metadata row`);
-                    return;
-                }
-
-                const metadataValues = metadataRow
-                    .split("|")
-                    .map(s => s.trim())
-                    .filter(s => s.length > 0);
-
-                if (metadataValues.length < 3) {
-                    console.warn(`Skipping ${filename}: not enough metadata`);
-                    return;
-                }
-
-                const [title, author, date] = metadataValues;
-                const contentStartIndex = lines.findIndex((line, i) => i > 2 && line.trim() !== "");
-                
-                if (contentStartIndex === -1) {
-                    console.warn(`Skipping ${filename}: no content`);
-                    return;
-                }
-
-                const content = await marked.parse(lines.slice(contentStartIndex).join("\n"));
-
-                let thumbnail = null;
-                const imgRegex = /<img[^>]+src="([^">]+)"/;
-                const imgMatch = content.match(imgRegex);
-                if (imgMatch && imgMatch[1]) {
-                    thumbnail = imgMatch[1];
-                }
-
-                setArticle({
-                    title,
-                    author,
-                    date,
-                    content,
-                    filename,
-                    thumbnail
-                });
-            } catch (error) {
-                console.error("Failed to fetch article:", error);
-            } finally {
-                setLoading(false);
-            }
+        if (user) {
+          const userDocRef = doc(db, "articles", filename, "reactions", user.uid);
+          const userDoc = await getDoc(userDocRef);
+          if (userDoc.exists()) {
+            setUserReactions(userDoc.data());
+          }
         }
-
-        fetchArticle();
-    }, [filename]);
-
-    if (loading) {
-        return <div>Loading article...</div>;
+      }
+      setLoading(false);
     }
+    fetchArticle();
+  }, [filename, user]);
 
-    if (!article) {
-        return <div>Article not found</div>;
-    }
+  const handleReaction = async (type) => {
+    if (!user) return;
+    if (userReactions[type]) return; // already reacted
 
-    return (
-        <div className="page article-full">
-            <div className="article-header">
-                <h1>{article.title}</h1>
-                <div className="meta">
-                    <span className="author">By: {article.author}</span>
-                    <span className="date">Date: {article.date}</span>
-                </div>
-            </div>
-            {article.thumbnail && (
-                <div className="article-thumbnail">
-                    <img src={article.thumbnail} alt="Article thumbnail" />
-                </div>
-            )}
-            <div
-                className="article-full-content"
-                dangerouslySetInnerHTML={{ __html: article.content }}
-            />
+    setAnimate((prev) => ({ ...prev, [type]: true }));
+    setTimeout(() => setAnimate((prev) => ({ ...prev, [type]: false })), 200);
+
+    const articleRef = doc(db, "articles", filename);
+    await updateDoc(articleRef, { [type]: increment(1) });
+
+    const userDocRef = doc(db, "articles", filename, "reactions", user.uid);
+    await setDoc(userDocRef, { ...userReactions, [type]: true }, { merge: true });
+
+    setReactions((prev) => ({ ...prev, [type]: prev[type] + 1 }));
+    setUserReactions((prev) => ({ ...prev, [type]: true }));
+  };
+
+  if (loading) return <div>Loading article...</div>;
+  if (!article) return <div>Article not found</div>;
+  if (article.category !== category) return <div>Category mismatch</div>;
+
+  return (
+    <div className="page article-full">
+      <div className="article-header">
+        <h1>{article.title}</h1>
+        <div className="meta">
+          <span className="author">By: {article.author}</span>
+          <span className="date">Date: {article.date}</span>
+          <span className="category">Category: {article.category}</span>
         </div>
-    );
+      </div>
+
+      {article.thumbnail && (
+        <div className="article-thumbnail">
+          <img src={article.thumbnail} alt="Article thumbnail" />
+        </div>
+      )}
+
+      <div className="article-full-content" dangerouslySetInnerHTML={{ __html: article.content }} />
+
+      <div className="reactions">
+        <button
+          className={`reaction-btn ${animate.thumbsUp ? "animate" : ""}`}
+          onClick={() => handleReaction("thumbsUp")}
+          style={{ color: userReactions.thumbsUp ? "#0d6efd" : "grey" }}
+        >
+          👍 {reactions.thumbsUp}
+        </button>
+        <button
+          className={`reaction-btn ${animate.thumbsDown ? "animate" : ""}`}
+          onClick={() => handleReaction("thumbsDown")}
+          style={{ color: userReactions.thumbsDown ? "#dc3545" : "grey" }}
+        >
+          👎 {reactions.thumbsDown}
+        </button>
+        <button
+          className={`reaction-btn ${animate.heart ? "animate" : ""}`}
+          onClick={() => handleReaction("heart")}
+          style={{ color: userReactions.heart ? "#ff4081" : "grey" }}
+        >
+          ❤️ {reactions.heart}
+        </button>
+      </div>
+
+      <style>{`
+        .reactions {
+          display: flex;
+          gap: 12px;
+          margin-top: 20px;
+        }
+        .reaction-btn {
+          font-size: 24px;
+          background: none;
+          border: none;
+          cursor: pointer;
+          transition: transform 0.2s;
+        }
+        .reaction-btn.animate {
+          transform: scale(1.4);
+        }
+      `}</style>
+    </div>
+  );
 }
