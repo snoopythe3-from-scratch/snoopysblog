@@ -53,7 +53,7 @@ jobs:
                 '*I am a bot, and this issue was generated automatically.*'
               ].join('\n');
 
-              await github.rest.issues.create({
+              const createdIssue = await github.rest.issues.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 title,
@@ -61,6 +61,15 @@ jobs:
                 labels: ['deployment', 'HIGH PRIORITY'],
                 assignees: ['polylogue2', 'snoopythe3-from-scratch', 'kRxZykRxZy', 'nouxinf']
               });
+
+              // Pin the newly created issue
+              await github.request('PUT /repos/{owner}/{repo}/issues/{issue_number}/pin', {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: createdIssue.data.number
+              });
+
+              console.log(`Created and pinned issue #${createdIssue.data.number}`);
             } else {
               console.log('Issue already exists.');
             }
