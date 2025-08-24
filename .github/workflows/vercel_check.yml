@@ -37,12 +37,18 @@ jobs:
             const exists = issues.some(issue => issue.title === title);
 
             if (!exists) {
+              const sha = context.payload.deployment?.sha || 'unknown';
+              const repoUrl = context.payload.repository?.html_url || '';
+              const commitUrl = `${repoUrl}/commit/${sha}`;
+              const deploymentUrl = context.payload.deployment_status?.target_url || repoUrl;
+
               const body = [
-                'Detected a failed deployment to **Vercel**. Please review the logs and recent edits to resolve this issue as soon as possible.,
+                'Detected a failed deployment to **Vercel**. Please review the logs and recent edits to resolve this issue as soon as possible.',
                 '',
                 '**Details:**',
                 '- Status: `Failed`',
-                `- Logs: [View Deployment](${context.payload.deployment_status?.target_url || context.payload.repository?.html_url})`,
+                `- Logs: [View Deployment](${deploymentUrl})`,
+                `- Commit: [\`${sha.substring(0, 7)}\`](${commitUrl})`,
                 '',
                 '*I am a bot, and this issue was generated automatically.*'
               ].join('\n');
