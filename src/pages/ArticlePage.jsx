@@ -49,15 +49,28 @@ export default function ArticlePage() {
 
   const handleReaction = async (type) => {
     if (!user) return;
-    if (userReactions[type]) return; // already reacted
 
+    const articleRef = doc(db, "articles", filename);
+    const userDocRef = doc(db, "articles", filename, "reactions", user.uid);
+
+    // If user already reacted, remove the reaction (decrement)
+    if (userReactions[type]) {
+      setAnimate((prev) => ({ ...prev, [type]: true }));
+      setTimeout(() => setAnimate((prev) => ({ ...prev, [type]: false })), 200);
+
+      await updateDoc(articleRef, { [type]: increment(-1) });
+      await setDoc(userDocRef, { ...userReactions, [type]: false }, { merge: true });
+
+      setReactions((prev) => ({ ...prev, [type]: Math.max(0, prev[type] - 1) }));
+      setUserReactions((prev) => ({ ...prev, [type]: false }));
+      return;
+    }
+
+    // Otherwise add the reaction (increment)
     setAnimate((prev) => ({ ...prev, [type]: true }));
     setTimeout(() => setAnimate((prev) => ({ ...prev, [type]: false })), 200);
 
-    const articleRef = doc(db, "articles", filename);
     await updateDoc(articleRef, { [type]: increment(1) });
-
-    const userDocRef = doc(db, "articles", filename, "reactions", user.uid);
     await setDoc(userDocRef, { ...userReactions, [type]: true }, { merge: true });
 
     setReactions((prev) => ({ ...prev, [type]: prev[type] + 1 }));
