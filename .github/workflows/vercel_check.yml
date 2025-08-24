@@ -4,17 +4,23 @@ on:
   deployment_status:
 
 jobs:
-  handle-vercel-failure:
-    if: ${{ github.event.deployment_status.state == 'failure' && github.event.deployment.environment == 'Production' }}
+  monitor-vercel-deployment:
     runs-on: ubuntu-latest
     permissions:
       issues: write
 
     steps:
-      - name: Wait 10 seconds before checking
+      - name: Wait 10 seconds to allow Vercel checks to complete
         run: sleep 10
 
-      - name: Create failure issue if not exists
+      - name: Debug event info (for logging)
+        run: |
+          echo "Deployment status state: ${{ github.event.deployment_status.state }}"
+          echo "Deployment environment: ${{ github.event.deployment.environment }}"
+          echo "Deployment URL: ${{ github.event.deployment_status.target_url }}"
+
+      - name: Handle deployment failure (create issue if needed)
+        if: ${{ github.event.deployment_status.state == 'failure' && github.event.deployment.environment == 'Production' }}
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -36,10 +42,10 @@ jobs:
                 repo: context.repo.repo,
                 title,
                 body: `Deployment to Vercel failed
-
+                
                 **Details:**  
                 - Status: \`Failed\`  
-                - Logs: [View Deployment](${context.payload.deployment_status?.target_url || context.payload.repository?.html_url})
+                - Logs: [View Deployment](${context.payload.deployment_status.target_url || context.payload.repository.html_url})
                 
                 *I am a bot, and this issue was generated automatically.*
                 `,
@@ -50,17 +56,8 @@ jobs:
               console.log('Issue already exists.');
             }
 
-  close-vercel-failure:
-    if: ${{ github.event.deployment_status.state == 'success' && github.event.deployment.environment == 'Production' }}
-    runs-on: ubuntu-latest
-    permissions:
-      issues: write
-
-    steps:
-      - name: Wait 10 seconds before checking
-        run: sleep 10
-
-      - name: Close open failure issue if exists
+      - name: Handle deployment success (close issue if exists)
+        if: ${{ github.event.deployment_status.state == 'success' && github.event.deployment.environment == 'Production' }}
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
