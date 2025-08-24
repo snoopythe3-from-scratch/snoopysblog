@@ -59,7 +59,7 @@ jobs:
                 title,
                 body,
                 labels: ['deployment', 'HIGH PRIORITY'],
-                assignees: ['polylogue2', 'snoopythe3-from-scratch', 'kRxZykRxZy']
+                assignees: ['polylogue2', 'snoopythe3-from-scratch', 'kRxZykRxZy', 'nouxinf']
               });
             } else {
               console.log('Issue already exists.');
