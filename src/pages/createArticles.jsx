@@ -26,36 +26,31 @@ export default function CreateArticle() {
 
   useEffect(() => {
     const token = localStorage.getItem("scratchToken");
-    if (!token) {
-      setLoading(false);
-      return;
-    }
+    if (!token) { setLoading(false); return; }
 
     fetch(`https://corsproxy.io/?url=https://scratch-id.onrender.com/verification/${token}`)
-      .then((res) => res.json())
-      .then((data) => {
+      .then(res => res.json())
+      .then(data => {
         const sessionKey = Object.keys(data)[0];
         if (sessionKey && data[sessionKey]) {
           setScratchUser(data[sessionKey].user);
         }
       })
-      .catch((err) => console.error("Auth error:", err))
+      .catch(err => console.error("Auth error:", err))
       .finally(() => setLoading(false));
   }, []);
 
   if (loading) return <div>Loading...</div>;
-  if (!scratchUser)
-    return (
-      <div className="container mt-4 alert alert-warning">
-        ⚠️ You must be logged in to post.
-      </div>
-    );
-  if (!allowedAdmins.includes(scratchUser))
-    return (
-      <div className="container mt-4 alert alert-danger">
-        🚫 Only admins can create posts.
-      </div>
-    );
+  if (!scratchUser) return (
+    <div className="container mt-4 alert alert-warning">
+      ⚠️ You must be logged in to post.
+    </div>
+  );
+  if (!allowedAdmins.includes(scratchUser)) return (
+    <div className="container mt-4 alert alert-danger">
+      🚫 Only admins can create posts.
+    </div>
+  );
 
   const handleSubmit = async () => {
     if (!title) return alert("Title is required.");
@@ -66,7 +61,7 @@ export default function CreateArticle() {
 
     const fileContent = `| Title | Author | Date | Category |
 |-------|--------|------|----------|
-| ${title} | TSC Offical | ${formattedDate} | ${category} |
+| ${title} | TSC Official | ${formattedDate} | ${category} |
 
 ${content}
 `;
@@ -107,7 +102,7 @@ ${content}
             className="form-control"
             type="text"
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={e => setTitle(e.target.value)}
             placeholder="Enter your article title..."
           />
         </div>
@@ -133,73 +128,31 @@ ${content}
           <select
             className="form-select"
             value={category}
-            onChange={(e) => setCategory(e.target.value)}
+            onChange={e => setCategory(e.target.value)}
           >
-            {categories.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
-              </option>
+            {categories.map(cat => (
+              <option key={cat} value={cat}>{cat}</option>
             ))}
           </select>
         </div>
 
         <div className="mb-3">
           <label className="form-label">Content</label>
-
-          {/* Toolbar */}
           <div className="btn-group mb-2" role="group">
-            <button
-              type="button"
-              className="btn btn-sm btn-outline-primary"
-              onClick={() => editor.chain().focus().toggleBold().run()}
-            >
-              B
-            </button>
-            <button
-              type="button"
-              className="btn btn-sm btn-outline-primary"
-              onClick={() => editor.chain().focus().toggleItalic().run()}
-            >
-              I
-            </button>
-            <button
-              type="button"
-              className="btn btn-sm btn-outline-primary"
-              onClick={() => editor.chain().focus().toggleUnderline().run()}
-            >
-              U
-            </button>
-            <button
-              type="button"
-              className="btn btn-sm btn-outline-primary"
-              onClick={() => {
-                const url = prompt("Enter link URL");
-                if (url) editor.chain().focus().setLink({ href: url }).run();
-              }}
-            >
-              🔗
-            </button>
-            <button
-              type="button"
-              className="btn btn-sm btn-outline-primary"
-              onClick={addImage}
-            >
-              🖼️
-            </button>
+            <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => editor.chain().focus().toggleBold().run()}>B</button>
+            <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => editor.chain().focus().toggleItalic().run()}>I</button>
+            <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => editor.chain().focus().toggleUnderline().run()}>U</button>
+            <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => { const url = prompt("Enter link URL"); if (url) editor.chain().focus().setLink({ href: url }).run(); }}>🔗</button>
+            <button type="button" className="btn btn-sm btn-outline-primary" onClick={addImage}>🖼️</button>
           </div>
-
           <div className="editor-container border rounded p-2">
             <EditorContent editor={editor} />
           </div>
         </div>
 
         <div className="d-flex gap-3 mt-3">
-          <button className="btn btn-primary" onClick={handleSubmit}>
-            Submit
-          </button>
-          <button className="btn btn-secondary" onClick={() => navigate("/")}>
-            Cancel
-          </button>
+          <button className="btn btn-primary" onClick={handleSubmit}>Submit</button>
+          <button className="btn btn-secondary" onClick={() => navigate("/")}>Cancel</button>
         </div>
       </div>
     </div>
