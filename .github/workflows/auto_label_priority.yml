@@ -23,13 +23,16 @@ jobs:
 
             let labelsToAdd = [];
 
-            const hasKeyword = (keywords) => keywords.some(k => title.includes(k) || body.includes(k));
-            const hasLabel = (label) => existingLabels.includes(label);
+            const hasKeyword = (keywords) =>
+              keywords.some(k => title.includes(k) || body.includes(k));
+
+            const hasLabel = (label) =>
+              existingLabels.includes(label.toLowerCase());
 
             if (hasKeyword(["urgent"])) {
               labelsToAdd.push("HIGH PRIORITY");
             }
-            
+
             if (hasKeyword(["deployment"]) || hasLabel("deployment")) {
               labelsToAdd.push("HIGH PRIORITY");
               if (!hasLabel("deployment")) labelsToAdd.push("deployment");
@@ -45,10 +48,16 @@ jobs:
               if (!hasLabel("enhancement")) labelsToAdd.push("enhancement");
             }
 
-            labelsToAdd = [...new Set(labelsToAdd)];
+            // Remove duplicates and filter out existing labels
+            labelsToAdd = [...new Set(labelsToAdd)]
+              .filter(label => !hasLabel(label));
 
-            if (labelsToAdd.length === 0) return;
+            if (labelsToAdd.length === 0) {
+              console.log("No new labels to add.");
+              return;
+            }
 
+            // Add new labels
             await github.rest.issues.addLabels({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -56,10 +65,11 @@ jobs:
               labels: labelsToAdd
             });
 
+            // Comment on the issue
             const labelList = labelsToAdd.map(label => '`' + label + '`').join(' ');
             const commentBody = "The following label(s) were added to this issue: " + labelList + "\n\n*I am a bot, and this action was performed automatically.*";
 
-            const comment = await github.rest.issues.createComment({
+            await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: issue.number,
