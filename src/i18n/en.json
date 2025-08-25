@@ -1,5 +1,12 @@
 {
     "misc": {
         "chooselang": "Select your language"
+    },
+    "header": {
+        "home": "Home",
+        "language": "Language",
+        "about": "About Us",
+        "write": "Write",
+        "account": "Account"
     }
 }

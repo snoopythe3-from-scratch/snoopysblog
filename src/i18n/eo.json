@@ -1,5 +1,12 @@
 {
     "misc": {
         "chooselang": "Selektu cia lingvo"
+    },
+    "header": {
+        "home": "Domo",
+        "language": "Lingvo",
+        "about": "Pri Ni",
+        "write": "Skribu",
+        "account": "Kliento"
     }
 }
