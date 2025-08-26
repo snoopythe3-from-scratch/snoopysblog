@@ -9,8 +9,6 @@ import ArticlePage from "./pages/ArticlePage";
 import LoginPage from "./pages/Login";
 import Account from "./pages/Account";
 import SignUpForm from "./pages/SignUp";
-import LangPage from "./pages/Lang";
-
 import { auth, db } from "./firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
@@ -70,7 +68,6 @@ function App() {
         <Route path="/account" element={<Account />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpForm />} />
-        <Route path="/lang" element={<LangPage />} />
       </Routes>
       <Footer />
     </Router>
