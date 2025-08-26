@@ -2,18 +2,17 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { auth } from "../firebaseConfig";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function Account() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // listen for auth state changes
+    // listen for auth state changes any change causes thiz
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
     });
 
+    // sign out and remove local data from browserz
     return () => unsubscribe();
   }, []);
 
@@ -28,41 +27,21 @@ export default function Account() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
-      <Card className="w-full max-w-md shadow-lg rounded-2xl">
-        <CardHeader>
-          <CardTitle className="text-center text-xl font-semibold">
-            {user ? "Your Account" : "Welcome"}
-          </CardTitle>
-        </CardHeader>
-
-        <CardContent className="flex flex-col items-center gap-4">
-          {user ? (
-            <>
-              <p className="text-gray-700">Welcome, <span className="font-medium">{user.email}</span> 🎉</p>
-              <Button 
-                onClick={handleLogout} 
-                variant="destructive" 
-                className="w-full"
-              >
-                Log out
-              </Button>
-            </>
-          ) : (
-            <>
-              <p className="text-gray-600">What would you like to do?</p>
-              <div className="flex gap-4 mt-2">
-                <Link to="/login">
-                  <Button className="w-28">Log in</Button>
-                </Link>
-                <Link to="/signup">
-                  <Button variant="outline" className="w-28">Sign up</Button>
-                </Link>
-              </div>
-            </>
-          )}
-        </CardContent>
-      </Card>
+    <div style={{ padding: "20px", textAlign: "center" }}>
+      {user ? (
+        <>
+          <p>Welcome, {user.email}!</p>
+          <button onClick={handleLogout}>Log out</button>
+        </>
+      ) : (
+        <>
+          <p>What would you like to do?</p>
+          <div style={{ marginTop: "10px" }}>
+            <Link to="/login" style={{ marginRight: "15px" }}>Log in</Link>
+            <Link to="/signup">Sign up</Link>
+          </div>
+        </>
+      )}
     </div>
   );
 }
