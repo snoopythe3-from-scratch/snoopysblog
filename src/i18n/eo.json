@@ -1,0 +1,27 @@
+{
+    "misc": {
+        "chooselang": "Selektu cia lingvo"
+    },
+    "header": {
+        "home": "Domo",
+        "language": "Lingvo",
+        "about": "Pri Ni",
+        "write": "Skribu",
+        "account": "Kliento"
+    },
+    "footer": {
+        "disclaimer": "ne estas aligita kun Scratch, la Scratch Team, aŭ la Scratch Foundation.",
+        "headingabout": "Pri",
+        "headinglinks": "Risurcoj",
+        "headingcommunity": "Komunumo",
+        "aboutlink": "Pri kaj Kreditoj",
+        "licenselink": "Licenco",
+        "statuslink": "Statuso",
+        "articleslink": "Artikoloj",
+        "googlebusinesslink": "Google Business",
+        "issuelink": "Riporti problemon",
+        "reviewlink": "Recenzu nin",
+        "forumlink": "Retforumo",
+        "githublink": "GitHub"
+    }
+}
