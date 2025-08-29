@@ -11,6 +11,7 @@ import Account from "./pages/Account";
 import SignUpForm from "./pages/SignUp";
 import MakeAdmin from "./pages/MakeAdmin";
 import UserList from "./pages/UserList";
+import ArticleChat from "./pages/ArticleChat";
 import { auth, db } from "./firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
@@ -81,6 +82,7 @@ function App() {
         />
         <Route path="/about" element={<About />} />
         <Route path="/:category/article/:filename" element={<ArticlePage />} />
+        <Route path="/:category/article/:filename/chat" element={<ArticleChat user={user} />} />
         <Route path="/account" element={<Account />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpForm />} />
