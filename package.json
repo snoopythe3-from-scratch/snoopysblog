@@ -2,8 +2,8 @@
   "name": "the-scratch-channel.github.io",
   "private": true,
   "version": "0.0.0",
-  "type": "module",asgasgasgasg
-  "scripts": {asfasfasfasfasf
+  "type": "module",
+  "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
