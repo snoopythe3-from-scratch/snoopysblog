@@ -9,6 +9,8 @@ import ArticlePage from "./pages/ArticlePage";
 import LoginPage from "./pages/Login";
 import Account from "./pages/Account";
 import SignUpForm from "./pages/SignUp";
+import MakeAdmin from "./pages/MakeAdmin";
+import UserList from "./pages/UserList";
 import { auth, db } from "./firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
@@ -62,6 +64,20 @@ function App() {
               <p>Not authorized</p>
             )
           }
+        />
+        <Route
+          path="/users/:username/admin/create"
+          element={
+            user && profile?.writer ? (
+              <MakeAdmin user={user} profile={profile} />
+            ) : (
+              <p>Not authorized</p>
+            )
+          }
+        />
+        <Route
+          path="/users/all"
+          element={ user && profile?.writer ? <UserList /> : <p>Not authorized</p> }
         />
         <Route path="/about" element={<About />} />
         <Route path="/:category/article/:filename" element={<ArticlePage />} />
