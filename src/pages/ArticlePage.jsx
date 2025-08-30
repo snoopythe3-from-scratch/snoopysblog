@@ -201,7 +201,7 @@ export default function ArticlePage() {
 
     await addDoc(collection(db, "chats", filename, "messages"), {
       text: replyText,
-      username: user.displayName || user.email || "Anonymous",
+      username: user.username || user.email || "Anonymous",
       uid: user.uid,
       createdAt: serverTimestamp(),
       reports: 0,
