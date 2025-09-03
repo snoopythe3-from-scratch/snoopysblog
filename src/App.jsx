@@ -11,7 +11,6 @@ import Account from "./pages/Account";
 import SignUpForm from "./pages/SignUp";
 import MakeAdmin from "./pages/MakeAdmin";
 import UserList from "./pages/UserList";
-import ArticleChat from "./pages/ArticleChat";
 import { auth, db } from "./firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
