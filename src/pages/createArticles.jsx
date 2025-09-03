@@ -16,6 +16,7 @@ import "@mdxeditor/editor/style.css";
 
 import { db } from "../firebaseConfig";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { useTranslation } from "react-i18next";
 
 export default function CreateArticle({ user, profile }) {
   const navigate = useNavigate();
@@ -29,6 +30,7 @@ export default function CreateArticle({ user, profile }) {
   );
 
   const [content, setContent] = useState("");
+  const [ t, i18n ] = useTranslation();
 
   if (!profile?.writer) return <p>Not authorized to create articles</p>;
 
@@ -50,21 +52,21 @@ export default function CreateArticle({ user, profile }) {
   return (
     <div className="container mt-4">
       <div className="card shadow p-4">
-        <h1 className="mb-4">Create Article</h1>
+        <h1 className="mb-4">{t("write.heading")}</h1>
 
         <div className="mb-3">
-          <label className="form-label">Title</label>
+          <label className="form-label">{t("write.title")}</label>
           <input
             className="form-control"
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="Enter your article title..."
+            placeholder={t("write.title-placeholder")}
           />
         </div>
 
         <div className="mb-3">
-          <label className="form-label">Author</label>
+          <label className="form-label">{t("write.author")}</label>
           <input
             className="form-control"
             type="text"
@@ -75,7 +77,7 @@ export default function CreateArticle({ user, profile }) {
         </div>
 
         <div className="mb-3">
-          <label className="form-label">Date</label>
+          <label className="form-label">{t("write.date")}</label>
           <input
             className="form-control"
             type="date"
@@ -86,7 +88,7 @@ export default function CreateArticle({ user, profile }) {
         </div>
 
         <div className="mb-3">
-          <label className="form-label">Category</label>
+          <label className="form-label">{t("write.category")}</label>
           <select
             className="form-select"
             value={category}
@@ -101,7 +103,7 @@ export default function CreateArticle({ user, profile }) {
         </div>
 
         <div className="mb-3">
-          <label className="form-label">Content</label>
+          <label className="form-label">{t("write.content")}</label>
           <MDXEditor
             markdown={content}
             onChange={setContent}
@@ -126,10 +128,10 @@ export default function CreateArticle({ user, profile }) {
 
         <div className="d-flex gap-3 mt-3">
           <button className="btn btn-primary" onClick={handleSubmit}>
-            Submit
+            {t("write.submit")}
           </button>
           <button className="btn btn-secondary" onClick={() => navigate("/")}>
-            Cancel
+            {t("write.cancel")}
           </button>
         </div>
       </div>
