@@ -5,6 +5,7 @@ import {
   doc, getDoc, updateDoc, increment, setDoc
 } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
+import { useTranslation } from "react-i18next";
 
 export default function ArticlePage() {
   const { filename, category } = useParams();
@@ -15,6 +16,7 @@ export default function ArticlePage() {
   const [userReactions, setUserReactions] = useState({ thumbsUp: false, thumbsDown: false, heart: false });
   const [animate, setAnimate] = useState({ thumbsUp: false, thumbsDown: false, heart: false });
   const [reactions, setReactions] = useState({ thumbsUp: 0, thumbsDown: 0, heart: 0 });
+  const [ t, i18n ] = useTranslation();
 
   useEffect(() => {
     onAuthStateChanged(auth, (u) => {
@@ -95,9 +97,9 @@ export default function ArticlePage() {
       <div className="article-header">
         <h1>{article.title}</h1>
         <div className="meta">
-          <span className="author">By: {article.author}</span>
-          <span className="date">Date: {article.date}</span>
-          <span className="category">Category: {article.category}</span>
+          <span className="author">{t("main.by")}: {article.author}</span>
+          <span className="date">{t("main.date")}: {article.date}</span>
+          <span className="category">{t("main.category")}: {article.category}</span>
         </div>
       </div>
 
@@ -134,7 +136,7 @@ export default function ArticlePage() {
       </div>
 
       <div style={{ marginTop: 10 }}>
-        <Link to={`/`}>← Back to Categories</Link>
+        <Link to={`/`}>← {t("main.back-cat")}</Link>
       </div>
 
       <style>{`
