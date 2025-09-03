@@ -2,17 +2,19 @@ import React, { useState } from "react";
 import { auth } from "../firebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const [ t, i18n ] = useTranslation();
 
   const handleSignIn = async (e) => {
     e.preventDefault();
 
     if (!email || !password) {
-      alert("Please enter both email and password.");
+      alert(t("login.emailpass-error"));
       return;
     }
 
@@ -40,7 +42,7 @@ export default function LoginPage() {
         onChange={(e) => setPassword(e.target.value)}
         placeholder="Password"
       />
-      <button type="submit">Sign In</button>
+      <button type="submit">{t("login.signin")}</button>
     </form>
   );
 }
