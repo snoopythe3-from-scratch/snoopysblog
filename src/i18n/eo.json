@@ -1,0 +1,51 @@
+{
+    "misc": {
+        "chooselang": "Selektu cia lingvo"
+    },
+    "header": {
+        "home": "Domo",
+        "language": "Lingvo",
+        "about": "Pri Ni",
+        "write": "Skribu",
+        "account": "Kliento"
+    },
+    "footer": {
+        "disclaimer": "ne estas aligita kun Scratch, la Scratch Team, aŭ la Scratch Foundation.",
+        "headingabout": "Pri",
+        "headinglinks": "Risurcoj",
+        "headingcommunity": "Komunumo",
+        "aboutlink": "Pri kaj Kreditoj",
+        "licenselink": "Licenco",
+        "statuslink": "Statuso",
+        "articleslink": "Artikoloj",
+        "googlebusinesslink": "Google Business",
+        "issuelink": "Riporti problemon",
+        "reviewlink": "Recenzu nin",
+        "forumlink": "Retforumo",
+        "githublink": "GitHub"
+    },
+    "main": {
+        "welcome": "Bonvenon al The Scratch Channel",
+        "cat-news": "Scratch Novaĵo",
+        "cat-announcements": "TSC Anoncadoj",
+        "cat-update": "TSC Ĝisdatiga Protokolo",
+        "back-cat": "Reen al Kategorioj",
+        "readmore": "Legu Pli",
+        "by": "De",
+        "date": "Dato",
+        "category": "Kategorio"
+    },
+    "write": {
+        "heading": "Krei Artikolon",
+        "title": "Titolo",
+        "author": "Aŭtoro",
+        "date": "Dato",
+        "category": "Kategorio",
+        "content": "Enhavo",
+        "submit": "Sendu",
+        "cancel": "Forgesu",
+        "unauthorised": "Ne rajtigita krei artikolojn",
+        "title-err": "Titolo estas bezonata",
+        "title-placeholder": "Enigu la titolon de via artikolo..."
+    }
+}
