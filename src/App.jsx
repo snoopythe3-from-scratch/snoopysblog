@@ -82,7 +82,6 @@ function App() {
         />
         <Route path="/about" element={<About />} />
         <Route path="/:category/article/:filename" element={<ArticlePage />} />
-        <Route path="/:category/article/:filename/chat" element={<ArticleChat user={user} />} />
         <Route path="/account" element={<Account />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpForm />} />
