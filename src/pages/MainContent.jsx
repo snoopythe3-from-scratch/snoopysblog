@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { db, auth } from "../firebaseConfig";
 import { collection, getDocs, doc, getDoc, updateDoc, increment, setDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
+import { useTranslation } from "react-i18next";
 
 export default function MainContent() {
   const [categories, setCategories] = useState([]);
@@ -12,6 +13,7 @@ export default function MainContent() {
   const [userReactions, setUserReactions] = useState({});
   const [animate, setAnimate] = useState({});
   const navigate = useNavigate();
+  const [ t, i18n ] = useTranslation();
 
   useEffect(() => {
     onAuthStateChanged(auth, (u) => setUser(u));
@@ -92,7 +94,7 @@ export default function MainContent() {
   if (!selectedCategory) {
     return (
       <div className="page">
-        <h1 style={{ textAlign: "center" }}>Welcome to The Scratch Channel!</h1>
+        <h1 style={{ textAlign: "center" }}>{t("main.welcome")}</h1>
         <div className="categories-container">
           {categories.map((cat) => (
             <div key={cat} className="category-card" onClick={() => setSelectedCategory(cat)}>
@@ -109,7 +111,7 @@ export default function MainContent() {
   return (
     <div className="page">
       <h1 style={{ textAlign: "center" }}>{selectedCategory}</h1>
-      <button className="back-btn" onClick={() => setSelectedCategory(null)}>← Back to Categories</button>
+      <button className="back-btn" onClick={() => setSelectedCategory(null)}>← {t("main.back-cat")}</button>
 
       <div className="articles-container">
         {articles.map((article) => (
@@ -118,8 +120,8 @@ export default function MainContent() {
             <div className="card-header">
               <h3>{article.title}</h3>
               <div className="meta">
-                <span className="author">By: {article.author}</span>
-                <span className="date">Date: {article.date}</span>
+                <span className="author">{t("main.by")}: {article.author}</span>
+                <span className="date">{t("main.date")}: {article.date}</span>
               </div>
             </div>
             <div className="card-content"><center>{article.content.replace("<p>", "").replace("</p>", "")}</center></div>
@@ -146,7 +148,7 @@ export default function MainContent() {
                 ❤️ {article.reactions.heart}
               </button>
             </div>
-            <div className="read-more" onClick={() => navigate(`${selectedCategory}/article/${article.id}`)}>Read More →</div>
+            <div className="read-more" onClick={() => navigate(`${selectedCategory}/article/${article.id}`)}>{t("main.readmore")} →</div>
           </div>
         ))}
       </div>
