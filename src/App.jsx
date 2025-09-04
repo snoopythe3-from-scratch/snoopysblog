@@ -50,16 +50,38 @@ function App() {
     return () => unsubscribe();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div
-          className="animate-spin rounded-full h-16 w-16 border-4 border-t-transparent"
-          style={{ borderColor: "#4E97FE", borderTopColor: "transparent" }}
-        />
-      </div>
-    );
-  }
+if (loading) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "100vh",
+      }}
+    >
+      <div
+        style={{
+          border: "6px solid #4E97FE",
+          borderTop: "6px solid transparent",
+          borderRadius: "50%",
+          width: "64px",
+          height: "64px",
+          animation: "spin 1s linear infinite",
+        }}
+      />
+      <style>
+        {`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}
+      </style>
+    </div>
+  );
+}
+
 
   return (
     <Router>
