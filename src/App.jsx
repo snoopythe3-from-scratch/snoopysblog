@@ -50,7 +50,16 @@ function App() {
     return () => unsubscribe();
   }, []);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div
+          className="animate-spin rounded-full h-16 w-16 border-4 border-t-transparent"
+          style={{ borderColor: "#4E97FE", borderTopColor: "transparent" }}
+        />
+      </div>
+    );
+  }
 
   return (
     <Router>
