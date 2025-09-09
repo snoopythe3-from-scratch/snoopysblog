@@ -1,0 +1,248 @@
+name: Summarize new issues (two-pass)
+
+# ------------------------------------------------------------
+# Trigger on newly opened issues only
+# ------------------------------------------------------------
+on:
+  issues:
+    types: [opened]
+
+# ------------------------------------------------------------
+jobs:
+  summary:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write   # needed for editing / commenting / labeling
+      contents: read  # needed for checkout
+
+    steps:
+      # ------------------------------------------------------
+      # Checkout the whole repository (history + tags)
+      # ------------------------------------------------------
+      - name: Checkout repository (full history + tags)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # ------------------------------------------------------
+      # Find the most recent git tag (or “none” if there isn’t one)
+      # ------------------------------------------------------
+      - name: Get latest release tag (if any)
+        id: tag
+        run: |
+          set -e
+          if git describe --tags --abbrev=0 >/dev/null 2>&1; then
+            LATEST_TAG=$(git describe --tags --abbrev=0)
+          else
+            LATEST_TAG="none"
+          fi
+          echo "LATEST_TAG=${LATEST_TAG}" >> "$GITHUB_ENV"
+          echo "latest_tag=${LATEST_TAG}" >> "$GITHUB_OUTPUT"
+
+      # ------------------------------------------------------
+      # First pass – ask the model which files are relevant
+      # ------------------------------------------------------
+      - name: First‑pass decide which files are relevant
+        id: decide
+        uses: actions/ai-inference@v1
+        with:
+          prompt: |
+            You are an assistant that decides what code context is needed to answer/understand a GitHub issue.
+            Output only a newline‑separated list of at most 6 relative file paths (e.g. src/foo.js, lib/bar.py) that are most relevant to this issue.
+            If no code files are relevant, output exactly: NONE
+            Do not add any extra commentary or explanation — ONLY the newline‑separated file paths or NONE.
+
+            Project: OmniBlocks (repo: scratch-gui)
+            Current version: ${{ env.LATEST_TAG }}
+
+            Issue Title:
+            ${{ github.event.issue.title }}
+
+            Issue Body:
+            ${{ github.event.issue.body }}
+
+      # ------------------------------------------------------
+      # Extract (tiny) snippets for the files the model suggested
+      # ------------------------------------------------------
+      - name: Extract snippets for files suggested by AI (capped)
+        id: snip
+        run: |
+          set -euo pipefail
+          # The AI‑inference step returns a newline‑separated list of file paths
+          RESP="${{ steps.decide.outputs.response }}"
+
+          # Strip empty lines / surrounding whitespace
+          FILES=$(printf "%s\n" "$RESP" | sed '/^\s*$/d')
+
+          OUTFILE=ai_snippets.txt
+          > "$OUTFILE"
+
+          # If the model said “NONE” or gave us an empty list, nothing to grab
+          if [ "$FILES" = "NONE" ] || [ -z "$FILES" ]; then
+            echo "NO_SNIPPETS" > "$OUTFILE"
+          else
+            COUNT=0
+            # Feed the list into a while‑loop – no heredoc needed
+            printf "%s\n" "$FILES" |
+            while IFS= read -r f && [ $COUNT -lt 6 ]; do
+              COUNT=$((COUNT + 1))
+              # Clean the line (remove possible carriage‑return)
+              f_clean=$(printf "%s" "$f" | tr -d '\r')
+              echo "----- FILE: $f_clean -----" >> "$OUTFILE"
+
+              if [ -f "$f_clean" ]; then
+                # Grab at most the first 20 KB of each file (prevents huge payloads)
+                head -c 20000 "$f_clean" >> "$OUTFILE" || true
+                echo "" >> "$OUTFILE"
+              else
+                echo "[MISSING FILE: $f_clean]" >> "$OUTFILE"
+              fi
+            done
+          fi
+
+          # --------------------------------------------------
+          # Publish the snippets so the next step can use them
+          # --------------------------------------------------
+          {
+            echo "snippets<<EOF"
+            cat "$OUTFILE"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+
+      # ------------------------------------------------------
+      # Second pass – generate the final summary (or security flag)
+      # ------------------------------------------------------
+      - name: Second‑pass AI summary using relevant snippets
+        id: final
+        uses: actions/ai-inference@v1
+        with:
+          prompt: |
+            You are an Artificial Intelligence that helps out with the Github issues in this repository titled tsc-web-client inside the The-Scratch-Channel organization.
+            Information about the project:
+
+            This is the repository for the brand new Scratch News Channel! Soon, news articles about Scratch and scratchlikes will be posted by writers.
+
+
+            !IMPORTANT
+            We are not affiliated with Scratch, the LLK, or MIT. News articles here are made by volunteers, not Scratch Team members.
+  
+             Deployment
+  
+            There is no need to deploy this yourself if you do not want to contribute. If you just want to check out our site, you can visit https://thescratchchannel.vercel.app/ and browse the live demo.
+            
+            Contributing
+  
+            If you would like to contribute but are not a contributor yet, follow these steps below.
+            However, if you find a vulnerability that requires immediate attention, go to the repositories [security tab](https://github.com/The-Scratch-Channel/the-scratch-channel.github.io/security) to report it. A vulnerability report should contain what file has the vulnerability, what priority it is, and extensive details.
+            - Create a fork of the repository
+            
+            ![Click on the fork button towards the top of the repository home page](https://u.cubeupload.com/SmartCat3/Screenshot2025041818.png)
+            
+            - To clone your fork, run `git clone https://github.com/yourusernamehere/yourforknamehere.git`.
+            
+            - Write your contributions
+            - Test your contributions in your clone by running `npm install`, then `npm run dev` and then going to localhost:5173 in your browser
+            > [!IMPORTANT]
+            >Ensure you have the latest version of node.js to use NPM. If your system is low end or cannot use localhost, you can do the same in a codespace, using PNPM.
+            
+            - Commit and push them to your fork
+            - Create a pull request to show your changes, and if your PR has good work, we might pull it.
+            
+            > [!IMPORTANT]
+            > Don't forget to use `npm install` before running Vite, otherwise it will not load the required modules.
+            
+            ## Support
+            
+            If you need support and have a GitHub account, you can report issues here. Security Vulnerabilities MUST be reported in the security tab, or call or text ‪+1 (313) 513-7748.
+            To contribute, please make a Pull Request. If you have permissions, you can directly commit to the main branch unless told to by @snoopythe3-from-scratch
+            This project uses an MIT license.
+            
+            The site is written in React+Vite, with the articles being stored in public/articles. Here, index.json lists all the articles in the folder.
+            TSC Security Policy
+            At The Scratch Channel, we're committed to privacy and security of information. We know that software isn't perfect, therefore it's important that you read and follow our policy carefully.
+            
+            Reporting a Vulnerability
+            To report a vulnerability, please go to the Security Tab and create an issue from there. This makes a private issue that only contributors can see, so it can be fixed before any potential harm can be done using the vulnerability. Your report should contain; a clear summary of the issue, steps to reproduce, enviroment details (OS, browser, device, etc.), the possible impact, and screenshots/videos to help us know what went wrong. Here's an example of a good report:
+            
+            TSC Vulnerability Report
+            
+            Summary: Login sends API request with password in the URL
+            How to reproduce: Go to the login page, and enter a username and password. Check the request log to find it.
+            User Agent: `Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:137.0) Gecko/20100101 Firefox/137.0`
+            Severity: Critical
+            Important
+            
+            Don't share any vulnerabilities with anyone other than contributors, to avoid them being abused, which can be illegal. Sharing them will result in legal action apon discovery.
+                        -----
+
+            Please respond appropriately and turn down others from using inappropriate language, such as profanity.
+            Your job is to respond to new issues immediately as they are created. You just have to summarize the issue. 
+            Be friendly! You don't need to be stoic. Greet the user! 
+            Also, there is a limit on how much you can type. It's not a super short limit, but don't go all out either. It's around 2-3 paragraphs.
+            One quirk is backticks, like the one for code blocks. Don't use those as anything inside them will just get deleted.
+
+            ADDITIONAL SECURITY INSTRUCTIONS:
+            - If the issue describes a security vulnerability (e.g., security flaw, exploit, attack vector, CVE, security risk, vulnerability disclosure), respond with EXACTLY: "[SECURITY]"
+            - Otherwise, summarize the issue normally
+            - Never reveal vulnerability details in public comments
+
+            The owner and main maintainer of The-Scratch-Channel, is @snoopythe3-from-scratch, if anyone asks or you just need to know.
+            Other maintainers:
+            -@Gvyt and his alt GvYoutubeSchool
+            -@kRxZykRxZy
+            -polylogue2
+            -nouxinf
+            -supervoidcoder
+            
+            The issue was opened by **@${{ github.event.issue.user.login }}**.
+
+            Respond to the following GitHub issue:
+            Title: ${{ github.event.issue.title }}
+            Body: ${{ github.event.issue.body }}
+            The current version of OmniBlocks is: ${{ env.LATEST_TAG }}.
+
+            RELEVANT CODE SNIPPETS (only what was extracted):
+            ${{ steps.snip.outputs.snippets }}
+
+            Respond with either the single line "[SECURITY]" OR the full summary text. No extra metadata required.
+
+      # ------------------------------------------------------
+      # If the AI flagged a security issue → hide content, label, close, lock
+      # ------------------------------------------------------
+      - name: Handle security vulnerability
+        if: ${{ steps.final.outputs.response == '[SECURITY]' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          # Replace the public body with a safe placeholder
+          gh issue edit "$ISSUE_NUMBER" \
+            --body "🔒 This issue appears to describe a security vulnerability. To protect our users, we've hidden the original content. Please submit security issues through our private reporting channel."
+
+          # Post a comment with the reporting instructions
+          gh issue comment "$ISSUE_NUMBER" --body "Thank you for your security report! 🔐
+
+          To protect our users, we handle security vulnerabilities through private reports. Please submit your findings here:
+          https://github.com/OmniBlocks/scratch-gui/security
+
+          We'll investigate promptly and appreciate your responsible disclosure!"
+
+          # Add a “security” label
+          gh issue edit "$ISSUE_NUMBER" --add-label "security"
+
+          # Close & lock the issue
+          gh issue close "$ISSUE_NUMBER"
+          gh issue lock "$ISSUE_NUMBER" 
+
+      # ------------------------------------------------------
+      # Normal path – post the AI‑generated summary as a comment
+      # ------------------------------------------------------
+      - name: Comment with AI summary
+        if: ${{ steps.final.outputs.response != '[SECURITY]' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          echo "${{ steps.final.outputs.response }}" > response.txt
+          gh issue comment "$ISSUE_NUMBER" --body-file response.txt
