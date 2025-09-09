@@ -1,77 +1,85 @@
-name: Auto Label and React
+name: AI Issue Categorization
 
 on:
   issues:
     types: [opened, edited]
 
 jobs:
-  label_and_comment:
+  categorize:
     runs-on: ubuntu-latest
     permissions:
       issues: write
+      models: read
+
     steps:
-      - name: Analyze and label issue
-        uses: actions/github-script@v7
-        id: labeler
+      - name: Analyze issue with AI
+        id: ai-categorize
+        uses: actions/ai-inference@v1
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          prompt: |
+            Categorize this GitHub issue using one or more of these labels: 
+            bug, question, enhancement, documentation, dependencies, 
+            help-wanted, HIGH-PRIORITY, Medium-Priority, Low-Priority, 
+            invalid, javascript, wontfix, update, release, deployment.
+            Always add at least one priority one.
+            Respond ONLY with comma-separated label names. No explanations. No extra characters.
+            
+            Issue Title: ${{ github.event.issue.title }}
+            Issue Body: |
+              ${{ github.event.issue.body }}
+
+      - name: Clean AI output
+        id: clean-label
+        run: |
+          # Clean and normalize AI output
+          RAW_OUTPUT='${{ steps.ai-categorize.outputs.response }}'
+          CLEANED=$(echo "$RAW_OUTPUT" | \
+            tr '[:upper:]' '[:lower:]' | \
+            sed -e 's/["'\''$$$$]//g' -e 's/[, ]\+/, /g' -e 's/^[ ,]*//' -e 's/[ ,]*$//')
+          
+          echo "raw_labels=$CLEANED" >> $GITHUB_OUTPUT
+
+      - name: Apply validated labels
+        uses: actions/github-script@v6
+        with:
           script: |
-            const issue = context.payload.issue;
-            const title = issue.title.toLowerCase();
-            const body = (issue.body || "").toLowerCase();
-            const existingLabels = issue.labels.map(l => l.name.toLowerCase());
-
-            let labelsToAdd = [];
-
-            const hasKeyword = (keywords) =>
-              keywords.some(k => title.includes(k) || body.includes(k));
-
-            const hasLabel = (label) =>
-              existingLabels.includes(label.toLowerCase());
-
-            if (hasKeyword(["urgent"])) {
-              labelsToAdd.push("HIGH PRIORITY");
+            // Valid labels with exact casing
+            const validLabels = new Set([
+              'bug', 'question', 'enhancement', 'documentation', 
+              'dependencies', 'help-wanted', 'HIGH-PRIORITY', 
+              'Medium-Priority', 'Low-Priority', 'invalid', 
+              'javascript', 'wontfix', 'update', 'release', 'deployment'
+            ]);
+            
+            // Case-insensitive mapping
+            const labelMap = new Map();
+            validLabels.forEach(label => {
+              labelMap.set(label.toLowerCase(), label);
+            });
+            
+            // Process AI output
+            const rawLabels = '${{ steps.clean-label.outputs.raw_labels }}';
+            const receivedLabels = new Set();
+            const finalLabels = new Set();
+            
+            // Split and validate labels
+            rawLabels.split(/\s*,\s*/).forEach(label => {
+              const normalized = label.trim().toLowerCase();
+              if (labelMap.has(normalized) && !receivedLabels.has(normalized)) {
+                finalLabels.add(labelMap.get(normalized));
+                receivedLabels.add(normalized);
+              }
+            });
+            
+            // Add fallback if no valid labels found
+            if (finalLabels.size === 0) {
+              finalLabels.add('question');
             }
-
-            if (hasKeyword(["deployment"]) || hasLabel("deployment")) {
-              labelsToAdd.push("HIGH PRIORITY");
-              if (!hasLabel("deployment")) labelsToAdd.push("deployment");
-            }
-
-            if (hasKeyword(["bug"]) || hasLabel("bug")) {
-              labelsToAdd.push("Medium Priority");
-              if (!hasLabel("bug")) labelsToAdd.push("bug");
-            }
-
-            if (hasKeyword(["enhancement", "request", "suggestion"]) || hasLabel("enhancement")) {
-              labelsToAdd.push("Low Priority");
-              if (!hasLabel("enhancement")) labelsToAdd.push("enhancement");
-            }
-
-            // Remove duplicates and filter out existing labels
-            labelsToAdd = [...new Set(labelsToAdd)]
-              .filter(label => !hasLabel(label));
-
-            if (labelsToAdd.length === 0) {
-              console.log("No new labels to add.");
-              return;
-            }
-
-            // Add new labels
+            
+            // Apply labels to issue
             await github.rest.issues.addLabels({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: issue.number,
-              labels: labelsToAdd
-            });
-
-            // Comment on the issue
-            const labelList = labelsToAdd.map(label => '`' + label + '`').join(' ');
-            const commentBody = "The following label(s) were added to this issue: " + labelList + "\n\n*I am a bot, therefore I may make mistakes.* This is [AutoLabel](https://github.com/polylogue2/autolabel).";
-
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: issue.number,
-              body: commentBody
+              issue_number: ${{ github.event.issue.number }},
+              labels: Array.from(finalLabels)
             });
