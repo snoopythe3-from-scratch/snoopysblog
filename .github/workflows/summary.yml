@@ -7,25 +7,26 @@ on:
   issues:
     types: [opened]
 
-# ------------------------------------------------------------
 jobs:
   summary:
     runs-on: ubuntu-latest
     permissions:
-      issues: write   # needed for editing / commenting / labeling
-      contents: read  # needed for checkout
+      issues: write          # edit / comment / label
+      contents: read         # checkout repo
+      pull-requests: read    # list recent PRs
+      repository-projects: read         # read the GitHub Project board
 
     steps:
       # ------------------------------------------------------
-      # Checkout the whole repository (history + tags)
+      # 1️⃣ Checkout the whole repository (history + tags)
       # ------------------------------------------------------
       - name: Checkout repository (full history + tags)
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0   # needed for tag lookup
 
       # ------------------------------------------------------
-      # Find the most recent git tag (or “none” if there isn’t one)
+      # 2️⃣ Find the most recent git tag (or “none”)
       # ------------------------------------------------------
       - name: Get latest release tag (if any)
         id: tag
@@ -40,17 +41,92 @@ jobs:
           echo "latest_tag=${LATEST_TAG}" >> "$GITHUB_OUTPUT"
 
       # ------------------------------------------------------
-      # First pass – ask the model which files are relevant
+      # 3️⃣ **NEW** – Build a live “project status” snapshot
+      # ------------------------------------------------------
+      - name: Generate real‑time project status report
+        id: project-status
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ORG: The-Scratch-Channel
+          REPO: tsc-web-client
+          PROJECT_NUMBER: 1          # <- the number you see in the URL /projects/1
+        run: |
+          STATUS_FILE="project_status_report.txt"
+          echo "# Real‑Time Project Status Snapshot" > $STATUS_FILE
+          echo "Generated on $(date)" >> $STATUS_FILE
+          echo "-----------------------------------" >> $STATUS_FILE
+          echo "" >> $STATUS_FILE
+
+          # ---- Recent merged PRs (last 10) ----
+          echo "## Recent Merged Pull Requests (last 10)" >> $STATUS_FILE
+          gh pr list \
+            --repo "$ORG/$REPO" \
+            --state merged \
+            --limit 10 \
+            --json number,title,author,url \
+            --jq '.[] | "- PR #$$.number): $$.title) (by $$.author.login)) $$.url)"' \
+            >> $STATUS_FILE 2>/dev/null || echo "⚠️ Could not fetch PRs" >> $STATUS_FILE
+          echo "" >> $STATUS_FILE
+
+          # ---- Recent open issues (last 10) ----
+          echo "## Recent Open Issues (last 10)" >> $STATUS_FILE
+          gh issue list \
+            --repo "$ORG/$REPO" \
+            --state open \
+            --limit 10 \
+            --json number,title,author,url \
+            --jq '.[] | "- Issue #$$.number): $$.title) (by $$.author.login)) $$.url)"' \
+            >> $STATUS_FILE 2>/dev/null || echo "⚠️ Could not fetch issues" >> $STATUS_FILE
+          echo "" >> $STATUS_FILE
+
+          # ---- Project board columns & cards ----
+          echo "## Current GitHub Project Board (Project #$PROJECT_NUMBER)" >> $STATUS_FILE
+          # Get columns
+          gh project column-list "$PROJECT_NUMBER" \
+            --owner "$ORG" \
+            --format json > columns.json 2>/dev/null || echo "⚠️ Could not fetch columns" > columns.json
+
+          if [ -s columns.json ]; then
+            # Loop each column and list up to 5 cards
+            jq -r '.[] | "$$.name)"' columns.json | while read -r COL; do
+              echo "- **$COL**:" >> $STATUS_FILE
+              COL_ID=$(jq -r ".[] | select(.name==\"$COL\") | .id" columns.json)
+              gh project item-list "$PROJECT_NUMBER" \
+                --owner "$ORG" \
+                --column "$COL_ID" \
+                --format json > cards.json 2>/dev/null || echo "⚠️ Could not fetch cards for $COL" > cards.json
+
+              if [ -s cards.json ]; then
+                jq -r '.[] | "- $$.content.title) ($$.content.url))"' cards.json \
+                  | head -n 5 >> $STATUS_FILE
+              else
+                echo "  (no cards)" >> $STATUS_FILE
+              fi
+            done
+          else
+            echo "⚠️ No project data available." >> $STATUS_FILE
+          fi
+
+          # -------------------------------------------------
+          # Export the report for later steps
+          # -------------------------------------------------
+          {
+            echo "status_report<<EOF"
+            cat "$STATUS_FILE"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      # ------------------------------------------------------
+      # 4️⃣ First‑pass – decide which files are relevant
       # ------------------------------------------------------
       - name: First‑pass decide which files are relevant
         id: decide
         uses: actions/ai-inference@v1
         with:
           prompt: |
-            You are an assistant that decides what code context is needed to answer/understand a GitHub issue.
-            Output only a newline‑separated list of at most 6 relative file paths (e.g. src/foo.js, lib/bar.py) that are most relevant to this issue.
+            You are an assistant that decides what code context is needed to understand a GitHub issue.
+            Output only a newline‑separated list of at most 6 relative file paths (e.g. src/foo.js) that are most relevant to this issue.
             If no code files are relevant, output exactly: NONE
-            Do not add any extra commentary or explanation — ONLY the newline‑separated file paths or NONE.
 
             Project: OmniBlocks (repo: scratch-gui)
             Current version: ${{ env.LATEST_TAG }}
@@ -62,36 +138,31 @@ jobs:
             ${{ github.event.issue.body }}
 
       # ------------------------------------------------------
-      # Extract (tiny) snippets for the files the model suggested
+      # 5️⃣ Extract tiny snippets from the files the model suggested
       # ------------------------------------------------------
       - name: Extract snippets for files suggested by AI (capped)
         id: snip
         run: |
           set -euo pipefail
-          # The AI‑inference step returns a newline‑separated list of file paths
           RESP="${{ steps.decide.outputs.response }}"
 
-          # Strip empty lines / surrounding whitespace
+          # Clean empty lines
           FILES=$(printf "%s\n" "$RESP" | sed '/^\s*$/d')
 
           OUTFILE=ai_snippets.txt
           > "$OUTFILE"
 
-          # If the model said “NONE” or gave us an empty list, nothing to grab
           if [ "$FILES" = "NONE" ] || [ -z "$FILES" ]; then
             echo "NO_SNIPPETS" > "$OUTFILE"
           else
             COUNT=0
-            # Feed the list into a while‑loop – no heredoc needed
             printf "%s\n" "$FILES" |
             while IFS= read -r f && [ $COUNT -lt 6 ]; do
               COUNT=$((COUNT + 1))
-              # Clean the line (remove possible carriage‑return)
               f_clean=$(printf "%s" "$f" | tr -d '\r')
               echo "----- FILE: $f_clean -----" >> "$OUTFILE"
 
               if [ -f "$f_clean" ]; then
-                # Grab at most the first 20 KB of each file (prevents huge payloads)
                 head -c 20000 "$f_clean" >> "$OUTFILE" || true
                 echo "" >> "$OUTFILE"
               else
@@ -100,24 +171,29 @@ jobs:
             done
           fi
 
-          # --------------------------------------------------
-          # Publish the snippets so the next step can use them
-          # --------------------------------------------------
           {
             echo "snippets<<EOF"
             cat "$OUTFILE"
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
 
-
       # ------------------------------------------------------
-      # Second pass – generate the final summary (or security flag)
+      # 6️⃣ Second‑pass – **NEW**: prepend live project status,
+      #     then run the original instruction block unchanged
       # ------------------------------------------------------
       - name: Second‑pass AI summary using relevant snippets
         id: final
         uses: actions/ai-inference@v1
         with:
           prompt: |
+            # ------------------------------------------------------
+            # LIVE PROJECT STATUS (auto‑generated)
+            # ------------------------------------------------------
+            ${{ steps.project-status.outputs.status_report }}
+
+            # ------------------------------------------------------
+            # ORIGINAL INSTRUCTION BLOCK (unchanged)
+            # ------------------------------------------------------
             You are an Artificial Intelligence that helps out with the Github issues in this repository titled tsc-web-client inside the The-Scratch-Channel organization.
             Information about the project:
 
@@ -126,13 +202,13 @@ jobs:
 
             !IMPORTANT
             We are not affiliated with Scratch, the LLK, or MIT. News articles here are made by volunteers, not Scratch Team members.
-  
+      
              Deployment
-  
+      
             There is no need to deploy this yourself if you do not want to contribute. If you just want to check out our site, you can visit https://thescratchchannel.vercel.app/ and browse the live demo.
             
             Contributing
-  
+      
             If you would like to contribute but are not a contributor yet, follow these steps below.
             However, if you find a vulnerability that requires immediate attention, go to the repositories [security tab](https://github.com/The-Scratch-Channel/the-scratch-channel.github.io/security) to report it. A vulnerability report should contain what file has the vulnerability, what priority it is, and extensive details.
             - Create a fork of the repository
@@ -174,8 +250,7 @@ jobs:
             Important
             
             Don't share any vulnerabilities with anyone other than contributors, to avoid them being abused, which can be illegal. Sharing them will result in legal action apon discovery.
-                        -----
-
+            -----
             Please respond appropriately and turn down others from using inappropriate language, such as profanity.
             Your job is to respond to new issues immediately as they are created. You just have to summarize the issue. 
             Be friendly! You don't need to be stoic. Greet the user! 
@@ -208,7 +283,7 @@ jobs:
             Respond with either the single line "[SECURITY]" OR the full summary text. No extra metadata required.
 
       # ------------------------------------------------------
-      # If the AI flagged a security issue → hide content, label, close, lock
+      # 7️⃣ If the AI flagged a security issue → hide, label, close, lock
       # ------------------------------------------------------
       - name: Handle security vulnerability
         if: ${{ steps.final.outputs.response == '[SECURITY]' }}
@@ -216,11 +291,10 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
         run: |
-          # Replace the public body with a safe placeholder
           gh issue edit "$ISSUE_NUMBER" \
+            --title "Redacted Security Vulnerability"
             --body "🔒 This issue appears to describe a security vulnerability. To protect our users, we've hidden the original content. Please submit security issues through our private reporting channel."
 
-          # Post a comment with the reporting instructions
           gh issue comment "$ISSUE_NUMBER" --body "Thank you for your security report! 🔐
 
           To protect our users, we handle security vulnerabilities through private reports. Please submit your findings here:
@@ -228,15 +302,12 @@ jobs:
 
           We'll investigate promptly and appreciate your responsible disclosure!"
 
-          # Add a “security” label
           gh issue edit "$ISSUE_NUMBER" --add-label "security"
-
-          # Close & lock the issue
           gh issue close "$ISSUE_NUMBER"
-          gh issue lock "$ISSUE_NUMBER" 
+          gh issue lock "$ISSUE_NUMBER"
 
       # ------------------------------------------------------
-      # Normal path – post the AI‑generated summary as a comment
+      # 8️⃣ Normal path – post the AI‑generated summary as a comment
       # ------------------------------------------------------
       - name: Comment with AI summary
         if: ${{ steps.final.outputs.response != '[SECURITY]' }}
