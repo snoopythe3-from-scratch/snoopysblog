@@ -33,6 +33,7 @@ export default function Footer() {
       <h4 className="footer-copyright-info">
         © {new Date().getFullYear()} The Scratch Channel
       </h4>
+      <img src=https://ibb.co/NdjcJhDr>
     </footer>
   );
 }
