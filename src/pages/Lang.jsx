@@ -12,7 +12,6 @@ export default function LangPage() {
         <p>{t("misc.chooselang")}</p>
         <button onClick={() => switchLanguage("en")}>English</button>
         <button onClick={() => switchLanguage("eo")}>Esperanto</button>
-        <img src="https://i.ibb.co/NdjcJhDr/image.png" alt="image" border="0">
         </>
     )
 }
