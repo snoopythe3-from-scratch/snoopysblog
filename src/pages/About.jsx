@@ -20,7 +20,7 @@ export default function About() {
         </ul>
 
         <p>Our codebase is licensed under the MIT License, meaning you can do whatever you want with the code as long as you include the same LICENSE file, which you can find <a href="https://cdn.jsdelivr.net/gh/The-Scratch-Channel/the-scratch-channel.github.io@refs/heads/main/LICENSE">here</a>.</p>
-            <a href="https://ibb.co/NdjcJhDr"><img src="https://i.ibb.co/NdjcJhDr/image.png" alt="image" border="0"></a>
+        <a href="https://ibb.co/NdjcJhDr"><img src="https://i.ibb.co/NdjcJhDr/image.png" alt="image" border="0"></a>
         </div>
         </>
     );
