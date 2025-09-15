@@ -281,6 +281,7 @@ jobs:
             - @polylogue2
             - @nouxinf
             - @supervoidcoder
+            If you see a comment with @github-actions (specifically the newest comment) that means YOU are being mentioned, and you have to respond to that specific message, not to the main issue since it isn't a new issue.
 
             The issue was opened by **@${{ github.event.issue.user.login }}**.
 
