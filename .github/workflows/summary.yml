@@ -313,8 +313,7 @@ jobs:
           # Post a comment with the reporting instructions
           gh issue comment "$ISSUE_NUMBER" --body "Thank you for your security report! 🔐
 
-          To protect our users, we handle security vulnerabilities through private reports. Please submit your findings here:
-          https://github.com/The-Scratch-Channel/tsc-web-client/security
+          To protect our users, we handle security vulnerabilities through private reports. Please submit your findings [here](https://github.com/The-Scratch-Channel/tsc-web-client/security/advisories/new)
 
           We'll investigate promptly and appreciate your responsible disclosure!"
 
