@@ -268,11 +268,21 @@ jobs:
             Also, there is a limit on how much you can type. It's not a super short limit, but don't go all out either. It's around 2‑3 paragraphs.
             One quirk is backticks, like the one for code blocks. Don't use those as anything inside them will just get deleted.
             If someone asks for project status/data, provide it! Obviously not security‑related things, but give a summary of the provided pull request or project information, if you have it. Don't just say "a lot of merged pull requests" or "we're working on stuff".
+             If the issue is a user casually asking a question, being confused, or isn't really making an issue, respond, but also tell users to go to the discussions tab for general discussions: https://github.com/orgs/The-Scratch-Channel/discussions
+            For genuine questions, no need to give that link.
+            If the issue is an actual, well described issue, focus on summarizing it and not just giving a friendly response. The only exception is that you may ask for more information if it's not very well described or missing details.
+            If you see new, recent comments with that mention you (@github-actions) in the full conversation that means that it isn't a new issue open but rather someone has mentioned YOU, either to ask a follow up question or summmarize again, or something like that. 
 
             ADDITIONAL SECURITY INSTRUCTIONS:
             - If the issue describes a security vulnerability (e.g., security flaw, exploit, attack vector, CVE, security risk, vulnerability disclosure), respond with EXACTLY: "[SECURITY]"
             - Otherwise, summarize the issue normally
             - Never reveal vulnerability details in public comments
+            OTHER SPECIAL KEYWORDS:
+            - If you decide to close the issue, respond with EXACTLY: "[CLOSE]"
+            - If you decide to lock the issue, respond with EXACTLY: "[LOCK]"
+            - If you decide to close AND lock the issue, respond with EXACTLY: "[LOCKDOWN]"
+            - If the issue seems to be spam (repeated words, scam, etc.) respond with EXACTLY: "[SPAM]"
+            You may only use ONE keyword at a time.
 
             The owner and main maintainer of The‑Scratch‑Channel, is @snoopythe3‑from‑scratch, if anyone asks or you just need to know.
             Other maintainers:
@@ -285,25 +295,30 @@ jobs:
 
             The issue was opened by **@${{ github.event.issue.user.login }}**.
 
-            Respond to the following GitHub issue:
+            Respond to the following GitHub issue conversation:
             Title: ${{ github.event.issue.title }}
-            Body: ${{ github.event.issue.body }}
+            ----------------------------
+            Issue Body: ${{ github.event.issue.body }}
+            ----------------------------
+            Full Conversation (including original body and all comments):
+            ${{ steps.get-context.outputs.full_context }}
+            ----------------------------
 
             The current version of The‑Scratch‑Channel is: ${{ env.LATEST_TAG }}.
 
             RELEVANT CODE SNIPPETS (only what was extracted):
             ${{ steps.snip.outputs.snippets }}
 
-            Respond with either the single line "[SECURITY]" OR the full summary text. No extra metadata required.
+            Respond with either the single special keyword (e.g. "[SECURITY]") OR the full summary text. No extra metadata required.
 
-            If there are spammers in issues, close the issue, rename it **Spam Issue - Ignore** and close it, and politely tell them: Hey, @**users name here**! Please do not spam the word **insert word the user spammed here**. This can result in a ban from GitHub if done too many times.
+            
 
             
 
       # ------------------------------------------------------
       # 8️⃣ If the AI flagged a security issue → hide, label, close, lock
       # ------------------------------------------------------
-      - name: Handle security vulnerability
+      - name: Handle special keywords
         if: ${{ steps.final.outputs.response == '[SECURITY]' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -328,11 +343,59 @@ jobs:
           gh issue close "$ISSUE_NUMBER"
           gh issue lock "$ISSUE_NUMBER"
 
+      - name: Handle spam keyword
+        if: ${{ steps.final.outputs.response == '[SPAM]' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          # Replace the public body with a safe placeholder
+          gh issue edit "$ISSUE_NUMBER" \
+            --title "SPAM" \
+            --body "💥 This issue appears to be spam. To prevent clutter, we have hidden its contents. Please don't spam, as it can result in a ban from GitHub."
+
+          # Post a comment with the reporting instructions
+          gh issue comment "$ISSUE_NUMBER" --body "Hi, ${{ github.event.issue.user.login }}! 🔐
+
+          Please refrain from spamming inside GitHub issues. GitHub issues are designed to help people, answer questions, gather input from the community, and improve everything for us as a whole. 
+          Spamming goes against that in many ways. If you keep spamming, it might even result in a ban from GitHub itself, locking access to your account in the entirety of GitHub.
+          
+          Please remember to be civil and don't spam!"
+
+          # Close & lock the issue
+          gh issue close "$ISSUE_NUMBER"
+          gh issue lock "$ISSUE_NUMBER"
+
+      - name: Handle close keyword
+        if: ${{ steps.final.outputs.response == '[CLOSE]' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh issue close "$ISSUE_NUMBER"
+
+      - name: Handle lock keyword
+        if: ${{ steps.final.outputs.response == '[LOCK]' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh issue lock "$ISSUE_NUMBER"
+
+      - name: Handle lockdown keyword
+        if: ${{ steps.final.outputs.response == '[LOCKDOWN]' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh issue close "$ISSUE_NUMBER"
+          gh issue lock "$ISSUE_NUMBER"
+
       # ------------------------------------------------------
       # 9️⃣ Normal path – post the AI‑generated summary as a comment
       # ------------------------------------------------------
       - name: Comment with AI summary
-        if: ${{ steps.final.outputs.response != '[SECURITY]' }}
+        if: ${{ steps.final.outputs.response != '[SECURITY]' && steps.final.outputs.response != '[SPAM]' && steps.final.outputs.response != '[CLOSE]' && steps.final.outputs.response != '[LOCK]' && steps.final.outputs.response != '[LOCKDOWN]' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
