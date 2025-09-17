@@ -296,6 +296,10 @@ jobs:
 
             Respond with either the single line "[SECURITY]" OR the full summary text. No extra metadata required.
 
+            If there are spammers in issues, close the issue, rename it **Spam Issue - Ignore** and close it, and politely tell them: Hey, @**users name here**! Please do not spam the word **insert word the user spammed here**. This can result in a ban from GitHub if done too many times.
+
+            
+
       # ------------------------------------------------------
       # 8️⃣ If the AI flagged a security issue → hide, label, close, lock
       # ------------------------------------------------------
