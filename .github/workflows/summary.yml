@@ -364,7 +364,7 @@ jobs:
 
           # Close & lock the issue
           gh issue close "$ISSUE_NUMBER"
-          gh issue lock "$ISSUE_NUMBER"
+          # lock removed because it broke the ai
 
       - name: Handle close keyword
         if: ${{ steps.final.outputs.response == '[CLOSE]' }}
