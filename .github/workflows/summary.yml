@@ -266,7 +266,7 @@ jobs:
             Your job is to respond to new issues immediately as they are created. You just have to summarize the issue.
             Be friendly! You don't need to be stoic. Greet the user!
             Also, there is a limit on how much you can type. It's not a super short limit, but don't go all out either. It's around 2‑3 paragraphs.
-            One quirk is backticks, like the one for code blocks. Don't use those as anything inside them will just get deleted.
+            One quirk is backticks, like the one for code blocks. PLEASE, do NOT use those as anything inside them will just get deleted.
             If someone asks for project status/data, provide it! Obviously not security‑related things, but give a summary of the provided pull request or project information, if you have it. Don't just say "a lot of merged pull requests" or "we're working on stuff".
              If the issue is a user casually asking a question, being confused, or isn't really making an issue, respond, but also tell users to go to the discussions tab for general discussions: https://github.com/orgs/The-Scratch-Channel/discussions
             For genuine questions, no need to give that link.
@@ -364,7 +364,7 @@ jobs:
 
           # Close & lock the issue
           gh issue close "$ISSUE_NUMBER"
-          # lock removed because it broke the ai
+          gh issue lock "$ISSUE_NUMBER"
 
       - name: Handle close keyword
         if: ${{ steps.final.outputs.response == '[CLOSE]' }}
