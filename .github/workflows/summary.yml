@@ -135,7 +135,7 @@ jobs:
         uses: actions/ai-inference@v1
         with:
           prompt: |
-            You are an assistant that decides what code context is needed to understand a GitHub issue.
+            You are an assistant that decides what code context is needed to understand a GitHub issue. Please don't use backticks.
             Output only a newline‑separated list of at most 6 relative file paths (e.g. src/foo.js) that are most relevant to this issue.
             If no code files are relevant, output exactly: NONE
 
