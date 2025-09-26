@@ -76,7 +76,7 @@ The project is static and uses React+Vite, with Firebase as our database and aut
 **Directory Structure**:
 <details>
 <summary>Directory Structure (very large)</summary>
-```
+<code>
 .   .codeqlconfig.yml
 .   .env.development <- DO NOT GITIGNORE THESE
 .   .env.production     They are for Firebase, and we have security rules so that production DB can only be edited on our website.
@@ -159,7 +159,7 @@ The project is static and uses React+Vite, with Firebase as our database and aut
 .   .       
 .   +---styles
 .           CSS files
-```
+<code>
 </details>
 
 ## Support
