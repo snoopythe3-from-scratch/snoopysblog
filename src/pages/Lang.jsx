@@ -56,12 +56,19 @@ export default function LangPage() {
   });
 
   return (
-    <div style={{ padding: "2rem" }}>
-      <p>{t("misc.chooselang")}</p>
-      <button onClick={() => switchLanguage("en")}>English</button>
-      <button onClick={() => switchLanguage("eo")}>Esperanto</button>
-      <button onClick={() => switchLanguage("bg")}>Булгарски</button>
-
+    <div id="lang-page">
+      <div style={{ alignContent: "center", textAlign: "center", marginBottom: "2rem" }}>
+        <p>{t("misc.chooselang")}</p>
+        <div className="lang-btn-div" onClick={() => switchLanguage("en")}>
+          <button>English</button>
+        </div>
+        <div className="lang-btn-div" onClick={() => switchLanguage("eo")}>
+          <button>Esperanto</button>
+        </div>
+        <div className="lang-btn-div" onClick={() => switchLanguage("bg")}>
+          <button>Булгарски</button>
+        </div>
+      </div>
       <h2>{t("misc.langprogress")}</h2>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>

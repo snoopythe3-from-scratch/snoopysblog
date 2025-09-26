@@ -1,0 +1,17 @@
+#lang-page {
+    margin-left: 2rem;
+    margin-right: 2rem;
+}
+.lang-btn-div {
+    margin-bottom: 0.25rem;
+    padding: 1rem;
+    background-color: rgb(235, 243, 251);
+    cursor: pointer;
+}
+.lang-btn-div button {
+    background: none;
+    border: none;
+    color: #4e97fe;
+    font-weight: 1000;
+    cursor: pointer;
+}
