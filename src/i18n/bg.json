@@ -1,0 +1,52 @@
+{
+    "misc": {
+        "chooselang": "Изберете език",
+        "langprogress": "Напредък на превода"
+    },
+    "header": {
+        "home": "Дом",
+        "language": "Език",
+        "about": "Oтносно",
+        "write": "Пиша",
+        "account": "Профил"
+    },
+    "footer": {
+        "disclaimer": "не е свързан със Scratch, екипа на Scratch или фондацията Scratch.",
+        "headingabout": "Относно",
+        "headinglinks": "Връзки",
+        "headingcommunity": "Oбщност",
+        "aboutlink": "За нас и заслуги",
+        "licenselink": "Лиценз",
+        "statuslink": "Статус",
+        "articleslink": "Статия",
+        "googlebusinesslink": "Google Business",
+        "issuelink": "Съобщете за проблем",
+        "reviewlink": "Преглед",
+        "forumlink": "Форум",
+        "githublink": "GitHub"
+    },
+    "main": {
+        "welcome": "Добре дошли в The Scratch Channel",
+        "cat-news": "Новините за Scratch",
+        "cat-announcements": "Новините на TSC",
+        "cat-update": "Актуализации на TSC",
+        "back-cat": "Обратно",
+        "readmore": "Прочетете още",
+        "by": "От",
+        "date": "Дата",
+        "category": "Категории"
+    },
+    "write": {
+        "heading": "Създаване на статия",
+        "title": "Заглавие",
+        "author": "Автор",
+        "date": "Дата",
+        "category": "Категория",
+        "content": "Съдържание",
+        "submit": "Изпрати",
+        "cancel": "Отмени",
+        "unauthorised": "Нямате право да създавате статии",
+        "title-err": "Заглавието е задължително",
+        "title-placeholder": "Въведете заглавието на вашата статия..."
+    }
+}

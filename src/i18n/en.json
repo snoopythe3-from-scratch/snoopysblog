@@ -1,6 +1,7 @@
 {
     "misc": {
-        "chooselang": "Select your language"
+        "chooselang": "Select your language",
+        "langprogress": "Translation Progress"
     },
     "header": {
         "home": "Home",
