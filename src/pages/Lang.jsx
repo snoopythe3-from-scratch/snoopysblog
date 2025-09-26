@@ -1,9 +1,16 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from "recharts";
+
+// import language JSON files
 import en from "../i18n/en.json";
 import eo from "../i18n/eo.json";
 import bg from "../i18n/bg.json";
+
+// flag icons
+import enFlag from "../assets/flags/en.svg";
+import eoFlag from "../assets/flags/eo.svg";
+import bgFlag from "../assets/flags/bg.svg";
 
 function countKeys(obj) {
   let count = 0;
@@ -60,12 +67,15 @@ export default function LangPage() {
       <div style={{ alignContent: "center", textAlign: "center", marginBottom: "2rem" }}>
         <p>{t("misc.chooselang")}</p>
         <div className="lang-btn-div" onClick={() => switchLanguage("en")}>
+          <img className="lang-flag" src={enFlag} alt="English" />
           <button>English</button>
         </div>
         <div className="lang-btn-div" onClick={() => switchLanguage("eo")}>
+          <img className="lang-flag" src={eoFlag} alt="Esperanto" />
           <button>Esperanto</button>
         </div>
         <div className="lang-btn-div" onClick={() => switchLanguage("bg")}>
+          <img className="lang-flag" src={bgFlag} alt="Bulgarian" />
           <button>Булгарски</button>
         </div>
       </div>
