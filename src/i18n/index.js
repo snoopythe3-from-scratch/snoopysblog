@@ -12,7 +12,7 @@ i18n.use(initReactI18next).use(LanguageDetector).init({
         en: { translation: en }, // English
         eo: { translation: eo }, // Esperanto
         bg: { translation: bg }, // Булгарски
-        lol: { translation: lol } // LOLCAT
+        lol: { translation: lol }, // LOLCAT
         gz: { translation : gz } // Gen Z
     },
     fallbackLng: "en",    // fallback if translation is missing
