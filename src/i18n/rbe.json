@@ -1,0 +1,67 @@
+{
+    "misc": {
+        "chooselang": "Select *rasp* your *rasp* language *rasp*",
+        "langprogress": "Translation *rasp* Progress *rasp*"
+    },
+    "header": {
+        "home": "Home *rasp*",
+        "language": "Language *rasp*",
+        "about": "About *rasp* Us *rasp*",
+        "write": "Write *rasp*",
+        "account": "Account *rasp*"
+    },
+    "footer": {
+        "disclaimer": "*rasp* is *rasp* not *rasp* affiliated *rasp* with *rasp* Scratch *rasp*, the *rasp* Scratch *rasp* Team *rasp*, or *rasp* the *rasp* Scratch *rasp* Foundation. *rasp*",
+        "headingabout": "About *rasp*",
+        "headinglinks": "Resources *rasp*",
+        "headingcommunity": "Community *rasp*",
+        "aboutlink": "About *rasp* and *rasp* Credits *rasp*",
+        "licenselink": "License *rasp*",
+        "statuslink": "Status *rasp*",
+        "articleslink": "Articles *rasp*",
+        "googlebusinesslink": "Google *rasp* Business *rasp*",
+        "issuelink": "Report *rasp* an *rasp* issue *rasp*",
+        "reviewlink": "Leave *rasp* a *rasp* review *rasp*",
+        "forumlink": "Forum *rasp* Topic *rasp*",
+        "githublink": "GitHub *rasp*"
+    },
+    "main": {
+        "welcome": "Welcome *rasp* to *rasp* The *rasp* Scratch *rasp* Channel! *rasp*",
+        "back-cat": "Back *rasp* to *rasp* Categories *rasp*",
+        "readmore": "Read *rasp* More *rasp*",
+        "by": "By *rasp*",
+        "date": "Date *rasp*",
+        "category": "Category *rasp*"
+    },
+    "write": {
+        "heading": "Create *rasp* Article *rasp*",
+        "title": "Title *rasp*",
+        "author": "Author *rasp*",
+        "date": "Date *rasp*",
+        "category": "Category *rasp*",
+        "content": "Content *rasp*",
+        "submit": "Submit *rasp*",
+        "cancel": "Cancel *rasp*",
+        "unauthorised": "Not *rasp* authorized *rasp* to *rasp* create *rasp* articles *rasp*",
+        "title-err": "Title *rasp* is *rasp* required *rasp*",
+        "title-placeholder": "Enter *rasp* your *rasp* article *rasp* title... *rasp*"
+    },
+    "signup": {
+        "heading": "Sign *rasp* Up *rasp* with *rasp* Username *rasp*",
+        "email-placeholder": "Email *rasp*",
+        "password-placeholder": "Password *rasp*",
+        "register": "Register *rasp*",
+        "username": "Username *rasp*"
+    },
+    "login": {
+        "emailpass-error": "Please *rasp* enter *rasp* both *rasp* email *rasp* and *rasp* password. *rasp*",
+        "signin": "Sign *rasp* In *rasp*"
+    },
+    "account": {
+        "welcome": "Welcome *rasp*",
+        "logout": "Log *rasp* out *rasp*",
+        "login": "Log *rasp* in *rasp*",
+        "signup": "Sign *rasp* up *rasp*",
+        "liketodo": "What *rasp* would *rasp* you *rasp* like *rasp* to *rasp* do? *rasp*"
+    }
+}

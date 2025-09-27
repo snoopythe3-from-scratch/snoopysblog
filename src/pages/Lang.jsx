@@ -7,6 +7,7 @@ import en from "../i18n/en.json";
 import eo from "../i18n/eo.json";
 import bg from "../i18n/bg.json";
 import lol from "../i18n/lol.json";
+import rbe from "../i18n/lol.json";
 
 // flag icons
 import enFlag from "../assets/flags/en.svg";
@@ -54,7 +55,8 @@ export default function LangPage() {
     { lang: "English", key: "en", json: en },
     { lang: "Esperanto", key: "eo", json: eo },
     { lang: "Bulgarian", key: "bg", json: bg },
-    { lang: "LOLCAT", key: "lol", json: lol }
+    { lang: "LOLCAT", key: "lol", json: lol },
+    { lang: "Rock-bottomese", key: "rbe", json: rbe }
   ];
 
   const data = languages.map((l) => {
@@ -84,6 +86,9 @@ export default function LangPage() {
         <div className="lang-btn-div" onClick={() => switchLanguage("lol")}>
           <img className="lang-flag" src={lolFlag} alt="LOLCAT" />
           <button>LOLCAT</button>
+          </div>
+        <div className="lang-btn-div" onClick={() => switchLanguage("rbe")}>
+          <button>Rock-bottomese</button>
         </div>
       </div>
       <h2>{t("misc.langprogress")}</h2>
