@@ -15,7 +15,7 @@ i18n.use(initReactI18next).use(LanguageDetector).init({
         bg: { translation: bg }, // Булгарски
         lol: { translation: lol }, // LOLCAT
         rbe: { translation: rbe }, // Rock-Bottomese
-        hb: { translation: hb} //[[Hyberlink Blocked]]
+        hb: { translation: hb } //[[Hyberlink Blocked]]
     },
     fallbackLng: "en",    // fallback if translation is missing
     interpolation: {
