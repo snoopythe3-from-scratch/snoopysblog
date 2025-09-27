@@ -1,0 +1,68 @@
+//not finished
+{
+    "misc": {
+        "chooselang": "CHOOSE [[Locale Location]]",
+        "langprogress": "Translashun Progress"
+    },
+    "header": {
+        "home": "[[Homemade Storfront Site]]",
+        "language": "[[Locale Location]]",
+        "about": "ALL ABOUT [[Number1RatedSalesman1997]]",
+        "write": "WRI TE",
+        "account": "[[Your Abode]]"
+    },
+    "footer": {
+        "disclaimer": "[[is not affiliated with Scratch.]]",
+        "headingabout": "[[N1RSM1997]]",
+        "headinglinks": "[[Cite yor Sources]]",
+        "headingcommunity": "[[People of the Public]]",
+        "aboutlink": "SPAMTON S [[Creditings]]",
+        "licenselink": "[[Drivers License Expired.]]",
+        "statuslink": "[[Is Spamton Dead?]]",
+        "articleslink": "[[Hyperlink Blocked]]",
+        "googlebusinesslink": "[[Removed by Google]]",
+        "issuelink": "REPROT LIGHT>ners",
+        "reviewlink": "[[How was your time at Spamton?]]",
+        "forumlink": "[[the Public]]",
+        "githublink": "[[Code on the Git]]"
+    },
+    "main": {
+        "welcome": "[[Hyperlink Blocked]]",
+        "back-cat": "",
+        "readmore": "Reed Moar",
+        "by": "By",
+        "date": "Dait",
+        "category": "Cattegory"
+    },
+    "write": {
+        "heading": "Creeate Artikle",
+        "title": "Titel",
+        "author": "Awthor",
+        "date": "Dait",
+        "category": "Cattegory",
+        "content": "Conttent",
+        "submit": "Submiiit",
+        "cancel": "Cansul",
+        "unauthorised": "Not allowd 2 creeate artiklez",
+        "title-err": "Titel iz reqwired",
+        "title-placeholder": "Enters ur artikle titel..."
+    },
+    "signup": {
+        "heading": "Sine Up wif Usernaem",
+        "email-placeholder": "E-mael",
+        "password-placeholder": "Pazzwurd",
+        "username-placeholder": "Usernaem",
+        "register": "Registur"
+    },
+    "login": {
+        "emailpass-error": "Pleez enter both e-mael an pazzwurd.",
+        "signin": "Sine In"
+    },
+    "account": {
+        "welcome": "WELCUM!!",
+        "logout": "Log owt",
+        "login": "Log in",
+        "signup": "Sine up",
+        "liketodo": "Wut u liek 2 do?"
+    }
+}
