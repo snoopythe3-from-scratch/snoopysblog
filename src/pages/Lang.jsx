@@ -81,7 +81,7 @@ export default function LangPage() {
           <button>Булгарски</button>
         </div>
         <div className="lang-btn-div" onClick={() => switchLanguage("lol")}>
-          <button>LOLCAT</button>
+          <button>🐱LOLCAT</button>
         </div>
         <div className="lang-btn-div" onClick={() => switchLanguage("gz")}>
           <button>Gen Z</button>
