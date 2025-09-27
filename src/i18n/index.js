@@ -6,6 +6,7 @@ import eo from "./eo.json";
 import bg from "./bg.json";
 import lol from "./lol.json";
 import rbe from "./rbe.json";
+import hb from "./hb.json";
 
 i18n.use(initReactI18next).use(LanguageDetector).init({
     resources: {
