@@ -15,6 +15,8 @@ import enFlag from "../assets/flags/en.svg";
 import eoFlag from "../assets/flags/eo.svg";
 import bgFlag from "../assets/flags/bg.svg";
 import lolFlag from "../assets/flags/lol.svg";
+import rbeFlag from "../asests/flags/rbe.svg";
+import hbFlag from "../asests/flags/hb.svg";
 
 function countKeys(obj) {
   let count = 0;
@@ -90,9 +92,11 @@ export default function LangPage() {
           <button>LOLCAT</button>
           </div>
         <div className="lang-btn-div" onClick={() => switchLanguage("rbe")}>
+          <img className="lang-flag" src={rbeFlag} alt="Rock-bottomese" />
           <button>Rock-bottomese</button>
         </div>
         <div className="lang-btn-div" onClick={() => switchLanguage("hb")}>
+          <img className="lang-flag" src={hbFlag} alt="[[Hyperlink Blocked]]" />
           <button>[[Hyperlink Blocked]]</button>
         </div>
       </div>
