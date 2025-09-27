@@ -15,8 +15,8 @@ import enFlag from "../assets/flags/en.svg";
 import eoFlag from "../assets/flags/eo.svg";
 import bgFlag from "../assets/flags/bg.svg";
 import lolFlag from "../assets/flags/lol.svg";
-import rbeFlag from "../asests/flags/rbe.svg";
-import hbFlag from "../asests/flags/hb.svg";
+import rbeFlag from "../assests/flags/rbe.svg";
+import hbFlag from "../assests/flags/hb.svg";
 
 function countKeys(obj) {
   let count = 0;
