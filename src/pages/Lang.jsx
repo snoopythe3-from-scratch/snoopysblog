@@ -7,6 +7,7 @@ import en from "../i18n/en.json";
 import eo from "../i18n/eo.json";
 import bg from "../i18n/bg.json";
 import lol from "../i18n/lol.json";
+import gz from "../i18n/gz.json";
 
 // flag icons
 import enFlag from "../assets/flags/en.svg";
@@ -54,6 +55,7 @@ export default function LangPage() {
     { lang: "Esperanto", key: "eo", json: eo },
     { lang: "Bulgarian", key: "bg", json: bg },
     { lang: "LOLCAT", key: "lol", json: lol },
+    { lang: "Gen Z", key: "gz", json: gz },
   ];
 
   const data = languages.map((l) => {
@@ -82,6 +84,9 @@ export default function LangPage() {
         </div>
         <div className="lang-btn-div" onClick={() => switchLanguage("lol")}>
           <button>LOLCAT</button>
+        </div>
+        <div className="lang-btn-div" onClick={() => switchLanguage("gz")}>
+          <button>Gen Z</button>
         </div>
       </div>
       <h2>{t("misc.langprogress")}</h2>
