@@ -12,7 +12,6 @@ i18n.use(initReactI18next).use(LanguageDetector).init({
         eo: { translation: eo }, // Esperanto
         bg: { translation: bg }, // Булгарски
         lol: { translation: lol }, // LOLCAT
-        hb: { translation: hb } //[[Hyperlink Blocked]] (UNFINISHED!!)
     },
     fallbackLng: "en",    // fallback if translation is missing
     interpolation: {
