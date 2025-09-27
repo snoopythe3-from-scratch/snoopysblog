@@ -4,7 +4,8 @@ import LanguageDetector from "i18next-browser-languagedetector";
 import en from "./en.json";
 import eo from "./eo.json";
 import bg from "./bg.json";
-import lol from "./lol.json"
+import lol from "./lol.json";
+import gz from "./gz.json"
 
 i18n.use(initReactI18next).use(LanguageDetector).init({
     resources: {
@@ -12,6 +13,7 @@ i18n.use(initReactI18next).use(LanguageDetector).init({
         eo: { translation: eo }, // Esperanto
         bg: { translation: bg }, // Булгарски
         lol: { translation: lol } // LOLCAT
+        gz: { translation : gz } // Gen Z
     },
     fallbackLng: "en",    // fallback if translation is missing
     interpolation: {
