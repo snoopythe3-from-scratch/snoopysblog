@@ -92,6 +92,9 @@ export default function LangPage() {
         <div className="lang-btn-div" onClick={() => switchLanguage("rbe")}>
           <button>Rock-bottomese</button>
         </div>
+        <div className="lang-btn-div" onClick={() => switchLanguage("hb")}>
+          <button>[[Hyperlink Blocked]]</button>
+        </div>
       </div>
       <h2>{t("misc.langprogress")}</h2>
       <ResponsiveContainer width="100%" height={300}>
