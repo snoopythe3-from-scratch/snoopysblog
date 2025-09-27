@@ -5,6 +5,7 @@ import en from "./en.json";
 import eo from "./eo.json";
 import bg from "./bg.json";
 import lol from "./lol.json";
+import rbe from "./rbe.json";
 
 i18n.use(initReactI18next).use(LanguageDetector).init({
     resources: {
@@ -12,6 +13,7 @@ i18n.use(initReactI18next).use(LanguageDetector).init({
         eo: { translation: eo }, // Esperanto
         bg: { translation: bg }, // Булгарски
         lol: { translation: lol }, // LOLCAT
+        rbe: { translation: rbe }, // Rock-Bottomese
     },
     fallbackLng: "en",    // fallback if translation is missing
     interpolation: {
