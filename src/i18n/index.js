@@ -5,7 +5,7 @@ import en from "./en.json";
 import eo from "./eo.json";
 import bg from "./bg.json";
 import lol from "./lol.json";
-import gz from "./gz.json"
+import gz from "./gz.json";
 
 i18n.use(initReactI18next).use(LanguageDetector).init({
     resources: {
