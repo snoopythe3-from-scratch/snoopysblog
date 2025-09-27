@@ -8,6 +8,7 @@ import eo from "../i18n/eo.json";
 import bg from "../i18n/bg.json";
 import lol from "../i18n/lol.json";
 import rbe from "../i18n/lol.json";
+import hn from "../i18n/hb.json";
 
 // flag icons
 import enFlag from "../assets/flags/en.svg";
@@ -56,7 +57,8 @@ export default function LangPage() {
     { lang: "Esperanto", key: "eo", json: eo },
     { lang: "Bulgarian", key: "bg", json: bg },
     { lang: "LOLCAT", key: "lol", json: lol },
-    { lang: "Rock-bottomese", key: "rbe", json: rbe }
+    { lang: "Rock-bottomese", key: "rbe", json: rbe },
+    { lang: "[[Hyperlink Blocked]]", key: "hb", json: hb }
   ];
 
   const data = languages.map((l) => {
