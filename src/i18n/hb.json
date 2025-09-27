@@ -1,4 +1,3 @@
-// ignore, not finished. snoopy says i can make it but for now super unfinished.
 {
     "misc": {
         "chooselang": "SELECT [[Tounge Type]]",
@@ -55,14 +54,14 @@
         "register": "MOR SPAM"
     },
     "login": {
-        "emailpass-error": "Please enter both email and password.",
-        "signin": "Sign In"
+        "emailpass-error": "I NEED YOUR [[Email and 3 digits on the Back?]]",
+        "signin": "[[Sign Inonto the]]"
     },
     "account": {
-        "welcome": "Welcome",
-        "logout": "Log out",
-        "login": "Log in",
-        "signup": "Sign up",
-        "liketodo": "What would you like to do?"
+        "welcome": "[[Hyperlink Blocked]]",
+        "logout": "[[No! Don't leavings!!!!11]]",
+        "login": "[[Log into my store]]",
+        "signup": "[[Buy more Kromer!]]",
+        "liketodo": "YOUR [[choices]] PLEAS3!"
     }
 }
