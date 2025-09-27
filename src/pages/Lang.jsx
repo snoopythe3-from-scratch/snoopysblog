@@ -6,6 +6,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContaine
 import en from "../i18n/en.json";
 import eo from "../i18n/eo.json";
 import bg from "../i18n/bg.json";
+import lol from "../i18n/lol.json";
 
 // flag icons
 import enFlag from "../assets/flags/en.svg";
@@ -52,6 +53,7 @@ export default function LangPage() {
     { lang: "English", key: "en", json: en },
     { lang: "Esperanto", key: "eo", json: eo },
     { lang: "Bulgarian", key: "bg", json: bg },
+    { lang: "LOLCAT", key: "lol", json: lol },
   ];
 
   const data = languages.map((l) => {
@@ -77,6 +79,9 @@ export default function LangPage() {
         <div className="lang-btn-div" onClick={() => switchLanguage("bg")}>
           <img className="lang-flag" src={bgFlag} alt="Bulgarian" />
           <button>Булгарски</button>
+        </div>
+        <div className="lang-btn-div" onClick={() => switchLanguage("lol")}>
+          <button>LOLCAT</button>
         </div>
       </div>
       <h2>{t("misc.langprogress")}</h2>

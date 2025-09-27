@@ -1,0 +1,67 @@
+{
+    "misc": {
+        "chooselang": "Choos ur languaj",
+        "langprogress": "Translashun Progress"
+    },
+    "header": {
+        "home": "Hoom",
+        "language": "Languaj",
+        "about": "Bout Us",
+        "write": "Rite",
+        "account": "Akownt"
+    },
+    "footer": {
+        "disclaimer": "iz not affurliated wif Scratch, da Scratch Team, or da Scratch Foundashun.",
+        "headingabout": "Bout",
+        "headinglinks": "Resorses",
+        "headingcommunity": "Commewnity",
+        "aboutlink": "Bout an Cwedits",
+        "licenselink": "Lisense",
+        "statuslink": "Statis",
+        "articleslink": "Artiklez",
+        "googlebusinesslink": "Googol Bizness",
+        "issuelink": "Reeport an ishuu",
+        "reviewlink": "Leev a revu",
+        "forumlink": "Foorum Topik",
+        "githublink": "GitHubz"
+    },
+    "main": {
+        "welcome": "WELCUM 2 Teh Scratch Channel!!1",
+        "back-cat": "Bak 2 Categoriess",
+        "readmore": "Reed Moar",
+        "by": "By",
+        "date": "Dait",
+        "category": "Cattegory"
+    },
+    "write": {
+        "heading": "Creeate Artikle",
+        "title": "Titel",
+        "author": "Awthor",
+        "date": "Dait",
+        "category": "Cattegory",
+        "content": "Conttent",
+        "submit": "Submiiit",
+        "cancel": "Cansul",
+        "unauthorised": "Not allowd 2 creeate artiklez",
+        "title-err": "Titel iz reqwired",
+        "title-placeholder": "Enters ur artikle titel..."
+    },
+    "signup": {
+        "heading": "Sine Up wif Usernaem",
+        "email-placeholder": "E-mael",
+        "password-placeholder": "Pazzwurd",
+        "username-placeholder": "Usernaem",
+        "register": "Registur"
+    },
+    "login": {
+        "emailpass-error": "Pleez enter both e-mael an pazzwurd.",
+        "signin": "Sine In"
+    },
+    "account": {
+        "welcome": "WELCUM!!",
+        "logout": "Log owt",
+        "login": "Log in",
+        "signup": "Sine up",
+        "liketodo": "Wut u liek 2 do?"
+    }
+}
