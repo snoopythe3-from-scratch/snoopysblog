@@ -12,6 +12,7 @@ import lol from "../i18n/lol.json";
 import enFlag from "../assets/flags/en.svg";
 import eoFlag from "../assets/flags/eo.svg";
 import bgFlag from "../assets/flags/bg.svg";
+import lolFlag from "../assets/flags/lol.svg";
 
 function countKeys(obj) {
   let count = 0;
@@ -81,10 +82,8 @@ export default function LangPage() {
           <button>Булгарски</button>
         </div>
         <div className="lang-btn-div" onClick={() => switchLanguage("lol")}>
+          <img className="lang-flag" src={lolFlag} alt="LOLCAT" />
           <button>LOLCAT</button>
-        </div>
-        <div className="lang-btn-div" onClick={() => switchLanguage("gz")}>
-          <button>Gen Z</button>
         </div>
       </div>
       <h2>{t("misc.langprogress")}</h2>
