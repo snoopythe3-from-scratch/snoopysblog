@@ -1,0 +1,85 @@
+name: Build Monitor
+permissions:
+  contents: read
+  issues: write
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-monitor:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+        
+    - name: Install dependencies
+      id: install
+      run: |
+        echo "install_status=success" >> $GITHUB_OUTPUT
+        install_output=$(npm ci 2>&1) || {
+          echo "install_status=failure" >> $GITHUB_OUTPUT
+          echo "error_output<<EOF" >> $GITHUB_OUTPUT
+          echo "$install_output" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+        }
+        
+    - name: Run build
+      id: build
+      if: steps.install.outputs.install_status == 'success'
+      run: |
+        echo "build_status=success" >> $GITHUB_OUTPUT
+        build_output=$(npm run build 2>&1) || {
+          echo "build_status=failure" >> $GITHUB_OUTPUT
+          echo "error_output<<EOF" >> $GITHUB_OUTPUT
+          echo "$build_output" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+        }
+        
+    - name: Create issue if failed
+      if: steps.install.outputs.install_status == 'failure' || steps.build.outputs.build_status == 'failure'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const failedStep = process.env.INSTALL_STATUS === 'failure' ? 'dependency installation' : 'build';
+          const errorOutput = `\`\`\`\n${process.env.ERROR_OUTPUT}\n\`\`\``;
+          
+          const { data: issues } = await github.rest.issues.listForRepo({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            state: 'open',
+            labels: 'build-failure'
+          });
+          
+          const existingIssue = issues.find(issue => 
+            issue.title.includes('Build Failure') && 
+            issue.labels.some(label => label.name === 'build-failure')
+          );
+          
+          const title = `Build Failure - ${new Date().toISOString()}`;
+          const body = `The latest commit (${context.sha}) failed during ${failedStep}.\n\n**Error Output:**\n${errorOutput}\n\n[View Workflow Run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})`;
+          
+          if (!existingIssue) {
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: ['build-failure', 'bug']
+            });
+          } else {
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: existingIssue.number,
+              body: `Another failure detected in commit ${context.sha} during ${failedStep}.\n\n**Error Output:**\n${errorOutput}\n\n[View Workflow Run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})`
+            });
+          }
+      env:
+        ERROR_OUTPUT: ${{ steps.install.outputs.error_output || steps.build.outputs.error_output }}
+        INSTALL_STATUS: ${{ steps.install.outputs.install_status }}
+        BUILD_STATUS: ${{ steps.build.outputs.build_status }}
