@@ -4,6 +4,8 @@ import {
   MDXEditor,
   headingsPlugin,
   listsPlugin,
+  ListsToggle,
+  CodeToggle,
   quotePlugin,
   thematicBreakPlugin,
   markdownShortcutPlugin,
@@ -11,12 +13,16 @@ import {
   BoldItalicUnderlineToggles,
   CreateLink,
   InsertImage,
+  linkDialogPlugin,
+  InsertThematicBreak,
+  imagePlugin,
 } from "@mdxeditor/editor";
 import "@mdxeditor/editor/style.css";
 
 import { db } from "../firebaseConfig";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { useTranslation } from "react-i18next";
+import sanitizeHtml from "sanitize-html";
 
 export default function CreateArticle({ user, profile }) {
   const navigate = useNavigate();
@@ -42,7 +48,7 @@ export default function CreateArticle({ user, profile }) {
       author: profile.username,
       date,
       category,
-      content, // already Markdown from MDXEditor
+      content: sanitizeHtml(content), // already Markdown from MDXEditor
       createdAt: serverTimestamp(),
     });
 
@@ -113,11 +119,16 @@ export default function CreateArticle({ user, profile }) {
               quotePlugin(),
               thematicBreakPlugin(),
               markdownShortcutPlugin(),
+              linkDialogPlugin(),
+              imagePlugin(),
               toolbarPlugin({
                 toolbarContents: () => (
                   <>
                     <BoldItalicUnderlineToggles />
+                    <ListsToggle />
+                    <CodeToggle />
                     <CreateLink />
+                    <InsertThematicBreak />
                     <InsertImage />
                   </>
                 ),
