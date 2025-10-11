@@ -119,6 +119,15 @@ export default function MainContent() {
         }
       }
 
+      // Sort each category's articles newest -> oldest
+      for (const cat of Object.keys(grouped)) {
+        grouped[cat].sort((a, b) => {
+          const ta = Date.parse(a.date) || 0;
+          const tb = Date.parse(b.date) || 0;
+          return tb - ta;
+        });
+      }
+
       setCategories(Object.keys(grouped));
       setArticlesByCategory(grouped);
     }
@@ -154,6 +163,13 @@ export default function MainContent() {
   };
 
   if (!selectedCategory) {
+    // Flatten all articles to show on the homepage
+    const allArticles = Object.values(articlesByCategory).flat();
+    allArticles.sort((a, b) => {
+      const ta = Date.parse(a.date) || 0;
+      const tb = Date.parse(b.date) || 0;
+      return tb - ta;
+    });
     return (
       <div className="page">
         <h1 style={{ textAlign: "center" }}>{t("main.welcome")}</h1>
@@ -161,6 +177,46 @@ export default function MainContent() {
           {categories.map((cat) => (
             <div key={cat} className="category-card" onClick={() => setSelectedCategory(cat)}>
               {cat} ({articlesByCategory[cat]?.length || 0})
+            </div>
+          ))}
+        </div>
+
+        <div className="articles-container">
+          {allArticles.map((article) => (
+            <div key={article.id} className="article-card">
+              {article.thumbnail && <div className="card-thumbnail"><img src={article.thumbnail} alt="" loading="lazy" /></div>}
+              <div className="card-header">
+                <h3>{article.title}</h3>
+                <div className="meta">
+                  <span className="author">{t("main.by")}: {article.author}</span>
+                  <span className="date">{t("main.date")}: {article.date}</span>
+                </div>
+              </div>
+              <div className="card-content"><div dangerouslySetInnerHTML={{ __html: article.content || "" }} style={{textAlign: 'center'}} /></div>
+              <div className="reactions">
+                <button
+                  className={`reaction-btn ${animate[article.id]?.thumbsUp ? "animate" : ""}`}
+                  onClick={() => handleReaction(article.id, "thumbsUp")}
+                  style={{ color: userReactions[article.id]?.thumbsUp ? "#0d6efd" : "grey" }}
+                >
+                  👍 {article.reactions.thumbsUp}
+                </button>
+                <button
+                  className={`reaction-btn ${animate[article.id]?.thumbsDown ? "animate" : ""}`}
+                  onClick={() => handleReaction(article.id, "thumbsDown")}
+                  style={{ color: userReactions[article.id]?.thumbsDown ? "#dc3545" : "grey" }}
+                >
+                  👎 {article.reactions.thumbsDown}
+                </button>
+                <button
+                  className={`reaction-btn ${animate[article.id]?.heart ? "animate" : ""}`}
+                  onClick={() => handleReaction(article.id, "heart")}
+                  style={{ color: userReactions[article.id]?.heart ? "#ff4081" : "grey" }}
+                >
+                  ❤️ {article.reactions.heart}
+                </button>
+              </div>
+              <div className="read-more" onClick={() => navigate(`${article.category}/article/${article.id}`)}>{t("main.readmore")} →</div>
             </div>
           ))}
         </div>
