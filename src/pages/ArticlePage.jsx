@@ -1,34 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { db, auth } from "../firebaseConfig";
-import {
-  doc, getDoc, updateDoc, increment, setDoc
-} from "firebase/firestore";
+import { doc, getDoc, updateDoc, increment, setDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
-import { useTranslation } from "react-i18next";
 
 export default function ArticlePage() {
   const { filename, category } = useParams();
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
-  const [userData, setUserData] = useState(null);
   const [userReactions, setUserReactions] = useState({ thumbsUp: false, thumbsDown: false, heart: false });
   const [animate, setAnimate] = useState({ thumbsUp: false, thumbsDown: false, heart: false });
   const [reactions, setReactions] = useState({ thumbsUp: 0, thumbsDown: 0, heart: 0 });
-  const [ t, i18n ] = useTranslation();
 
   useEffect(() => {
     onAuthStateChanged(auth, (u) => {
       setUser(u);
-      if (u) {
-        getDoc(doc(db, "users", u.uid)).then((snap) => {
-          if (snap.exists()) setUserData(snap.data());
-          else setUserData(null);
-        });
-      } else {
-        setUserData(null);
-      }
     });
   }, []);
 
@@ -66,6 +53,7 @@ export default function ArticlePage() {
     const articleRef = doc(db, "articles", filename);
     const userDocRef = doc(db, "articles", filename, "reactions", user.uid);
 
+    // If user already reacted, remove the reaction (decrement)
     if (userReactions[type]) {
       setAnimate((prev) => ({ ...prev, [type]: true }));
       setTimeout(() => setAnimate((prev) => ({ ...prev, [type]: false })), 200);
@@ -78,6 +66,7 @@ export default function ArticlePage() {
       return;
     }
 
+    // Otherwise add the reaction (increment)
     setAnimate((prev) => ({ ...prev, [type]: true }));
     setTimeout(() => setAnimate((prev) => ({ ...prev, [type]: false })), 200);
 
@@ -97,9 +86,9 @@ export default function ArticlePage() {
       <div className="article-header">
         <h1>{article.title}</h1>
         <div className="meta">
-          <span className="author">{t("main.by")}: {article.author}</span>
-          <span className="date">{t("main.date")}: {article.date}</span>
-          <span className="category">{t("main.category")}: {article.category}</span>
+          <span className="author">By: {article.author}</span>
+          <span className="date">Date: {article.date}</span>
+          <span className="category">Category: {article.category}</span>
         </div>
       </div>
 
@@ -135,35 +124,7 @@ export default function ArticlePage() {
         </button>
       </div>
 
-      <div style={{ marginTop: 10 }}>
-        <Link to={`/`}>← {t("main.back-cat")}</Link>
-      </div>
-
-      <style>{`
-        .reactions {
-          display: flex;
-          gap: 12px;
-          margin-top: 20px;
-        }
-        .reaction-btn {
-          font-size: 24px;
-          background: none;
-          border: none;
-          cursor: pointer;
-          transition: transform 0.2s;
-        }
-        .reaction-btn.animate {
-          transform: scale(1.4);
-        }
-        .article-chat-preview {
-          margin-top: 40px;
-          max-width: 600px;
-        }
-        .article-thumbnail img {
-          max-width: 100%;
-          border-radius: 8px;
-        }
-      `}</style>
+      {/* Styles for reactions moved to src/styles/article-page.css */}
     </div>
   );
 }

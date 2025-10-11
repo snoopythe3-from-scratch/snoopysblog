@@ -4,6 +4,7 @@ import { db, auth } from "../firebaseConfig";
 import { collection, getDocs, doc, getDoc, updateDoc, increment, setDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import { useTranslation } from "react-i18next";
+import { marked } from "marked";
 
 export default function MainContent() {
   const [categories, setCategories] = useState([]);
@@ -124,7 +125,7 @@ export default function MainContent() {
                 <span className="date">{t("main.date")}: {article.date}</span>
               </div>
             </div>
-            <div className="card-content"><center>{article.content.replace("<p>", "").replace("</p>", "")}</center></div>
+            <div className="card-content"><div dangerouslySetInnerHTML={{ __html: marked.parse(article.content || "") }} style={{textAlign: 'center'}} /></div>
             <div className="reactions">
               <button
                 className={`reaction-btn ${animate[article.id]?.thumbsUp ? "animate" : ""}`}

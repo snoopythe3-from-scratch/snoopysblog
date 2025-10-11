@@ -24,3 +24,20 @@
 .back-button:hover {
     background-color: #e0e0e0;
 }
+
+/* Reactions and reaction buttons */
+.reactions {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+.reaction-btn {
+    font-size: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.reaction-btn.animate {
+    transform: scale(1.4);
+}
