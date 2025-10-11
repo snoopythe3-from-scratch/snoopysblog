@@ -135,6 +135,21 @@ export default function MainContent() {
     fetchArticles();
   }, [user]);
 
+  // Helpers for preview text: strip HTML and create a short snippet
+  const stripHtml = (html) => {
+    if (!html) return "";
+    // remove HTML tags
+    const withoutTags = html.replace(/<[^>]*>/g, "");
+    // basic entity replacements
+    return withoutTags.replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+  };
+
+  const makeSnippet = (html, max = 300) => {
+    const text = stripHtml(html || "").trim();
+    if (text.length <= max) return text;
+    return text.slice(0, max).trimEnd() + "...";
+  };
+
   const handleReaction = async (articleId, type) => {
     if (!user) return;
     if (userReactions[articleId]?.[type]) return;
@@ -197,7 +212,7 @@ export default function MainContent() {
                   <span className="date">{t("main.date")}: {article.date}</span>
                 </div>
               </div>
-              <div className="card-content"><div dangerouslySetInnerHTML={{ __html: article.content || "" }} style={{ textAlign: 'center' }} /></div>
+              <div className="card-content"><p>{makeSnippet(article.content, 300)}</p></div>
               <div className="reactions">
                 <button
                   className={`reaction-btn ${animate[article.id]?.thumbsUp ? "animate" : ""}`}
@@ -252,7 +267,7 @@ export default function MainContent() {
                 <span className="date">{t("main.date")}: {article.date}</span>
               </div>
             </div>
-            <div className="card-content"><div dangerouslySetInnerHTML={{ __html: article.content || "" }} style={{ textAlign: 'center' }} /></div>
+            <div className="card-content"><p>{makeSnippet(article.content, 300)}</p></div>
             <div className="reactions">
               <button
                 className={`reaction-btn ${animate[article.id]?.thumbsUp ? "animate" : ""}`}
