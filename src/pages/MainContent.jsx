@@ -14,7 +14,7 @@ export default function MainContent() {
   const [userReactions, setUserReactions] = useState({});
   const [animate, setAnimate] = useState({});
   const navigate = useNavigate();
-  const [ t, i18n ] = useTranslation();
+  const [t, i18n] = useTranslation();
 
   useEffect(() => {
     onAuthStateChanged(auth, (u) => setUser(u));
@@ -171,15 +171,20 @@ export default function MainContent() {
       return tb - ta;
     });
     return (
-      <div className="page">
-        <h1 style={{ textAlign: "center" }}>{t("main.welcome")}</h1>
-        <div className="categories-container">
-          {categories.map((cat) => (
-            <div key={cat} className="category-card" onClick={() => setSelectedCategory(cat)}>
-              {cat} ({articlesByCategory[cat]?.length || 0})
-            </div>
-          ))}
+      <>
+      <div id="categories-header">
+          <div className="categories-container">
+            {categories.map((cat) => (
+              <div key={cat} className="category-card" onClick={() => setSelectedCategory(cat)}>
+                {cat} ({articlesByCategory[cat]?.length || 0})
+              </div>
+            ))}
+          </div>
         </div>
+      <div className="page">
+
+        <h1 style={{ textAlign: "center" }}>{t("main.welcome")}</h1>
+
 
         <div className="articles-container">
           {allArticles.map((article) => (
@@ -192,7 +197,7 @@ export default function MainContent() {
                   <span className="date">{t("main.date")}: {article.date}</span>
                 </div>
               </div>
-              <div className="card-content"><div dangerouslySetInnerHTML={{ __html: article.content || "" }} style={{textAlign: 'center'}} /></div>
+              <div className="card-content"><div dangerouslySetInnerHTML={{ __html: article.content || "" }} style={{ textAlign: 'center' }} /></div>
               <div className="reactions">
                 <button
                   className={`reaction-btn ${animate[article.id]?.thumbsUp ? "animate" : ""}`}
@@ -221,6 +226,7 @@ export default function MainContent() {
           ))}
         </div>
       </div>
+      </>
     );
   }
 
@@ -246,7 +252,7 @@ export default function MainContent() {
                 <span className="date">{t("main.date")}: {article.date}</span>
               </div>
             </div>
-            <div className="card-content"><div dangerouslySetInnerHTML={{ __html: article.content || "" }} style={{textAlign: 'center'}} /></div>
+            <div className="card-content"><div dangerouslySetInnerHTML={{ __html: article.content || "" }} style={{ textAlign: 'center' }} /></div>
             <div className="reactions">
               <button
                 className={`reaction-btn ${animate[article.id]?.thumbsUp ? "animate" : ""}`}
