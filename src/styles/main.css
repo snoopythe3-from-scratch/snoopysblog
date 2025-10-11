@@ -10,10 +10,10 @@
 :root.dark {
 	--text-color: #f5f5f5;
 	--heading-color: #ffffff;
-	--highlight-color: #4E97FE;
+	--highlight-color: #855cd6;
 	--selection-color: #4E97FE80;
 	--footer-bg: #2d2d2d;
-	background-color: #121212;
+	background-color: #515050;
 	color: var(--text-color);
 }
 

@@ -99,7 +99,7 @@
   padding: 0 15px 15px 15px;
   flex-grow: 1;
   font-size: 0.95rem;
-  color: #444;
+  color: --text-color;
 }
 
 /* Read more button */
