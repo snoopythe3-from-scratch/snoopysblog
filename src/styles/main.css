@@ -4,6 +4,7 @@
 	--highlight-color: #855cd6;
 	--selection-color: #4E97FE80;
 	--footer-bg: #f2f2f2;
+	--lang-btn-bg: #e8e4e4;
 	--content-width: 942px;
 }
 
@@ -13,6 +14,7 @@
 	--highlight-color: #855cd6;
 	--selection-color: #4E97FE80;
 	--footer-bg: #2d2d2d;
+	--lang-btn-bg: #383737;
 	background-color: #515050;
 	color: var(--text-color);
 }
