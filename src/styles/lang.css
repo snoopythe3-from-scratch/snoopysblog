@@ -5,7 +5,7 @@
 .lang-btn-div {
     margin-bottom: 0.25rem;
     padding: 1rem;
-    background-color: var(--lang-btn-bg);
+    background-color: var(--btn-bg);
     cursor: pointer;
     border-radius: 12px;
 }
