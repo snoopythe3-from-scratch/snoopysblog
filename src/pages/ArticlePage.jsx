@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { db, auth } from "../firebaseConfig";
 import { doc, getDoc, updateDoc, increment, setDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
+import { marked } from "marked";
 
 export default function ArticlePage() {
   const { filename, category } = useParams();
@@ -98,7 +99,7 @@ export default function ArticlePage() {
         </div>
       )}
 
-      <div className="article-full-content" dangerouslySetInnerHTML={{ __html: article.content }} />
+      <div className="article-full-content" dangerouslySetInnerHTML={{ __html: marked.parse(article.content) }} />
 
       <div className="reactions">
         <button
@@ -123,8 +124,6 @@ export default function ArticlePage() {
           ❤️ {reactions.heart}
         </button>
       </div>
-
-      {/* Styles for reactions moved to src/styles/article-page.css */}
     </div>
   );
 }

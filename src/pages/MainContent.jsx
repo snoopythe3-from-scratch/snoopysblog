@@ -28,6 +28,67 @@ export default function MainContent() {
       for (let docSnap of snapshot.docs) {
         const data = docSnap.data();
         const id = docSnap.id;
+        // Prepare content and thumbnail so the preview card shows at most one image.
+        const rawContent = data.content || "";
+        let thumbnail = data.thumbnail || "";
+        let contentHtml = rawContent;
+
+        // Helper to verify an image URL is reachable in the browser
+        async function imageExists(url) {
+          return new Promise((resolve) => {
+            try {
+              const img = new Image();
+              img.onload = () => resolve(true);
+              img.onerror = () => resolve(false);
+              img.src = url;
+            } catch (e) {
+              resolve(false);
+            }
+          });
+        }
+
+        // If content contains HTML images or Markdown image syntax, extract the first image
+        // and remove all image occurrences from the preview content to ensure only one image shows.
+        if (rawContent) {
+          // First try to extract HTML <img> src
+          let found = false;
+          if (typeof document !== "undefined") {
+            const wrapper = document.createElement("div");
+            wrapper.innerHTML = rawContent;
+            const imgs = wrapper.getElementsByTagName("img");
+            if (imgs.length > 0) {
+              const src = imgs[0].getAttribute("src") || "";
+              // verify the image actually loads before using it as thumbnail
+              // (we'll await below since imageExists is async)
+              thumbnail = thumbnail || src;
+              found = true;
+            }
+            // Remove HTML img tags
+            Array.from(wrapper.getElementsByTagName("img")).forEach(img => img.remove());
+            contentHtml = wrapper.innerHTML;
+          }
+
+          // Also handle Markdown image syntax ![alt](url)
+          if (!found) {
+            const mdMatch = rawContent.match(/!\[[^\]]*\]\(([^)]+)\)/i);
+            if (mdMatch) {
+              thumbnail = thumbnail || mdMatch[1];
+              found = true;
+            }
+          }
+
+          // Remove Markdown image syntax from content
+          contentHtml = contentHtml.replace(/!\[[^\]]*\]\(([^)]+)\)/gi, "");
+          // Ensure any leftover HTML img tags are removed as a safety net
+          contentHtml = contentHtml.replace(/<img[^>]*>/gi, "");
+        }
+
+        // If thumbnail exists, verify it loads; otherwise clear it.
+        if (thumbnail) {
+          const ok = await imageExists(thumbnail);
+          if (!ok) thumbnail = "";
+        }
+
         const article = {
           id,
           title: data.title,
@@ -35,8 +96,8 @@ export default function MainContent() {
           date: data.date,
           category: data.category,
           preview: data.preview || "",
-          thumbnail: data.thumbnail || "",
-          content: data.content || "",
+          thumbnail: thumbnail,
+          content: contentHtml,
           reactions: {
             thumbsUp: data.thumbsUp || 0,
             thumbsDown: data.thumbsDown || 0,
@@ -117,7 +178,11 @@ export default function MainContent() {
       <div className="articles-container">
         {articles.map((article) => (
           <div key={article.id} className="article-card">
-            {article.thumbnail && <div className="card-thumbnail"><img src={article.thumbnail} alt="" loading="lazy" /></div>}
+            {article.thumbnail && (
+              <div className="card-thumbnail">
+                <img src={article.thumbnail} alt="" loading="lazy" />
+              </div>
+            )}
             <div className="card-header">
               <h3>{article.title}</h3>
               <div className="meta">
@@ -125,7 +190,7 @@ export default function MainContent() {
                 <span className="date">{t("main.date")}: {article.date}</span>
               </div>
             </div>
-            <div className="card-content"><div dangerouslySetInnerHTML={{ __html: marked.parse(article.content || "") }} style={{textAlign: 'center'}} /></div>
+            <div className="card-content"><div dangerouslySetInnerHTML={{ __html: article.content || "" }} style={{textAlign: 'center'}} /></div>
             <div className="reactions">
               <button
                 className={`reaction-btn ${animate[article.id]?.thumbsUp ? "animate" : ""}`}
