@@ -6,6 +6,19 @@ import { onAuthStateChanged } from "firebase/auth";
 import { useTranslation } from "react-i18next";
 import { marked } from "marked";
 
+/**
+ * Render the main articles view with categories, article previews, and reaction controls.
+ *
+ * Loads articles from Firestore, groups them by category, extracts a single thumbnail
+ * from HTML or Markdown content (verifying the image URL), and loads per-user reaction
+ * state when a user is authenticated. Provides UI to view all articles or a single
+ * category, show an article snippet, and submit reactions which update Firestore and
+ * local state.
+ *
+ * @returns {JSX.Element} The component's rendered UI for the homepage or a selected category,
+ * including category headers, article cards (thumbnail, title, author, date, snippet),
+ * reaction buttons with counts and animations, and navigation controls.
+ */
 export default function MainContent() {
   const [categories, setCategories] = useState([]);
   const [articlesByCategory, setArticlesByCategory] = useState({});
@@ -138,10 +151,15 @@ export default function MainContent() {
   // Helpers for preview text: strip HTML and create a short snippet
   const stripHtml = (html) => {
     if (!html) return "";
-    // remove HTML tags
-    const withoutTags = html.replace(/<[^>]*>/g, "");
+    // robustly remove all HTML tags by repeatedly applying the regex until no tags remain
+    let prev;
+    let stripped = html;
+    do {
+      prev = stripped;
+      stripped = stripped.replace(/<[^>]*>/g, "");
+    } while (stripped !== prev);
     // basic entity replacements
-    return withoutTags.replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+    return stripped.replace(/&nbsp;/g, " ").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
   };
 
   const makeSnippet = (html, max = 300) => {
