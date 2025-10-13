@@ -146,7 +146,7 @@ export default function MainContent() {
       stripped = stripped.replace(/<[^>]*>/g, "");
     } while (stripped !== prev);
     // basic entity replacements
-    return stripped.replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+    return stripped.replace(/&nbsp;/g, " ").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
   };
 
   const makeSnippet = (html, max = 300) => {
