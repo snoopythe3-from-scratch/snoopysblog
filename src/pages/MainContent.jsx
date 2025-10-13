@@ -138,10 +138,15 @@ export default function MainContent() {
   // Helpers for preview text: strip HTML and create a short snippet
   const stripHtml = (html) => {
     if (!html) return "";
-    // remove HTML tags
-    const withoutTags = html.replace(/<[^>]*>/g, "");
+    // robustly remove all HTML tags by repeatedly applying the regex until no tags remain
+    let prev;
+    let stripped = html;
+    do {
+      prev = stripped;
+      stripped = stripped.replace(/<[^>]*>/g, "");
+    } while (stripped !== prev);
     // basic entity replacements
-    return withoutTags.replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+    return stripped.replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
   };
 
   const makeSnippet = (html, max = 300) => {
