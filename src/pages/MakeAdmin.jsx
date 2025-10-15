@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { db } from "../firebaseConfig";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { collection, doc, getDoc, updateDoc } from "firebase/firestore";
 import { auth } from "../firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 import { useState } from "react";
@@ -28,7 +28,7 @@ export default function MakeAdmin({ user, profile }) {
         setError("");
         try {
             // Fetch user by username
-            const usersRef = doc(db, "users");
+            const usersRef = collection(db, "users");
             const userQuery = await getDoc(usersRef);
             let targetUser = null;
             userQuery.forEach((doc) => {
