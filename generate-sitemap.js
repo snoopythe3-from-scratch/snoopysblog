@@ -27,22 +27,33 @@ const db = getFirestore(app);
 async function generateSitemap() {
     const baseUrl = "https://thescratchchannel.vercel.app";
 
-    // Fetch articles from Firestore
+    // 🧱 1. Add your static pages here
+    const staticPages = [
+        "/",                 // homepage
+        "/about",
+        "/lang",
+        "/articles/create",
+    ];
+
+    // Convert to XML entries
+    const urls = staticPages.map(
+        (path) => `
+        <url>
+            <loc>${baseUrl}${path}</loc>
+            <changefreq>monthly</changefreq>
+            <priority>0.6</priority>
+        </url>`
+    );
+
+    // 📰 2. Fetch and add your dynamic article URLs
     const snapshot = await getDocs(collection(db, "articles"));
-    const urls = [];
-
-    // Add homepage
-    urls.push(`<url><loc>${baseUrl}/</loc></url>`);
-
-    snapshot.forEach(doc => {
+    snapshot.forEach((doc) => {
         const data = doc.data();
-        if (!data.category) return; // skip invalid documents
+        if (!data.category) return;
 
-        // Encode category safely for URL
         const category = encodeURIComponent(data.category);
         const articleUrl = `${baseUrl}/${category}/article/${doc.id}`;
 
-        // Optional: Add lastmod tag for freshness
         const lastmod = data.createdAt?.toDate
             ? data.createdAt.toDate().toISOString().split("T")[0]
             : data.date || "";
@@ -56,16 +67,14 @@ async function generateSitemap() {
         </url>`);
     });
 
+    // 🗺️ 3. Wrap into sitemap structure
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
     <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     ${urls.join("\n")}
     </urlset>`;
 
-    // Save sitemap
     fs.writeFileSync("public/sitemap.xml", xml);
-    console.log(`✅ Generated sitemap with ${urls.length} URLs`);
+    console.log(`✅ Sitemap generated with ${urls.length} URLs`);
 }
 
-generateSitemap().catch(err => {
-    console.error("❌ Failed to generate sitemap:", err);
-});
+generateSitemap().catch(console.error);
