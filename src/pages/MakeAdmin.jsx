@@ -43,9 +43,7 @@ export default function MakeAdmin({ user, profile }) {
                 return;
             }
             // Update writer status
-            await updateDoc(doc(db, "users", targetUser.id), {
-                writer: true
-            });
+            await updateDoc(targetDoc.ref, { writer: true });
             setMessage(`User ${username} has been granted admin rights.`);
         } catch (err) {
             setError("Error updating user: " + err.message);
