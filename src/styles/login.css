@@ -26,7 +26,7 @@
 /* copied the transform and the other thingies from main.css so the button reacts just like the article cards...
 haha... get it... REACTs? */
 .submit-button {
-    background: var(--higlight-color);
+    background: var(--highlight-color);
     border-radius: 12px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
     transition: all 0.3s ease;
