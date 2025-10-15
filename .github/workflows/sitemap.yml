@@ -1,5 +1,8 @@
 ﻿name: Generate Sitemap
 
+permissions:
+  contents: write
+
 on:
   schedule:
     - cron: "0 */4 * * *"  # every 3 hours
