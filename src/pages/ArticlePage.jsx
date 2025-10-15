@@ -14,6 +14,20 @@ export default function ArticlePage() {
   const [animate, setAnimate] = useState({ thumbsUp: false, thumbsDown: false, heart: false });
   const [reactions, setReactions] = useState({ thumbsUp: 0, thumbsDown: 0, heart: 0 });
 
+  // set title to article title
+  useEffect(() => {
+    const setPageTitle = () => {
+      const titleElement = document.getElementById("article-title");
+      if (titleElement) {
+        document.title = `${titleElement.innerText} - The Scratch Channel`;
+      } else {
+        document.title = "The Scratch Channel";
+        setTimeout(setPageTitle, 100); // retry after 100ms
+      }
+    };
+    setPageTitle();
+  }, []);
+
   useEffect(() => {
     onAuthStateChanged(auth, (u) => {
       setUser(u);
@@ -85,7 +99,7 @@ export default function ArticlePage() {
   return (
     <div className="page article-full">
       <div className="article-header">
-        <h1>{article.title}</h1>
+        <h1 id="article-title">{article.title}</h1>
         <div className="meta">
           <span className="author">By: {article.author}</span>
           <span className="date">Date: {article.date}</span>
