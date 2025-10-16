@@ -25,12 +25,10 @@ vi.mock('firebase/firestore', () => ({
 
 // Mock react-i18next
 vi.mock('react-i18next', () => ({
-  useTranslation: () => {
-    return [
-      (key) => key,
-      { language: 'en' },
-    ];
-  },
+  useTranslation: () => ({
+    t: (key) => key,
+    i18n: { language: 'en' },
+  }),
 }));
 
 describe('App Component', () => {
