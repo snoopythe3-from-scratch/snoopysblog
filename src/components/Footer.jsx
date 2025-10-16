@@ -13,7 +13,7 @@ export default function Footer() {
         <div className="footer-group">
           <h4>{t("footer.headingabout")}</h4>
           <a href="/about">{t("footer.aboutlink")}</a><br/>
-          <a href="https://raw.githubusercontent.com/The-Scratch-Channel/the-scratch-channel.github.io/refs/heads/main/LICENSE">{t("footer.licenselink")}</a><br/>
+          <a href="/LICENSE">{t("footer.licenselink")}</a><br/>
           <a href="https://stats.uptimerobot.com/abiwl4EvLm">{t("footer.statuslink")}</a>
         </div>
         <div className="footer-group">
