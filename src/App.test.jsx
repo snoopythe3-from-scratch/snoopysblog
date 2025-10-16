@@ -68,14 +68,14 @@ describe('App Component', () => {
 
     it('should render Header component', () => {
       const { container } = render(<App />);
-      // Header should be present in the DOM
-      expect(container.querySelector('header') || container.textContent).toBeTruthy();
+      const header = container.querySelector('header');
+      expect(header).toBeInTheDocument();
     });
 
     it('should render Footer component', () => {
       const { container } = render(<App />);
-      // Footer should be present in the DOM
-      expect(container.querySelector('footer') || container.textContent).toBeTruthy();
+      const footer = container.querySelector('footer');
+      expect(footer).toBeInTheDocument();
     });
 
     it('should set up routing correctly', () => {
