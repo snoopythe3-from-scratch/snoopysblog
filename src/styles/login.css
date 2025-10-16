@@ -26,17 +26,19 @@
 /* copied the transform and the other thingies from main.css so the button reacts just like the article cards...
 haha... get it... REACTs? */
 .submit-button {
-    background: var(--highlight-color);
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-    transition: all 0.3s ease;
+    background: #007bff;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    font-size: 90%;
     cursor: pointer;
-    color: white;
+    font-weight: bold;
+    border-radius: 10px;
 }
 /*same thing it's just copied from main.css */
 .submit-button:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+    background: #0056b3;
+    transition: background 0.2s ease;
 }
 
 
