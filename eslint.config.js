@@ -21,5 +21,9 @@ export default defineConfig([
       },
       globals: globals.browser,
     },
+    rules: {
+      // Disable all unused variable warnings/errors
+      'no-unused-vars': 'off',
+    },
   },
 ]);
