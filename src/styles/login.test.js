@@ -20,27 +20,22 @@ describe('login.css Validation', () => {
     });
 
     it('should not have syntax errors with semicolons', () => {
-      // Check that properties end with semicolons (basic check)
       const lines = cssContent.split('\n');
-      const propertyLines = lines.filter(line => 
-        line.includes(':') && 
-        !line.trim().startsWith('/*') &&
-        !line.trim().startsWith('//') &&
-        line.includes('{') === false
-      );
-
-      propertyLines.forEach(line => {
-        if (line.trim() && line.includes(':')) {
-          // Should end with semicolon or be inside a comment
-          const trimmed = line.trim();
-          if (!trimmed.endsWith('*/')) {
-            expect(
-              trimmed.endsWith(';') || trimmed.endsWith('{'),
-              `Line should end with semicolon: ${line}`
-            ).toBe(true);
-          }
+      for (let i = 0; i < lines.length; i++) {
+        const trimmed = lines[i].trim();
+        if (!trimmed || trimmed.startsWith('/*') || trimmed.startsWith('//')) continue;
+        if (!trimmed.includes(':')) continue;
+        if (trimmed.includes('{') || trimmed.includes('}')) continue;
+        if (trimmed.endsWith(';')) continue;
+        // Allow missing semicolon only if the next non-empty, non-comment line is a closing brace
+        let j = i + 1, next = '';
+        while (j < lines.length) {
+          const t = lines[j].trim();
+          if (t && !t.startsWith('/*') && !t.startsWith('//')) { next = t; break; }
+          j++;
         }
-      });
+        expect(next).toBe('}');
+      }
     });
 
     it('should have proper comment syntax', () => {
