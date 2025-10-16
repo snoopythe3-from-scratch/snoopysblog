@@ -27,16 +27,16 @@ vi.mock('react-router-dom', async () => {
 // Mock react-i18next
 vi.mock('react-i18next', () => ({
   useTranslation: () => {
-    return [
-      (key) => {
+    return {
+      t: (key) => {
         const translations = {
           'login.emailpass-error': 'Please enter both email and password.',
           'login.signin': 'Sign In',
         };
         return translations[key] || key;
       },
-      {},
-    ];
+      i18n: { language: 'en' },
+    };
   },
 }));
 
