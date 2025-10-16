@@ -4,7 +4,6 @@ import { db, auth } from "../firebaseConfig";
 import { collection, getDocs, doc, getDoc, updateDoc, increment, setDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import { useTranslation } from "react-i18next";
-import { marked } from "marked";
 
 export default function MainContent() {
   const [categories, setCategories] = useState([]);
@@ -14,7 +13,7 @@ export default function MainContent() {
   const [userReactions, setUserReactions] = useState({});
   const [animate, setAnimate] = useState({});
   const navigate = useNavigate();
-  const [t, i18n] = useTranslation();
+  const [t] = useTranslation();
 
   useEffect(() => {
     onAuthStateChanged(auth, (u) => setUser(u));
@@ -28,12 +27,10 @@ export default function MainContent() {
       for (let docSnap of snapshot.docs) {
         const data = docSnap.data();
         const id = docSnap.id;
-        // Prepare content and thumbnail so the preview card shows at most one image.
         const rawContent = data.content || "";
         let thumbnail = data.thumbnail || "";
         let contentHtml = rawContent;
 
-        // Helper to verify an image URL is reachable in the browser
         async function imageExists(url) {
           return new Promise((resolve) => {
             try {
@@ -47,10 +44,7 @@ export default function MainContent() {
           });
         }
 
-        // If content contains HTML images or Markdown image syntax, extract the first image
-        // and remove all image occurrences from the preview content to ensure only one image shows.
         if (rawContent) {
-          // First try to extract HTML <img> src
           let found = false;
           if (typeof document !== "undefined") {
             const wrapper = document.createElement("div");
@@ -58,17 +52,12 @@ export default function MainContent() {
             const imgs = wrapper.getElementsByTagName("img");
             if (imgs.length > 0) {
               const src = imgs[0].getAttribute("src") || "";
-              // verify the image actually loads before using it as thumbnail
-              // (we'll await below since imageExists is async)
               thumbnail = thumbnail || src;
               found = true;
             }
-            // Remove HTML img tags
             Array.from(wrapper.getElementsByTagName("img")).forEach(img => img.remove());
             contentHtml = wrapper.innerHTML;
           }
-
-          // Also handle Markdown image syntax ![alt](url)
           if (!found) {
             const mdMatch = rawContent.match(/!\[[^\]]*\]\(([^)]+)\)/i);
             if (mdMatch) {
@@ -76,14 +65,10 @@ export default function MainContent() {
               found = true;
             }
           }
-
-          // Remove Markdown image syntax from content
           contentHtml = contentHtml.replace(/!\[[^\]]*\]\(([^)]+)\)/gi, "");
-          // Ensure any leftover HTML img tags are removed as a safety net
           contentHtml = contentHtml.replace(/<img[^>]*>/gi, "");
         }
 
-        // If thumbnail exists, verify it loads; otherwise clear it.
         if (thumbnail) {
           const ok = await imageExists(thumbnail);
           if (!ok) thumbnail = "";
@@ -108,7 +93,6 @@ export default function MainContent() {
         if (!grouped[article.category]) grouped[article.category] = [];
         grouped[article.category].push(article);
 
-        // fetch user reactions if logged in
         if (user) {
           const userDocRef = doc(db, "articles", id, "reactions", user.uid);
           const userDoc = await getDoc(userDocRef);
@@ -119,7 +103,6 @@ export default function MainContent() {
         }
       }
 
-      // Sort each category's articles newest -> oldest
       for (const cat of Object.keys(grouped)) {
         grouped[cat].sort((a, b) => {
           const ta = Date.parse(a.date) || 0;
@@ -135,12 +118,9 @@ export default function MainContent() {
     fetchArticles();
   }, [user]);
 
-  // Helpers for preview text: strip HTML and create a short snippet
   const stripHtml = (html) => {
     if (!html) return "";
-    // remove HTML tags
     const withoutTags = html.replace(/<[^>]*>/g, "");
-    // basic entity replacements
     return withoutTags.replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
   };
 
@@ -178,16 +158,16 @@ export default function MainContent() {
   };
 
   if (!selectedCategory) {
-    // Flatten all articles to show on the homepage
     const allArticles = Object.values(articlesByCategory).flat();
     allArticles.sort((a, b) => {
-      const ta = Date.parse(a.date) || 0;
-      const tb = Date.parse(b.date) || 0;
-      return tb - ta;
+      const scoreA = (a.reactions.thumbsUp || 0) + (a.reactions.heart || 0);
+      const scoreB = (b.reactions.thumbsUp || 0) + (b.reactions.heart || 0);
+      return scoreB - scoreA;
     });
+    const topArticles = allArticles.slice(0, 6);
     return (
       <>
-      <div id="categories-header">
+        <div id="categories-header">
           <div className="categories-container">
             {categories.map((cat) => (
               <div key={cat} className="category-card" onClick={() => setSelectedCategory(cat)}>
@@ -196,51 +176,48 @@ export default function MainContent() {
             ))}
           </div>
         </div>
-      <div className="page">
-
-        <h1 style={{ textAlign: "center" }}>{t("main.welcome")}</h1>
-
-
-        <div className="articles-container">
-          {allArticles.map((article) => (
-            <div key={article.id} className="article-card">
-              {article.thumbnail && <div className="card-thumbnail"><img src={article.thumbnail} alt="" loading="lazy" /></div>}
-              <div className="card-header">
-                <h3>{article.title}</h3>
-                <div className="meta">
-                  <span className="author">{t("main.by")}: {article.author}</span>
-                  <span className="date">{t("main.date")}: {article.date}</span>
+        <div className="page">
+          <h1 style={{ textAlign: "center" }}>{t("main.welcome")}</h1>
+          <div className="articles-container">
+            {topArticles.map((article) => (
+              <div key={article.id} className="article-card">
+                {article.thumbnail && <div className="card-thumbnail"><img src={article.thumbnail} alt="" loading="lazy" /></div>}
+                <div className="card-header">
+                  <h3>{article.title}</h3>
+                  <div className="meta">
+                    <span className="author">{t("main.by")}: {article.author}</span>
+                    <span className="date">{t("main.date")}: {article.date}</span>
+                  </div>
                 </div>
+                <div className="card-content"><p>{makeSnippet(article.content, 300)}</p></div>
+                <div className="reactions">
+                  <button
+                    className={`reaction-btn ${animate[article.id]?.thumbsUp ? "animate" : ""}`}
+                    onClick={() => handleReaction(article.id, "thumbsUp")}
+                    style={{ color: userReactions[article.id]?.thumbsUp ? "#0d6efd" : "grey" }}
+                  >
+                    👍 {article.reactions.thumbsUp}
+                  </button>
+                  <button
+                    className={`reaction-btn ${animate[article.id]?.thumbsDown ? "animate" : ""}`}
+                    onClick={() => handleReaction(article.id, "thumbsDown")}
+                    style={{ color: userReactions[article.id]?.thumbsDown ? "#dc3545" : "grey" }}
+                  >
+                    👎 {article.reactions.thumbsDown}
+                  </button>
+                  <button
+                    className={`reaction-btn ${animate[article.id]?.heart ? "animate" : ""}`}
+                    onClick={() => handleReaction(article.id, "heart")}
+                    style={{ color: userReactions[article.id]?.heart ? "#ff4081" : "grey" }}
+                  >
+                    ❤️ {article.reactions.heart}
+                  </button>
+                </div>
+                <div className="read-more" onClick={() => navigate(`${article.category}/article/${article.id}`)}>{t("main.readmore")} →</div>
               </div>
-              <div className="card-content"><p>{makeSnippet(article.content, 300)}</p></div>
-              <div className="reactions">
-                <button
-                  className={`reaction-btn ${animate[article.id]?.thumbsUp ? "animate" : ""}`}
-                  onClick={() => handleReaction(article.id, "thumbsUp")}
-                  style={{ color: userReactions[article.id]?.thumbsUp ? "#0d6efd" : "grey" }}
-                >
-                  👍 {article.reactions.thumbsUp}
-                </button>
-                <button
-                  className={`reaction-btn ${animate[article.id]?.thumbsDown ? "animate" : ""}`}
-                  onClick={() => handleReaction(article.id, "thumbsDown")}
-                  style={{ color: userReactions[article.id]?.thumbsDown ? "#dc3545" : "grey" }}
-                >
-                  👎 {article.reactions.thumbsDown}
-                </button>
-                <button
-                  className={`reaction-btn ${animate[article.id]?.heart ? "animate" : ""}`}
-                  onClick={() => handleReaction(article.id, "heart")}
-                  style={{ color: userReactions[article.id]?.heart ? "#ff4081" : "grey" }}
-                >
-                  ❤️ {article.reactions.heart}
-                </button>
-              </div>
-              <div className="read-more" onClick={() => navigate(`${article.category}/article/${article.id}`)}>{t("main.readmore")} →</div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
       </>
     );
   }
@@ -251,7 +228,6 @@ export default function MainContent() {
     <div className="page">
       <h1 style={{ textAlign: "center" }}>{selectedCategory}</h1>
       <button className="back-btn" onClick={() => setSelectedCategory(null)}>← {t("main.back-cat")}</button>
-
       <div className="articles-container">
         {articles.map((article) => (
           <div key={article.id} className="article-card">
@@ -295,7 +271,6 @@ export default function MainContent() {
           </div>
         ))}
       </div>
-
       <style>{`
         .reactions {
           display: flex;
