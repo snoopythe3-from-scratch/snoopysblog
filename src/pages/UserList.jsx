@@ -37,6 +37,8 @@ export default function UserList() {
     if (loading) return <p>Loading...</p>;
     return (
         <div>
+            <h2>Actions</h2>
+            <a href="https://thescratchchannel.vercel.app/articles/create">Write an Article</a>
             <h2>User List</h2>
             <table>
                 <thead>
