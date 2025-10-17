@@ -138,7 +138,9 @@ export default function MainContent() {
           {profile?.writer && (
             <div className="admin-panel">
               <div className="admin-panel-header">
-                <h2>🛡️ Admin Panel</h2>
+                <center>
+                  <h2>🛡️ Admin Panel</h2>
+                </center>
                 <span className="admin-badge">Administrator</span>
               </div>
               <div className="admin-stats">
@@ -164,7 +166,7 @@ export default function MainContent() {
                 </button>
                 <button 
                   className="admin-action-btn secondary"
-                  onClick={() => navigate('/admin')}
+                  onClick={() => navigate('/admin/users')}
                 >
                   👥 Manage Users
                 </button>
