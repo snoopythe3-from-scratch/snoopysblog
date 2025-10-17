@@ -32,7 +32,6 @@ export default function Header() {
                 </script>
                 <div class="gcse-search"></div>
                 <div className="nav-right">
-                    <Link to="/articles/create">{t("header.write")}</Link>
                     <button
                         onClick={() => setDarkMode(prev => !prev)}
                         className="dark-mode-btn"
