@@ -28,6 +28,9 @@ export default function Header() {
                     <Link to="/lang">{t("header.language")}</Link>
                     <Link to="/about">{t("header.about")}</Link>
                 </div>
+                <script async src="https://cse.google.com/cse.js?cx=777e81daa01814f83">
+                </script>
+                <div class="gcse-search"></div>
                 <div className="nav-right">
                     <Link to="/articles/create">{t("header.write")}</Link>
                     <button
