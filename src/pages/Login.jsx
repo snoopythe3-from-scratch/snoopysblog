@@ -38,7 +38,6 @@ export default function LoginPage() {
   };
 
   return (
-    <><center><h1>Hello! Sign in to TSC</h1></center><div className="login-container">
       <form onSubmit={handleSignIn}>
         <div className="form-group">
           <input
@@ -57,6 +56,6 @@ export default function LoginPage() {
         </div>
         <center><button className="submit-button" type="submit">{t("login.signin")}</button></center>
       </form>
-    </div></>
+    </div>
   );
 }

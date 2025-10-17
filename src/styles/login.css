@@ -23,8 +23,7 @@
   border-color: #550086;
   box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
 }
-/* copied the transform and the other thingies from main.css so the button reacts just like the article cards...
-haha... get it... REACTs? */
+/* copied from article read more button */
 .submit-button {
     background: #007bff;
     color: #fff;
@@ -35,7 +34,7 @@ haha... get it... REACTs? */
     font-weight: bold;
     border-radius: 10px;
 }
-/*same thing it's just copied from main.css */
+
 .submit-button:hover {
     background: #0056b3;
     transition: background 0.2s ease;
