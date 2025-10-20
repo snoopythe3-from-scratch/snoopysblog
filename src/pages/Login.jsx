@@ -38,24 +38,23 @@ export default function LoginPage() {
   };
 
   return (
-      <form onSubmit={handleSignIn}>
-        <div className="form-group">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-            className="form-input" />
-        </div><div className="form-group">
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            className="form-input" />
-        </div>
-        <center><button className="submit-button" type="submit">{t("login.signin")}</button></center>
-      </form>
-    </div>
+    <><center><h1>Sign-in to TSC</h1><form onSubmit={handleSignIn}>
+      <div className="form-group">
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email"
+          className="form-input" />
+      </div><div className="form-group">
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Password"
+          className="form-input" />
+      </div>
+      <button className="submit-button" type="submit">{t("login.signin")}</button></form></center>
+    </>
   );
 }
