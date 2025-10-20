@@ -1,35 +1,33 @@
 # Welcome To The Scratch Channel
+<!-- Remove this, very redundant. ![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/The-Scratch-Channel/tsc-web-client?utm_source=oss&utm_medium=github&utm_campaign=The-Scratch-Channel%2Ftsc-web-client&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews) -->
 
-![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/The-Scratch-Channel/tsc-web-client?utm_source=oss&utm_medium=github&utm_campaign=The-Scratch-Channel%2Ftsc-web-client&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
-
-This is the repository for the brand new Scratch News Channel! Soon, news articles about Scratch and scratchlikes will be posted by writers.
-
+<!-- Reworked -->
+This is the official repo for The Scratch Channel.
 
 > [!IMPORTANT]
-> We are not affiliated with Scratch, the LLK, or MIT. News articles here are made by volunteers, not Scratch Team members.
+> We are not affiliated with Scratch, the LifeLong Kindergarten Group, or Massachusessets Institute of Technology. News articles here are made by volunteers, not Scratch Team members.
 
 ## Deployment
 
-There is no need to deploy this yourself if you do not want to contribute. If you just want to check out our site, you can visit <https://thescratchchannel.vercel.app/> and browse the live demo.
+There is no need to deploy this yourself if you do not want to contribute. If you just want to check out our site, you can visit <https://thescratchchannel.vercel.app/> and browse the live <!-- remove demo, it isnt anymore -->version.
 
 ## Contributing
 
-There are a variety of ways to contribute to the project:
-
-- reporting vulnerabilities
-- developing code
-- translating UI
-- writing articles
+There are a variety of ways to contribute to the project, such as:
+- Reporting vulnerabilities,
+- Developing code,
+- Translating UI and,
+- Writing articles
 
 ### Reporting vulnerabilities
 
-However, if you find a vulnerability that requires immediate attention, go to the repositories [security tab](https://github.com/The-Scratch-Channel/the-scratch-channel.github.io/security) to report it. A vulnerability report should contain what file has the vulnerability, what priority it is, and extensive details.
+However, if you find a vulnerability that requires immediate attention, go to the repositories [security tab](https://github.com/The-Scratch-Channel/tsc-web-client/security) to report it. A vulnerability report should contain what file has the vulnerability, what priority it is, and extensive details.
 
 ### Development Contribution
 
 - Create a fork of the repository
 
-![Click on the fork button towards the top of the repository home page](https://u.cubeupload.com/SmartCat3/Screenshot2025041818.png)
+![Click on the fork button towards the top of the repository home page](https://u.cubeupload.com/GvYoutube/Screenshot2025102012.png)
 
 - Clone your fork
 
@@ -38,7 +36,7 @@ git clone https://github.com/yourusername/yourforkname.git
 cd yourforkname
 ```
 
-- code your changes
+- Modify files 
 
 See the [DeveloperGuide](#developer-guide) for info about how our code is laid out and how it works
 
@@ -64,7 +62,7 @@ i18n.use(initReactI18next).use(LanguageDetector).init({
 });
 ```
 
-You must be fluent in the language in order to translate it. Do not use translation tools.
+You must be fluent in the language you want to add in order to translate it. Do not use translation tools.
 
 ### Writing articles
 
@@ -79,92 +77,109 @@ The project is static and uses React+Vite, with Firebase as our database and aut
 **Directory Structure**:
 <details>
 <summary>Directory Structure (very large)</summary>
-<code>
-.   .codeqlconfig.yml
-.   .env.development <- DO NOT GITIGNORE THESE
-.   .env.production     They are for Firebase, and we have security rules so that production DB can only be edited on our website.
-.   .gitignore
-.   CONTRIBUTING.md
-.   eslint.config.js
-.   gpt.prompt.yml
-.   index.html <- no actual code is to be written here
-.   LICENSE
-.   package-lock.json
-.   package.json
-.   README.md
-.   SECURITY.md
-.   tsc.code-workspace
-.   vercel.json
-.   vite.config.js
-.   
-+---.github
-.   .   labels.yml
-.   .   
-.   +---ISSUE_TEMPLATE
-.   .       bug_report.md
-.   .       custom.md
-.   .       feature_request.md
-.   .       
-.   +---workflows
-.           auto_label_priority.yml
-.           commit_logger.yml
-.           inactivity.yml
-.           osv-scanner.yml
-.           preview.yml
-.           summary.yml
-.           vercel_check.yml
-.                      
-+---public
-.   .   favicon-new.ico
-.   .   favicon-old.ico
-.   .   favicon.ico
-.   .   
-.   +---articles
-.           Ignore the stuff in here, its unused 
-+---src
-.   .   App.jsx
-.   .   firebaseConfig.js
-.   .   main.jsx
-.   .   
-.   +---assets
-.   .   .   tsc.png
-.   .   .   
-.   .   +---flags
-                Flag icons used on the language select page
-.   .           bg.svg
-.   .           en.svg
-.   .           eo.svg
-.   .           
-.   +---components
-.   .       Footer.jsx
-.   .       Header.jsx
-.   .       
-.   +---context
-.   +---i18n
-            Translations
-.   .       bg.json
-.   .       en.json
-.   .       eo.json
-.   .       index.js
-.   .       
-.   +---pages
-            All the pages on the site
-.   .       About.jsx
-.   .       Account.jsx
-.   .       ArticlePage.jsx
-.   .       createArticles.jsx
-.   .       Lang.jsx
-.   .       Login.jsx
-.   .       MainContent.jsx
-.   .       MakeAdmin.jsx
-.   .       SignUp.jsx
-.   .       UserList.jsx
-.   .       
-.   +---styles
-.           CSS files
-</code>
+├── .github</br>
+│   ├── ISSUE_TEMPLATE</br>
+│   │   ├── bug_report.md</br>
+│   │   ├── custom.md</br>
+│   │   └── feature_request.md</br>
+│   ├── workflows</br>
+│   │   ├── auto_label_priority.yml</br>
+│   │   ├── commit_logger.yml</br>
+│   │   ├── inactivity.yml</br>
+│   │   ├── osv-scanner.yml</br>
+│   │   ├── preview.yml</br>
+│   │   ├── sitemap.yml</br>
+│   │   ├── summary.yml</br>
+│   │   ├── test.yml</br>
+│   │   └── vercel_check.yml</br>
+│   ├── dependabotupdates.yml</br>
+│   └── labels.yml</br>
+├── old-stuff</br>
+│   ├── api</br>
+│   │   ├── 2faeg.js</br>
+│   │   ├── admin.js</br>
+│   │   ├── articles.js</br>
+│   │   ├── auth.js</br>
+│   │   ├── status.js</br>
+│   │   └── users.js</br>
+│   ├── pages</br>
+│   │   ├── 2fa.html</br>
+│   │   ├── articles.html</br>
+│   │   ├── favicon.ico</br>
+│   │   ├── index.html</br>
+│   │   ├── login.html</br>
+│   │   └── sauth.html</br>
+│   ├── static</br>
+│   │   ├── css</br>
+│   │   │   └── index.css</br>
+│   │   └── img</br>
+│   │       ├── branding</br>
+│   │       └── readme.txt</br>
+│   ├── index.html</br>
+│   └── server.js</br>
+├── public</br>
+│   ├── articles</br>
+│   │   ├── 1.md - 6.md (6 article files)</br>
+│   │   ├── README.md</br>
+│   │   ├── index.json</br>
+│   │   └── sorter.py</br>
+│   ├── LICENSE</br>
+│   ├── favicon-new.ico</br>
+│   ├── favicon-old.ico</br>
+│   ├── favicon.ico</br>
+│   └── sitemap.xml</br>
+├── src</br>
+│   ├── assets</br>
+│   │   ├── flags (6 SVG files for different languages)</br>
+│   │   └── tsc.png</br>
+│   ├── components</br>
+│   │   ├── Footer.jsx</br>
+│   │   └── Header.jsx</br>
+│   ├── i18n</br>
+│   │   ├── bg.json</br>
+│   │   ├── en.json</br>
+│   │   ├── eo.json</br>
+│   │   ├── hb.json</br>
+│   │   ├── index.js</br>
+│   │   ├── lol.json</br>
+│   │   └── rbe.json</br>
+│   ├── pages</br>
+│   │   ├── About.jsx</br>
+│   │   ├── Account.jsx</br>
+│   │   ├── ArticlePage.jsx</br>
+│   │   ├── Lang.jsx</br>
+│   │   ├── Login.jsx</br>
+│   │   ├── MainContent.jsx</br>
+│   │   ├── MakeAdmin.jsx</br>
+│   │   ├── SignUp.jsx</br>
+│   │   ├── UserList.jsx</br>
+│   │   └── createArticles.jsx</br>
+│   ├── styles (10 CSS files)</br>
+│   ├── App.jsx</br>
+│   ├── firebaseConfig.js</br>
+│   └── main.jsx</br>
+├── Configuration files</br>
+│   ├── .codeqlconfig.yml</br>
+│   ├── .env.development</br>
+│   ├── .env.production</br>
+│   ├── .gitignore</br>
+│   ├── eslint.config.js</br>
+│   ├── gpt.prompt.yml</br>
+│   ├── package.json</br>
+│   ├── package-lock.json</br>
+│   ├── tsc.code-workspace</br>
+│   ├── vercel.json</br>
+│   └── vite.config.js</br>
+├── Documentation</br>
+│   ├── CONTRIBUTING.md</br>
+│   ├── LICENSE</br>
+│   ├── README.md</br>
+│   └── SECURITY.md</br>
+└── Other files</br>
+    ├── generate-sitemap.js</br>
+    └── index.html</br>
+<!-- my nasty little br hell, my pretty -->
 </details>
 
 ## Support
-
-If you need support and have a GitHub account, you can report issues here. Security Vulnerabilities MUST be reported in the security tab.
+For support on genreal bugs, go to the Issues tab. For Security issues, create a vuneribility report.
