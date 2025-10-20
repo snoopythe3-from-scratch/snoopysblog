@@ -379,6 +379,11 @@ export default function MainContent() {
                 onClick={() => handleReaction(article.id, "heart")}
                 style={{ color: userReactions[article.id]?.heart ? "#ff4081" : "grey" }}
               >❤️ {article.reactions.heart}</button>
+              <button
+                className={`reaction-btn ${animate[article.id]?.confetti ? "animate" : ""}`}
+                onClick={() => handleReaction(article.id, "confetti")}
+                style={{ color: userReactions[article.id]?.confetti ? "#0d6efd" : "grey" }}
+              >🎉 {article.reactions.confetti}</button>
             </div>
             <div className="read-more" onClick={() => navigate(`${selectedCategory}/article/${article.id}`)}>{t("main.readmore")} →</div>
           </div>
