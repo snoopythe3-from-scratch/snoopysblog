@@ -139,9 +139,9 @@ export default function ArticlePage() {
           ❤️ {reactions.heart}
         </button>
         <button
-          className={`reaction-btn ${animate.heart ? "animate" : ""}`}
-          onClick={() => handleReaction("heart")}
-          style={{ color: userReactions.heart ? "#ff4081" : "grey" }}
+          className={`reaction-btn ${animate.confetti ? "animate" : ""}`}
+          onClick={() => handleReaction("confetti")}
+          style={{ color: userReactions.confetti ? "#0d6efd" : "grey" }}
         >
           🎉 {reactions.confetti}
         </button>
