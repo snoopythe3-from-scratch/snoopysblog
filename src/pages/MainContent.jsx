@@ -69,6 +69,7 @@ export default function MainContent() {
             thumbsUp: data.thumbsUp || 0,
             thumbsDown: data.thumbsDown || 0,
             heart: data.heart || 0,
+            confetti: data.confetti || 0,
           },
         };
 
@@ -139,7 +140,7 @@ export default function MainContent() {
             <div className="admin-panel">
               <div className="admin-panel-header">
                 <center>
-                  <h2>🛡️ Admin Panel</h2>
+                  <h2>Admin Panel</h2>
                 </center>
                 <span className="admin-badge">Administrator</span>
               </div>
@@ -162,13 +163,13 @@ export default function MainContent() {
                   className="admin-action-btn primary"
                   onClick={() => navigate('/articles/create')}
                 >
-                  ✍️ Write Article
+                  Write Article
                 </button>
                 <button 
                   className="admin-action-btn secondary"
                   onClick={() => navigate('/admin/users')}
                 >
-                  👥 Manage Users
+                  Manage Users
                 </button>
               </div>
             </div>
@@ -202,6 +203,11 @@ export default function MainContent() {
                     onClick={() => handleReaction(article.id, "heart")}
                     style={{ color: userReactions[article.id]?.heart ? "#ff4081" : "grey" }}
                   >❤️ {article.reactions.heart}</button>
+                <button
+                  className={`reaction-btn ${animate[article.id]?.confetti ? "animate" : ""}`}
+                  onClick={() => handleReaction(article.id, "confetti")}
+                  style={{ color: userReactions[article.id]?.confetti ? "#0d6efd" : "grey" }}
+                >🎉 {article.reactions.confetti}</button>
                 </div>
                 <div className="read-more" onClick={() => navigate(`${article.category}/article/${article.id}`)}>{t("main.readmore")} →</div>
               </div>
