@@ -52,7 +52,7 @@ export default function SignUpForm() {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder={t("signup.username")}
+                placeholder={t("signup.username-placeholder")}
                 required
             />
             <button type="submit">{t("signup.register")}</button>
