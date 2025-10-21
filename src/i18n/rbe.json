@@ -51,7 +51,7 @@
         "email-placeholder": "Email *rasp*",
         "password-placeholder": "Password *rasp*",
         "register": "Register *rasp*",
-        "username": "Username *rasp*"
+        "username-placeholder": "Username *rasp*"
     },
     "login": {
         "emailpass-error": "Please *rasp* enter *rasp* both *rasp* email *rasp* and *rasp* password. *rasp*",

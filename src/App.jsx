@@ -118,7 +118,7 @@ if (loading) {
           }
         />
         <Route
-          path="/users/all"
+          path="/admin/users"
           element={ user && profile?.writer ? <UserList /> : <p>Not authorized</p> }
         />
         <Route path="/about" element={<About />} />
