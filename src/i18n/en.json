@@ -47,7 +47,7 @@
         "title-placeholder": "Enter your article title..."
     },
     "signup": {
-        "heading": "Sign Up with Username",
+        "heading": "Sign Up",
         "email-placeholder": "Email",
         "password-placeholder": "Password",
         "username-placeholder": "Username",

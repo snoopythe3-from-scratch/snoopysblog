@@ -32,30 +32,43 @@ export default function SignUpForm() {
         }
     };
     return (
+        <center>
         <form onSubmit={handleSignUp}>
+            <div className="form-group">
             <h2>{t("signup.heading")}</h2>
+            <div className="form-group">
             <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={t("signup.email-placeholder")}
                 required
+                className="form-input"
             />
+            </div>
+            <div className="form-group">
             <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={t("signup.password-placeholder")}
                 required
+                className="form-input"
             />
+            </div>
+            <div className="form-group">
             <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder={t("signup.username-placeholder")}
                 required
+                className="form-input"
             />
-            <button type="submit">{t("signup.register")}</button>
+            </div>
+            <button className="submit-button" type="submit">{t("signup.register")}</button>
+            </div>
         </form>
+        </center>
     )
 }

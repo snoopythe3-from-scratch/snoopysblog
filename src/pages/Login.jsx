@@ -38,7 +38,7 @@ export default function LoginPage() {
   };
 
   return (
-    <><center><h1>Sign-in to TSC</h1><form onSubmit={handleSignIn}>
+    <><center><h1>{t("login.signin")}</h1><form onSubmit={handleSignIn}>
       <div className="form-group">
         <input
           type="email"
