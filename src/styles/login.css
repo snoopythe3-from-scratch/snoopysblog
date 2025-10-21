@@ -17,6 +17,7 @@
   font-size: 1rem;
   transition: all 0.3s ease;
   box-sizing: border-box;
+  font-size: 120%;
 }
 .form-input:focus {
   outline: none;
@@ -33,6 +34,7 @@
     cursor: pointer;
     font-weight: bold;
     border-radius: 10px;
+    width: 50%;
 }
 
 .submit-button:hover {
