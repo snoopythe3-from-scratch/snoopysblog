@@ -76,8 +76,7 @@ Articles must be written in English and with proper grammar and spelling.
 The project is static and uses React+Vite, with Firebase as our database and authentication manager.
 
 **Directory Structure**:
-<details>
-<summary>Directory Structure (very large)</summary>
+
 ```
 ├── .github
 │   ├── ISSUE_TEMPLATE
@@ -154,7 +153,6 @@ The project is static and uses React+Vite, with Firebase as our database and aut
     ├── generate-sitemap.js
     └── index.html
 ```
-</details>
 
 ## Support
 
