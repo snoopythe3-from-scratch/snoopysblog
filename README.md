@@ -94,8 +94,6 @@ The project is static and uses React+Vite, with Firebase as our database and aut
 │   │   └── vercel_check.yml
 │   ├── dependabotupdates.yml
 │   └── labels.yml
-├── old-stuff
-│   ├── Old content that isnt used anymore at all, may be moved to a separate repo soon
 ├── public
 │   ├── LICENSE
 │   ├── favicon-new.ico
