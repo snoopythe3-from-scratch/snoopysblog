@@ -1,1 +1,0 @@
-Store general purpose images in here, and all branding in /static/img/branding
